@@ -3,8 +3,9 @@
 namespace App\Repository;
 
 use App\Entity\Jugador;
-use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\ORM\Mapping as ORM;
 use Doctrine\Persistence\ManagerRegistry;
+use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 
 /**
  * @extends ServiceEntityRepository<Jugador>
@@ -13,7 +14,12 @@ use Doctrine\Persistence\ManagerRegistry;
  * @method Jugador[]    findAll()
  * @method Jugador[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
 */
-
+#[
+    ORM\UniqueConstraint (
+        name:'jugador_idx',
+        columns:['nombre', 'email']
+    )
+]
 class JugadorRepository extends ServiceEntityRepository
 {
     public function __construct(ManagerRegistry $registry)
@@ -55,4 +61,9 @@ class JugadorRepository extends ServiceEntityRepository
                 ->getOneOrNullResult()
             ;
         }
+
+    public function nuevoJugador(): ?Jugador
+    {
+
+    }
 }
