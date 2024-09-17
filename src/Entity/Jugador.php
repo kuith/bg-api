@@ -6,6 +6,13 @@ use App\Repository\JugadorRepository;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: JugadorRepository::class)]
+#[
+    ORM\UniqueConstraint (
+        name:'Jugador',
+        columns:['nombre', 'email']
+    )
+]
+
 class Jugador
 {
     #[ORM\Id]

@@ -1,11 +1,15 @@
 <?php
 
 namespace App\Controller;
-
+use App\Entity\Jugador;
 use App\Repository\JugadorRepository;
+use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
+use Symfony\Component\Serializer\SerializerInterface;
+use Symfony\Component\HttpFoundation\JsonResponse;
 
 #[Route('/api/jugadores')]
 
@@ -30,22 +34,33 @@ class JugadorController extends AbstractController
 
         return $this->json($jugador);
     }
+
+    #[Route('/', name: 'app_jugador_crearJugador', methods: ['POST'])]
+    public function crearJugador (Request $request, EntityManagerInterface $entityManager, SerializerInterface $serializer): Response
+    {
+        $jugador = new Jugador();
+        $jugador->setNombre($request->get('nombre'));
+        $jugador->setNick($request->get('nick'));
+        $jugador->setEmail($request->get('email'));
+        $jugador->setPassword($request->get('password'));
+        $jugador->setRol($request->get('rol'));
+
+        if (!$jugador->getNombre() || !$jugador->getemail() || !$jugador->getPassword()) {
+            return new JsonResponse(['error' => 'Missing required fields'], 400);
+        }
+   
+        $entityManager->persist($jugador);
+        $entityManager->flush();
+    
+        $data =  [
+            'id' => $jugador->getId(),
+            'nombre' => $jugador->getNombre(),
+            'nick' => $jugador->getNick(),
+            'email' => $jugador->getEmail(),
+            'password' => $jugador->getPassword(),
+            'rol' => $jugador->getRol()
+        ];
+            
+        return $this->json($data, 200);
+    }
 }
-
-
-/* #[Route('/product', name: 'create_product')]
-public function createProduct(EntityManagerInterface $entityManager): Response
-{
-    $product = new Product();
-    $product->setName('Keyboard');
-    $product->setPrice(1999);
-    $product->setDescription('Ergonomic and stylish!');
-
-    // tell Doctrine you want to (eventually) save the Product (no queries yet)
-    $entityManager->persist($product);
-
-    // actually executes the queries (i.e. the INSERT query)
-    $entityManager->flush();
-
-    return new Response('Saved new product with id '.$product->getId());
-} */
