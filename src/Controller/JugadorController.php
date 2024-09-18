@@ -23,7 +23,7 @@ class JugadorController extends AbstractController
         return $this->json($jugadores);
     }
 
-    #[Route('/{id<\d+>}', name: 'app_jugador_getById', methods: ['GET'])]
+    #[Route('/search/{id<\d+>}', name: 'app_jugador_getById', methods: ['GET'])]
     public function getById(int $id, JugadorRepository $repository): Response
     {
         $jugador = $repository->findOneById($id);
@@ -62,5 +62,88 @@ class JugadorController extends AbstractController
         ];
             
         return $this->json($data, 200);
+    }
+
+    #[Route('/{id<\d+>}', name: 'jugador_edit', methods: ['PUT'])]
+    public function update(Request $request, EntityManagerInterface $entityManager, int $id): Response
+    {
+        $jugador = $entityManager->getRepository(Jugador::class)->findOneById($id);
+
+        if (!$jugador) {
+            throw $this->createNotFoundException(
+                'Jugador no encontrado: '.$id
+            );
+        }
+
+        $jugador->setNombre($request->get('nombre'));
+        $jugador->setNick($request->get('nick'));
+        $jugador->setEmail($request->get('email'));
+        $jugador->setPassword($request->get('password'));
+        $jugador->setRol($request->get('rol'));
+        $entityManager->flush();
+
+        $data =  [
+            'id' => $jugador->getId(),
+            'nombre' => $jugador->getNombre(),
+            'nick' => $jugador->getNick(),
+            'email' => $jugador->getEmail(),
+            'password' => $jugador->getPassword(),
+            'rol' => $jugador->getRol()
+        ];
+            
+        return $this->json($data, 200);
+    }
+
+    #[Route('/{id<\d+>}', name: 'jugador_delete', methods: ['DELETE'])]
+    public function delete(Request $request, EntityManagerInterface $entityManager, int $id): Response
+    {
+        $jugador = $entityManager->getRepository(Jugador::class)->findOneById($id);
+
+        if (!$jugador) {
+            throw $this->createNotFoundException(
+                'Jugador no encontrado: '.$id
+            );
+        }
+
+        $entityManager->remove($jugador);
+        $entityManager->flush();
+            
+        return new Response('Jugador eliminado!', 200);
+    }
+
+    #[Route('/search/nombre/{nombre}', name: 'app_jugador_getByNombre', methods: ['GET'])]
+    public function getByNombre(String $nombre, JugadorRepository $repository): Response
+    {
+        $jugador = $repository->findOneByNombre($nombre);
+
+        if (!$jugador) {
+            throw $this->createNotFoundException('Jugador no encontrado');
+        }
+
+        return $this->json($jugador);
+    }
+
+    #[Route('/search/email/{email}', name: 'app_jugador_getByEmail', methods: ['GET'])]
+    public function getByEmail(String $email, JugadorRepository $repository): Response
+    {
+        $jugador = $repository->findOneByEmail($email);
+
+        if (!$jugador) {
+            throw $this->createNotFoundException('Jugador no encontrado');
+        }
+
+        return $this->json($jugador);
+    }
+
+    #[Route('/search/rol/{rol}', name: 'app_jugador_getByRol', methods: ['GET'])]
+    public function getByRol(String $rol, JugadorRepository $repository): Response
+    {
+        $jugadores = $repository->findByRol($rol);
+
+        if (!$jugadores) {
+            throw $this->createNotFoundException('Rol no encontrado');
+        }
+
+        return $this->json($jugadores);
     }
 }

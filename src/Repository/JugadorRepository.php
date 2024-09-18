@@ -47,13 +47,45 @@ class JugadorRepository extends ServiceEntityRepository
     //        ;
     //    }
 
-     public function findOneById($id): ?Jugador
-        {
-            return $this->createQueryBuilder('j')
-                ->andWhere('j.id = :val')
-                ->setParameter('val', $id)
-                ->getQuery()
-                ->getOneOrNullResult()
-            ;
-        }
+    public function findOneById($id): ?Jugador
+    {
+        return $this->createQueryBuilder('j')
+            ->andWhere('j.id = :val')
+            ->setParameter('val', $id)
+            ->getQuery()
+            ->getOneOrNullResult()
+        ;
+    }
+
+    public function findOneByNombre($nombre): ?Jugador
+    {
+        return $this->createQueryBuilder('j')
+            ->andWhere('j.nombre = :val')
+            ->setParameter('val', $nombre)
+            ->getQuery()
+            ->getOneOrNullResult()
+        ;
+    }
+
+    public function findOneByEmail($email): ?Jugador
+    {
+        return $this->createQueryBuilder('j')
+            ->andWhere('j.email = :val')
+            ->setParameter('val', $email)
+            ->getQuery()
+            ->getOneOrNullResult()
+        ;
+    }
+
+    public function findByRol($rol): array
+    {
+        return $this->createQueryBuilder('j')
+            ->andWhere('j.rol = :val')
+            ->setParameter('val', $rol)
+            ->orderBy('j.id', 'ASC')
+            ->setMaxResults(10)
+            ->getQuery()
+            ->getResult()
+        ;
+    }
 }
