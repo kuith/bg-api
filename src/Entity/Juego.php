@@ -3,6 +3,8 @@
 namespace App\Entity;
 
 use App\Repository\JuegoRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: JuegoRepository::class)]
@@ -42,6 +44,17 @@ class Juego
 
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $editorial_local = null;
+
+    /**
+     * @var Collection<int, Expansion>
+     */
+    #[ORM\OneToMany(targetEntity: Expansion::class, mappedBy: 'juego')]
+    private Collection $expansions;
+
+    public function __construct()
+    {
+        $this->expansions = new ArrayCollection();
+    }
 
     public function getId(): ?int
     {
@@ -140,6 +153,36 @@ class Juego
     public function setEditorialLocal(?string $editorial_local): static
     {
         $this->editorial_local = $editorial_local;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Expansion>
+     */
+    public function getExpansions(): Collection
+    {
+        return $this->expansions;
+    }
+
+    public function addExpansion(Expansion $expansion): static
+    {
+        if (!$this->expansions->contains($expansion)) {
+            $this->expansions->add($expansion);
+            $expansion->setJuego($this);
+        }
+
+        return $this;
+    }
+
+    public function removeExpansion(Expansion $expansion): static
+    {
+        if ($this->expansions->removeElement($expansion)) {
+            // set the owning side to null (unless already changed)
+            if ($expansion->getJuego() === $this) {
+                $expansion->setJuego(null);
+            }
+        }
 
         return $this;
     }
