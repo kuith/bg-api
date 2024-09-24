@@ -49,11 +49,11 @@ class Juego
      * @var Collection<int, Expansion>
      */
     #[ORM\OneToMany(targetEntity: Expansion::class, mappedBy: 'juego')]
-    private Collection $expansions;
+    private Collection $expansion;
 
     public function __construct()
     {
-        $this->expansions = new ArrayCollection();
+        $this->expansion = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -160,15 +160,15 @@ class Juego
     /**
      * @return Collection<int, Expansion>
      */
-    public function getExpansions(): Collection
+    public function getExpansion(): Collection
     {
-        return $this->expansions;
+        return $this->expansion;
     }
 
     public function addExpansion(Expansion $expansion): static
     {
-        if (!$this->expansions->contains($expansion)) {
-            $this->expansions->add($expansion);
+        if (!$this->expansion->contains($expansion)) {
+            $this->expansion->add($expansion);
             $expansion->setJuego($this);
         }
 
@@ -177,7 +177,7 @@ class Juego
 
     public function removeExpansion(Expansion $expansion): static
     {
-        if ($this->expansions->removeElement($expansion)) {
+        if ($this->expansion->removeElement($expansion)) {
             // set the owning side to null (unless already changed)
             if ($expansion->getJuego() === $this) {
                 $expansion->setJuego(null);

@@ -38,6 +38,8 @@ class ExpansionController extends AbstractController
     #[Route('/', name: 'app_expansion_crearExpansion', methods: ['POST'])]
     public function crearExpansion (Request $request, EntityManagerInterface $entityManager, SerializerInterface $serializer): Response
     {
+        $juegoId = $request->get('juego_id');
+
         $expansion = new Expansion();
         $expansion->setNombre($request->get('nombre'));
 
