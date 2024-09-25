@@ -24,19 +24,12 @@ class JuegoController extends AbstractController
     {
         $juegos = $repository->findAll();
 
-        $encoder = new JsonEncoder();
-        $defaultContext = [
-            AbstractNormalizer::CIRCULAR_REFERENCE_HANDLER => function (object $object, ?string $format, array $context): string {
-                return $object->getId();
-            },
-        ];
-        $normalizer = new ObjectNormalizer(null, null, null, null, null, null, $defaultContext);
+        return $this->json([
+            'juegos' => $juegos
+        ], 200, [], ['groups' => ['main']]);
 
-        $serializer = new Serializer([$normalizer], [$encoder]);
+       // return $this->json($juegos);
 
-
-        return $this->json($serializer->serialize($juegos, 'json'));
-        //return $this->json($juegos);
     }
 
     #[Route('/search/{id<\d+>}', name: 'app_juego_getById', methods: ['GET'])]

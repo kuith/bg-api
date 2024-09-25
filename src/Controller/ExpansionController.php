@@ -4,12 +4,16 @@ namespace App\Controller;
 use App\Entity\Expansion;
 use App\Repository\ExpansionRepository;
 use Doctrine\ORM\EntityManagerInterface;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\Serializer\Serializer;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
-use Symfony\Component\Serializer\SerializerInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\Serializer\Encoder\JsonEncoder;
+use Symfony\Component\Serializer\SerializerInterface;
+use Symfony\Component\Serializer\Normalizer\ObjectNormalizer;
+use Symfony\Component\Serializer\Normalizer\AbstractNormalizer;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
 #[Route('/api/expansiones')]
 
@@ -19,8 +23,11 @@ class ExpansionController extends AbstractController
     public function getAll(ExpansionRepository $repository): Response
     {
         $expansiones = $repository->findAll();
+        return $this->json([
+            'expansiones' => $expansiones
+        ], 200, [], ['groups' => ['main']]);
 
-        return $this->json($expansiones);
+        //return $this->json($expansiones);
     }
 
     #[Route('/search/{id<\d+>}', name: 'app_Expansion_getById', methods: ['GET'])]

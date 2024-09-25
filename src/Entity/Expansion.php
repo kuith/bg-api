@@ -2,8 +2,9 @@
 
 namespace App\Entity;
 
-use App\Repository\ExpansionRepository;
 use Doctrine\ORM\Mapping as ORM;
+use App\Repository\ExpansionRepository;
+use Symfony\Component\Serializer\Attribute\Groups;
 
 #[ORM\Entity(repositoryClass: ExpansionRepository::class)]
 
@@ -12,9 +13,11 @@ class Expansion
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
+    #[Groups(['main'])]
     private ?int $id = null;
 
     #[ORM\Column(length: 255)]
+    #[Groups(['main'])]
     private ?string $nombre = null;
 
     #[ORM\ManyToOne(inversedBy: 'expansion')]

@@ -2,10 +2,11 @@
 
 namespace App\Entity;
 
-use App\Repository\JuegoRepository;
-use Doctrine\Common\Collections\ArrayCollection;
-use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use App\Repository\JuegoRepository;
+use Doctrine\Common\Collections\Collection;
+use Doctrine\Common\Collections\ArrayCollection;
+use Symfony\Component\Serializer\Attribute\Groups;
 
 #[ORM\Entity(repositoryClass: JuegoRepository::class)]
 #[
@@ -19,30 +20,39 @@ class Juego
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
+    #[Groups(['main'])]
     private ?int $id = null;
 
     #[ORM\Column(length: 255)]
+    #[Groups(['main'])]
     private ?string $nombre = null;
 
     #[ORM\Column(length: 255, nullable: true)]
+    #[Groups(['main'])]
     private ?string $urimagen = null;
 
     #[ORM\Column(length: 255, nullable: true)]
+    #[Groups(['main'])]
     private ?string $dimensiones_caja = null;
 
     #[ORM\Column(nullable: true)]
+    #[Groups(['main'])]
     private ?int $precio = null;
 
     #[ORM\Column(length: 255)]
+    #[Groups(['main'])]
     private ?string $rango_jugadores = null;
 
     #[ORM\Column(length: 255, nullable: true)]
+    #[Groups(['main'])]
     private ?string $autores = null;
 
     #[ORM\Column(length: 255, nullable: true)]
+    #[Groups(['main'])]
     private ?string $editorial_madre = null;
 
     #[ORM\Column(length: 255, nullable: true)]
+    #[Groups(['main'])]
     private ?string $editorial_local = null;
 
     /**
