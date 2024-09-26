@@ -64,4 +64,5 @@ class ExpansionRepository extends ServiceEntityRepository
             ->getOneOrNullResult()
         ;
     }
+
 }

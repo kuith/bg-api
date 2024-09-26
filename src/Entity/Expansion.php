@@ -7,6 +7,12 @@ use App\Repository\ExpansionRepository;
 use Symfony\Component\Serializer\Attribute\Groups;
 
 #[ORM\Entity(repositoryClass: ExpansionRepository::class)]
+#[
+    ORM\UniqueConstraint (
+        name:'Expansion',
+        columns:['nombre', 'juego_id']
+    )
+]
 
 class Expansion
 {
@@ -22,6 +28,10 @@ class Expansion
 
     #[ORM\ManyToOne(inversedBy: 'expansion')]
     private ?Juego $juego = null;
+    
+    #[Groups(['main'])]
+    #[ORM\Column]
+    private ?int $juego_id = null;
 
     public function getId(): ?int
     {
@@ -38,7 +48,7 @@ class Expansion
 
         return $this;
     }
-
+    
     public function getJuego(): ?Juego
     {
         return $this->juego;
@@ -50,4 +60,16 @@ class Expansion
 
         return $this;
     }
-}
+
+    public function getjuegoId(): ?int
+    {
+        return $this->juego_id;
+    }
+
+    public function setjuegoId(int $juego_id): static
+    {
+        $this->juego_id = $juego_id;
+
+        return $this;
+    }
+  }
