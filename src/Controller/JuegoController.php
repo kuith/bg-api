@@ -23,7 +23,6 @@ class JuegoController extends AbstractController
     public function getAll(JuegoRepository $repository): Response
     {
         $juegos = $repository->findAll();
-
         return $this->json([
             'juegos' => $juegos
         ], 200, [], ['groups' => ['main']]);
@@ -45,7 +44,7 @@ class JuegoController extends AbstractController
     }
 
     #[Route('/', name: 'app_jugador_crearJuego', methods: ['POST'])]
-    public function crearJuego (Request $request, EntityManagerInterface $entityManager, SerializerInterface $serializer): Response
+    public function crearJuego (Request $request, EntityManagerInterface $entityManager): Response
     {
         $juego = new Juego();
         $juego->setNombre($request->get('nombre'));
@@ -59,11 +58,12 @@ class JuegoController extends AbstractController
 
         if (!$juego->getNombre()) {
             return new JsonResponse(['error' => 'Missing required field: nombre'], 400);
-        }
-   
+        } 
+         
         $entityManager->persist($juego);
         $entityManager->flush();
-    
+
+
         $data =  [
             'id' => $juego->getId(),
             'nombre' => $juego->getNombre(),

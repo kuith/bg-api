@@ -45,28 +45,19 @@ class ExpansionController extends AbstractController
     #[Route('/', name: 'app_expansion_crearExpansion', methods: ['POST'])]
     public function crearExpansion (Request $request, EntityManagerInterface $entityManager): Response
     {
-       //return new JsonResponse($request->getPayload()->get('juego_id'), 400);
-
-        $nombre = ($request->get('nombre'));
-        $Juegoid = ($request->get('juegoid'));
-
         $expansion = new Expansion();
-        //$expansion->setNombre($request->get('nombre'));
-        //$expansion->setJuegoId($request->get('juego_id'));
-        $expansion->setNombre($nombre);
-        $expansion->setJuegoId($Juegoid);
-
-        //return new JsonResponse($expansion->getNombre(), 400);
+        $expansion->setNombre($request->get('nombre'));
+        $expansion->setJuegoId($request->get('juego_id'));
+        //return new JsonResponse($expansion->getJuegoId(), 400);
         
-
         if (!$expansion->getNombre() || !$expansion->getJuegoId()) {
             return new JsonResponse(['error' => 'Missing required field'], 400);
         } 
 
-        return $this->json($expansion, 200);
-
         $entityManager->persist($expansion);
         $entityManager->flush();
+
+        return $this->json($expansion, 200);
 
         $data =  [
             'id' => $expansion->getId(),

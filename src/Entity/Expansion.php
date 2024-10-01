@@ -29,8 +29,8 @@ class Expansion
     #[ORM\ManyToOne(inversedBy: 'expansion')]
     private ?Juego $juego = null;
     
-    #[Groups(['main'])]
     #[ORM\Column]
+    #[Groups(['main'])]
     private ?int $juego_id = null;
 
     public function getId(): ?int
@@ -49,14 +49,9 @@ class Expansion
         return $this;
     }
     
-    public function getJuego(): ?Juego
+    public function setJuegoId(int $juego_id): static
     {
-        return $this->juego;
-    }
-
-    public function setJuego(?Juego $juego): static
-    {
-        $this->juego = $juego;
+        $this->juego_id = $juego_id;
 
         return $this;
     }
@@ -65,10 +60,15 @@ class Expansion
     {
         return $this->juego_id;
     }
-
-    public function setjuegoId(int $juego_id): static
+        
+    public function getJuego(): ?Juego
     {
-        $this->juego_id = $juego_id;
+        return $this->juego;
+    }
+
+    public function setJuego(?Juego $juego): static
+    {
+        $this->juego = $juego;
 
         return $this;
     }
