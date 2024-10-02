@@ -2,10 +2,10 @@
 
 namespace App\Entity;
 
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use App\Repository\JuegoRepository;
-use Doctrine\Common\Collections\Collection;
-use Doctrine\Common\Collections\ArrayCollection;
 use Symfony\Component\Serializer\Attribute\Groups;
 
 #[ORM\Entity(repositoryClass: JuegoRepository::class)]
@@ -39,7 +39,7 @@ class Juego
     #[Groups(['main'])]
     private ?int $precio = null;
 
-    #[ORM\Column(length: 255)]
+    #[ORM\Column(length: 255, nullable: true)]
     #[Groups(['main'])]
     private ?string $rango_jugadores = null;
 
@@ -59,11 +59,12 @@ class Juego
      * @var Collection<int, Expansion>
      */
     #[ORM\OneToMany(targetEntity: Expansion::class, mappedBy: 'juego')]
-    private Collection $expansion;
+    #[Groups(['main'])]
+    private Collection $expansions;
 
     public function __construct()
     {
-        $this->expansion = new ArrayCollection();
+        $this->expansions = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -170,15 +171,15 @@ class Juego
     /**
      * @return Collection<int, Expansion>
      */
-    public function getExpansion(): Collection
+    public function getExpansions(): Collection
     {
-        return $this->expansion;
+        return $this->expansions;
     }
 
     public function addExpansion(Expansion $expansion): static
     {
-        if (!$this->expansion->contains($expansion)) {
-            $this->expansion->add($expansion);
+        if (!$this->expansions->contains($expansion)) {
+            $this->expansions->add($expansion);
             $expansion->setJuego($this);
         }
 
@@ -187,7 +188,7 @@ class Juego
 
     public function removeExpansion(Expansion $expansion): static
     {
-        if ($this->expansion->removeElement($expansion)) {
+        if ($this->expansions->removeElement($expansion)) {
             // set the owning side to null (unless already changed)
             if ($expansion->getJuego() === $this) {
                 $expansion->setJuego(null);

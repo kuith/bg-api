@@ -2,41 +2,30 @@
 
 namespace App\Entity;
 
-use Doctrine\ORM\Mapping as ORM;
 use App\Repository\ExpansionRepository;
-use Symfony\Component\Serializer\Attribute\Groups;
+use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: ExpansionRepository::class)]
-#[
-    ORM\UniqueConstraint (
-        name:'Expansion',
-        columns:['nombre', 'juego_id']
-    )
-]
-
 class Expansion
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
-    #[Groups(['main'])]
     private ?int $id = null;
 
     #[ORM\Column(length: 255)]
-    #[Groups(['main'])]
     private ?string $nombre = null;
 
-    #[ORM\ManyToOne(inversedBy: 'expansion')]
+    #[ORM\ManyToOne(inversedBy: 'expansions')]
+    #[ORM\JoinColumn(nullable: false)]
+
     private ?Juego $juego = null;
-    
-    #[ORM\Column]
-    #[Groups(['main'])]
-    private ?int $juego_id = null;
 
     public function getId(): ?int
     {
         return $this->id;
     }
+
     public function getNombre(): ?string
     {
         return $this->nombre;
@@ -48,19 +37,7 @@ class Expansion
 
         return $this;
     }
-    
-    public function setJuegoId(int $juego_id): static
-    {
-        $this->juego_id = $juego_id;
 
-        return $this;
-    }
-
-    public function getjuegoId(): ?int
-    {
-        return $this->juego_id;
-    }
-        
     public function getJuego(): ?Juego
     {
         return $this->juego;
@@ -72,4 +49,4 @@ class Expansion
 
         return $this;
     }
-  }
+}

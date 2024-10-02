@@ -10,7 +10,7 @@ use Doctrine\Migrations\AbstractMigration;
 /**
  * Auto-generated Migration: Please modify to your needs!
  */
-final class Version20240926185147 extends AbstractMigration
+final class Version20241002171618 extends AbstractMigration
 {
     public function getDescription(): string
     {
@@ -20,20 +20,14 @@ final class Version20240926185147 extends AbstractMigration
     public function up(Schema $schema): void
     {
         // this up() migration is auto-generated, please modify it to your needs
-        $this->addSql('ALTER TABLE expansion DROP FOREIGN KEY FK_F0695B7213375255');
-        $this->addSql('DROP INDEX IDX_F0695B7213375255 ON expansion');
-        $this->addSql('ALTER TABLE expansion ADD juego_id INT DEFAULT NULL');
+        $this->addSql('CREATE TABLE expansion (id INT AUTO_INCREMENT NOT NULL, juego_id INT NOT NULL, nombre VARCHAR(255) NOT NULL, INDEX IDX_F0695B7213375255 (juego_id), PRIMARY KEY(id)) DEFAULT CHARACTER SET utf8mb4 COLLATE `utf8mb4_unicode_ci` ENGINE = InnoDB');
         $this->addSql('ALTER TABLE expansion ADD CONSTRAINT FK_F0695B7213375255 FOREIGN KEY (juego_id) REFERENCES juego (id)');
-        $this->addSql('CREATE INDEX IDX_F0695B7213375255 ON expansion (juego_id)');
     }
 
     public function down(Schema $schema): void
     {
         // this down() migration is auto-generated, please modify it to your needs
         $this->addSql('ALTER TABLE expansion DROP FOREIGN KEY FK_F0695B7213375255');
-        $this->addSql('DROP INDEX IDX_F0695B7213375255 ON expansion');
-        $this->addSql('ALTER TABLE expansion DROP juego_id');
-        $this->addSql('ALTER TABLE expansion ADD CONSTRAINT FK_F0695B7213375255 FOREIGN KEY (juegoid) REFERENCES juego (id)');
-        $this->addSql('CREATE INDEX IDX_F0695B7213375255 ON expansion (juegoid)');
+        $this->addSql('DROP TABLE expansion');
     }
 }

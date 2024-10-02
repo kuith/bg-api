@@ -2,7 +2,9 @@
 
 namespace App\Controller;
 use App\Entity\Expansion;
+use App\Entity\Juego;
 use App\Repository\ExpansionRepository;
+use App\Repository\JuegoRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Serializer\Serializer;
 use Symfony\Component\HttpFoundation\Request;
@@ -27,10 +29,9 @@ class ExpansionController extends AbstractController
             'expansiones' => $expansiones
         ], 200, [], ['groups' => ['main']]);
 
-        //return $this->json($expansiones);
     }
 
-    #[Route('/search/{id<\d+>}', name: 'app_Expansion_getById', methods: ['GET'])]
+    #[Route('/search/{id<\d+>}', name: 'app_expansion_getById', methods: ['GET'])]
     public function getById(int $id, ExpansionRepository $repository): Response
     {
         $expansion = $repository->findOneById($id);
@@ -43,82 +44,24 @@ class ExpansionController extends AbstractController
     }
 
     #[Route('/', name: 'app_expansion_crearExpansion', methods: ['POST'])]
-    public function crearExpansion (Request $request, EntityManagerInterface $entityManager): Response
+    public function crearExpansion (Request $request, JuegoRepository $repository, EntityManagerInterface $entityManager): Response
     {
         $expansion = new Expansion();
         $expansion->setNombre($request->get('nombre'));
-        $expansion->setJuegoId($request->get('juego_id'));
-        //return new JsonResponse($expansion->getJuegoId(), 400);
-        
-        if (!$expansion->getNombre() || !$expansion->getJuegoId()) {
-            return new JsonResponse(['error' => 'Missing required field'], 400);
-        } 
+
+        $juego = $repository->findOneById($request->get('juego_id'));
+        $expansion->setJuego($juego);
 
         $entityManager->persist($expansion);
         $entityManager->flush();
-
-        return $this->json($expansion, 200);
+        
 
         $data =  [
             'id' => $expansion->getId(),
             'nombre' => $expansion->getNombre(),
-            'juego_id' => $expansion->getJuegoId(),
-        ]; 
-        
-        return $this->json($data, 200);
-        
-    }
-
-    #[Route('/{id<\d+>}', name: 'expansion_edit', methods: ['PUT'])]
-    public function update(Request $request, EntityManagerInterface $entityManager, int $id): Response
-    {
-        $expansion = $entityManager->getRepository(Expansion::class)->findOneById($id);
-
-        if (!$expansion) {
-            throw $this->createNotFoundException(
-                'Expansion no encontrada: '.$id
-            );
-        }
-
-        $expansion->setNombre($request->get('nombre'));
-
-
-        $entityManager->flush();
-
-        $data =  [
-            'id' => $expansion->getId(),
-            'nombre' => $expansion->getNombre(),
+            'juego' => $expansion->getJuego(),
         ];
             
-        return $this->json($data, 200);
-    }
-
-    #[Route('/{id<\d+>}', name: 'expansion_delete', methods: ['DELETE'])]
-    public function delete(EntityManagerInterface $entityManager, int $id): Response
-    {
-        $expansion = $entityManager->getRepository(Expansion::class)->findOneById($id);
-
-        if (!$expansion) {
-            throw $this->createNotFoundException(
-                'Expansion no encontrada: '.$id
-            );
-        }
-
-        $entityManager->remove($expansion);
-        $entityManager->flush();
-            
-        return new Response('Expansion eliminada!', 200);
-    }
-
-    #[Route('/search/nombre/{nombre}', name: 'app_expansion_getByNombre', methods: ['GET'])]
-    public function getByNombre(String $nombre, ExpansionRepository $repository): Response
-    {
-        $expansion = $repository->findOneByNombre($nombre);
-
-        if (!$expansion) {
-            throw $this->createNotFoundException('Expansion no encontrada');
-        }
-
-        return $this->json($expansion);
+        return $this->json($data, 200, ['groups' => ['main']]);
     }
 }
