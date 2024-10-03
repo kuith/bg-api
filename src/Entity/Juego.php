@@ -59,7 +59,6 @@ class Juego
      * @var Collection<int, Expansion>
      */
     #[ORM\OneToMany(targetEntity: Expansion::class, mappedBy: 'juego')]
-    #[Groups(['main'])]
     private Collection $expansions;
 
     public function __construct()

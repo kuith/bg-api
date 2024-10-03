@@ -2,19 +2,12 @@
 
 namespace App\Controller;
 use App\Entity\Expansion;
-use App\Entity\Juego;
 use App\Repository\ExpansionRepository;
 use App\Repository\JuegoRepository;
 use Doctrine\ORM\EntityManagerInterface;
-use Symfony\Component\Serializer\Serializer;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
-use Symfony\Component\HttpFoundation\JsonResponse;
-use Symfony\Component\Serializer\Encoder\JsonEncoder;
-use Symfony\Component\Serializer\SerializerInterface;
-use Symfony\Component\Serializer\Normalizer\ObjectNormalizer;
-use Symfony\Component\Serializer\Normalizer\AbstractNormalizer;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
 #[Route('/api/expansiones')]
@@ -50,6 +43,11 @@ class ExpansionController extends AbstractController
         $expansion->setNombre($request->get('nombre'));
 
         $juego = $repository->findOneById($request->get('juego_id'));
+
+        if (!$juego) {
+            throw $this->createNotFoundException('Juego no encontrado');
+        }
+
         $expansion->setJuego($juego);
 
         $entityManager->persist($expansion);
@@ -59,7 +57,41 @@ class ExpansionController extends AbstractController
         $data =  [
             'id' => $expansion->getId(),
             'nombre' => $expansion->getNombre(),
-            'juego' => $expansion->getJuego(),
+            'juego' => $expansion->getJuego()
+        ];
+            
+        return $this->json($data, 200, ['groups' => ['main']]);
+    }
+
+    #[Route('/{id<\d+>}', name: 'expansion_edit', methods: ['PUT'])]
+    public function update(Request $request, JuegoRepository $repository, EntityManagerInterface $entityManager, int $id): Response
+    {
+        $expansion = $entityManager->getRepository(Expansion::class)->findOneById($id);
+
+        if (!$expansion) {
+            throw $this->createNotFoundException(
+                'Expansion no encontrado: '.$id
+            );
+        }
+
+        $expansion->setNombre($request->get('nombre'));
+        
+        $juego = $repository->findOneById($request->get('juego_id'));
+
+        if (!$juego) {
+            throw $this->createNotFoundException('Juego no encontrado');
+        }
+
+        $expansion->setJuego($juego);
+
+        $entityManager->persist($expansion);
+        $entityManager->flush();
+        
+
+        $data =  [
+            'id' => $expansion->getId(),
+            'nombre' => $expansion->getNombre(),
+            'juego' => $expansion->getJuego()
         ];
             
         return $this->json($data, 200, ['groups' => ['main']]);
