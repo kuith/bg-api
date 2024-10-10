@@ -25,9 +25,22 @@ class ExpansionController extends AbstractController
     public function getAll(ExpansionRepository $repository): Response
     {
         $expansiones = $repository->findAll();
-        return $this->json([
+
+        $encoder = new JsonEncoder();
+        $defaultContext = [
+            AbstractNormalizer::CIRCULAR_REFERENCE_HANDLER => function (object $object, ?string $format, array $context): string {
+                return $object->getId();
+            },
+        ];
+        $normalizer = new ObjectNormalizer(null, null, null, null, null, null, $defaultContext);
+
+        $serializer = new Serializer([$normalizer], [$encoder]);
+
+        return $this->jSon(['expansiones'=>$serializer->serialize($expansiones, 'json')]);
+
+        /* return $this->json([
             'expansiones' => $expansiones
-        ], 200, [], ['groups' => ['main']]);
+        ], 200, [], ['groups' => ['main']]); */
 
     }
 
@@ -54,14 +67,12 @@ class ExpansionController extends AbstractController
 
         $entityManager->persist($expansion);
         $entityManager->flush();
-        
 
         $data =  [
             'id' => $expansion->getId(),
             'nombre' => $expansion->getNombre(),
-            'juego' => $expansion->getJuego(),
         ];
             
-        return $this->json($data, 200, ['groups' => ['main']]);
+        return $this->jSon([$data]);
     }
 }

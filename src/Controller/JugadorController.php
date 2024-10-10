@@ -95,7 +95,7 @@ class JugadorController extends AbstractController
     }
 
     #[Route('/{id<\d+>}', name: 'jugador_delete', methods: ['DELETE'])]
-    public function delete(Request $request, EntityManagerInterface $entityManager, int $id): Response
+    public function delete(EntityManagerInterface $entityManager, int $id): Response
     {
         $jugador = $entityManager->getRepository(Jugador::class)->findOneById($id);
 

@@ -6,6 +6,12 @@ use App\Repository\ExpansionRepository;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: ExpansionRepository::class)]
+#[
+    ORM\UniqueConstraint (
+        name:'Expansion',
+        columns:['nombre']
+    )
+]
 class Expansion
 {
     #[ORM\Id]
@@ -18,8 +24,8 @@ class Expansion
 
     #[ORM\ManyToOne(inversedBy: 'expansions')]
     #[ORM\JoinColumn(nullable: false)]
-
     private ?Juego $juego = null;
+
 
     public function getId(): ?int
     {
