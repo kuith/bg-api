@@ -4,6 +4,7 @@ namespace App\Entity;
 
 use App\Repository\ExpansionRepository;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Serializer\Attribute\Groups;
 
 #[ORM\Entity(repositoryClass: ExpansionRepository::class)]
 #[
@@ -24,6 +25,7 @@ class Expansion
 
     #[ORM\ManyToOne(inversedBy: 'expansions')]
     #[ORM\JoinColumn(nullable: false)]
+
     private ?Juego $juego = null;
 
 
