@@ -4,16 +4,12 @@ namespace App\Controller;
 use App\Entity\Juego;
 use App\Repository\JuegoRepository;
 use Doctrine\ORM\EntityManagerInterface;
-use Symfony\Component\Serializer\Serializer;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\HttpFoundation\JsonResponse;
-use Symfony\Component\Serializer\Encoder\JsonEncoder;
-use Symfony\Component\Serializer\SerializerInterface;
-use Symfony\Component\Serializer\Normalizer\ObjectNormalizer;
-use Symfony\Component\Serializer\Normalizer\AbstractNormalizer;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use App\Util\Utils;
 
 #[Route('/api/juegos')]
 
@@ -23,11 +19,15 @@ class JuegoController extends AbstractController
     public function getAll(JuegoRepository $repository): Response
     {
         $juegos = $repository->findAll();
-        return $this->json([
+
+        $mySerialize = Utils::antiCircular();
+
+        return $this->jSon(['expansiones'=>$mySerialize->serialize($juegos, 'json')]);
+/*         return $this->json([
             'juegos' => $juegos
         ], 200, [], ['groups' => ['main']]);
 
-       // return $this->json($juegos);
+       // return $this->json($juegos); */
 
     }
 
@@ -40,7 +40,9 @@ class JuegoController extends AbstractController
             throw $this->createNotFoundException('Juego no encontrado');
         }
 
-        return $this->json($juego);
+                $mySerialize = Utils::antiCircular();
+
+        return $this->jSon(['expansiones'=>$mySerialize->serialize($juego, 'json')]);
     }
 
     #[Route('/', name: 'app_jugador_crearJuego', methods: ['POST'])]
@@ -63,20 +65,9 @@ class JuegoController extends AbstractController
         $entityManager->persist($juego);
         $entityManager->flush();
 
+                $mySerialize = Utils::antiCircular();
 
-        $data =  [
-            'id' => $juego->getId(),
-            'nombre' => $juego->getNombre(),
-            'urimagen' => $juego->getUrimagen(),
-            'dimensiones_caja' => $juego->getDimensionesCaja(),
-            'precio' => $juego->getPrecio(),
-            'rango_jugadores' => $juego->getRangoJugadores(),
-            'autores' => $juego->getAutores(),
-            'editorial_madre' => $juego->getEditorialMadre(),
-            'editorial_local' => $juego->getEditorialLocal()
-        ];
-            
-        return $this->json($data, 200);
+        return $this->jSon(['expansiones'=>$mySerialize->serialize($juego, 'json')]);
     }
 
     #[Route('/{id<\d+>}', name: 'juego_edit', methods: ['PUT'])]
@@ -101,19 +92,9 @@ class JuegoController extends AbstractController
 
         $entityManager->flush();
 
-        $data =  [
-            'id' => $juego->getId(),
-            'nombre' => $juego->getNombre(),
-            'urimagen' => $juego->getUrimagen(),
-            'dimensiones_caja' => $juego->getDimensionesCaja(),
-            'precio' => $juego->getPrecio(),
-            'rango_jugadores' => $juego->getRangoJugadores(),
-            'autores' => $juego->getAutores(),
-            'editorial_madre' => $juego->getEditorialMadre(),
-            'editorial_local' => $juego->getEditorialLocal()
-        ];
-            
-        return $this->json($data, 200);
+            $mySerialize = Utils::antiCircular();
+
+        return $this->jSon(['expansiones'=>$mySerialize->serialize($juego, 'json')]);
     }
 
     #[Route('/{id<\d+>}', name: 'juego_delete', methods: ['DELETE'])]
@@ -142,6 +123,9 @@ class JuegoController extends AbstractController
             throw $this->createNotFoundException('Jugador no encontrado');
         }
 
-        return $this->json($juego);
+        $mySerialize = Utils::antiCircular();
+
+        return $this->jSon(['expansiones'=>$mySerialize->serialize($juego, 'json')]);
+        //return $this->json($juego);
     }
 }

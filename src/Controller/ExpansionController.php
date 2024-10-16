@@ -2,13 +2,15 @@
 
 namespace App\Controller;
 use App\Entity\Expansion;
-use App\Repository\ExpansionRepository;
 use App\Repository\JuegoRepository;
+use App\Repository\ExpansionRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use App\Util\Utils;
+
 
 #[Route('/api/expansiones')]
 
@@ -19,17 +21,9 @@ class ExpansionController extends AbstractController
     {
         $expansiones = $repository->findAll();
 
-        $encoder = new JsonEncoder();
-        $defaultContext = [
-            AbstractNormalizer::CIRCULAR_REFERENCE_HANDLER => function (object $object, ?string $format, array $context): string {
-                return $object->getId();
-            },
-        ];
-        $normalizer = new ObjectNormalizer(null, null, null, null, null, null, $defaultContext);
+        $mySerialize = Utils::antiCircular();
 
-        $serializer = new Serializer([$normalizer], [$encoder]);
-
-        return $this->jSon(['expansiones'=>$serializer->serialize($expansiones, 'json')]);
+        return $this->jSon(['expansiones'=>$mySerialize->serialize($expansiones, 'json')]);
 
         /* return $this->json([
             'expansiones' => $expansiones
@@ -46,12 +40,21 @@ class ExpansionController extends AbstractController
             throw $this->createNotFoundException('Expansion no encontrada');
         }
 
-        return $this->json($expansion);
+        $mySerialize = Utils::antiCircular();
+
+        return $this->jSon(['expansiones'=>$mySerialize->serialize($expansion, 'json')]);
+        //return $this->json($expansion);
     }
 
     #[Route('/', name: 'app_expansion_crearExpansion', methods: ['POST'])]
     public function crearExpansion (Request $request, JuegoRepository $repository, EntityManagerInterface $entityManager): Response
-    {
+    {   
+        $yaNombreExpansion = $entityManager->getRepository(Expansion::class)->findOneByNombre($request->get('nombre'));
+
+        if ( $yaNombreExpansion){
+            throw $this->createNotFoundException('Ya existe una expansión con ese nombre');
+        }
+
         $expansion = new Expansion();
         $expansion->setNombre($request->get('nombre'));
 
@@ -65,26 +68,35 @@ class ExpansionController extends AbstractController
 
         $entityManager->persist($expansion);
         $entityManager->flush();
+
+        $mySerialize = Utils::antiCircular();
+
+        return $this->jSon(['expansion'=>$mySerialize->serialize($expansion, 'json')]);
         
 
-        $data =  [
+       /*  $data =  [
             'id' => $expansion->getId(),
             'nombre' => $expansion->getNombre(),
             'juego' => $expansion->getJuego()
         ];
             
-        return $this->jSon([$data]);
+        return $this->jSon([$data]); */
     }
 
     #[Route('/{id<\d+>}', name: 'expansion_edit', methods: ['PUT'])]
     public function update(Request $request, JuegoRepository $repository, EntityManagerInterface $entityManager, int $id): Response
     {
         $expansion = $entityManager->getRepository(Expansion::class)->findOneById($id);
+        $yaNombreExpansion = $entityManager->getRepository(Expansion::class)->findOneByNombre($request->get('nombre'));
 
         if (!$expansion) {
             throw $this->createNotFoundException(
-                'Expansion no encontrado: '.$id
+                'Expansion no encontrada: '.$id
             );
+        }
+
+        if ( $yaNombreExpansion){
+            throw $this->createNotFoundException('Ya existe una expansión con ese nombre');
         }
 
         $expansion->setNombre($request->get('nombre'));
@@ -100,12 +112,16 @@ class ExpansionController extends AbstractController
         $entityManager->persist($expansion);
         $entityManager->flush();
 
-        $data =  [
+        $mySerialize = Utils::antiCircular();
+
+        return $this->jSon(['expansion'=>$mySerialize->serialize($expansion, 'json')]);
+
+        /* $data =  [
             'id' => $expansion->getId(),
             'nombre' => $expansion->getNombre(),
             'juego' => $expansion->getJuego(),
         ];
             
-        return $this->jSon([$data]);
+        return $this->jSon([$data]); */
     }
 }

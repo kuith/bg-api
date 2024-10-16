@@ -4,7 +4,6 @@ namespace App\Entity;
 
 use App\Repository\ExpansionRepository;
 use Doctrine\ORM\Mapping as ORM;
-use Symfony\Component\Serializer\Attribute\Groups;
 
 #[ORM\Entity(repositoryClass: ExpansionRepository::class)]
 #[

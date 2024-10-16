@@ -40,4 +40,14 @@ class ExpansionRepository extends ServiceEntityRepository
     //            ->getOneOrNullResult()
     //        ;
     //    }
+
+    public function findOneByNombre($nombre): ?Expansion
+    {
+        return $this->createQueryBuilder('j')
+            ->andWhere('j.nombre = :val')
+            ->setParameter('val', $nombre)
+            ->getQuery()
+            ->getOneOrNullResult()
+        ;
+    }
 }
