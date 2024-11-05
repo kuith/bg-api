@@ -2,197 +2,103 @@
 
 namespace App\Entity;
 
+use Doctrine\ORM\Mapping as ORM;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
-use Doctrine\ORM\Mapping as ORM;
-use App\Repository\JuegoRepository;
-//use Symfony\Component\Serializer\Attribute\Groups;
 
-#[ORM\Entity(repositoryClass: JuegoRepository::class)]
-#[
-    ORM\UniqueConstraint (
-        name:'Juego',
-        columns:['nombre']
-    )
-]
+#[ORM\Entity]
 class Juego
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
-    #[ORM\Column]
-    //#[Groups(['main'])]
-    private ?int $id = null;
+    #[ORM\Column(type: 'integer')]
+    private int $id;
 
-    #[ORM\Column(length: 255)]
-    //#[Groups(['main'])]
-    private ?string $nombre = null;
+    #[ORM\Column(type: 'string', length: 100, unique: true)]
+    private string $nombre;
 
-    #[ORM\Column(length: 255, nullable: true)]
-    //#[Groups(['main'])]
-    private ?string $urimagen = null;
+    #[ORM\Column(type: 'text')]
+    private string $descripcion;
 
-    #[ORM\Column(length: 255, nullable: true)]
-    //#[Groups(['main'])]
-    private ?string $dimensiones_caja = null;
+    #[ORM\Column(type: 'boolean')]
+    private bool $dispAutoma;
 
-    #[ORM\Column(nullable: true)]
-    //#[Groups(['main'])]
-    private ?int $precio = null;
+    #[ORM\OneToMany(mappedBy: 'juego', targetEntity: Expansion::class)]
+    private Collection $expansiones;
 
-    #[ORM\Column(length: 255, nullable: true)]
-    //#[Groups(['main'])]
-    private ?string $rango_jugadores = null;
-
-    #[ORM\Column(length: 255, nullable: true)]
-    //#[Groups(['main'])]
-    private ?string $autores = null;
-
-    #[ORM\Column(length: 255, nullable: true)]
-    //#[Groups(['main'])]
-    private ?string $editorial_madre = null;
-
-    #[ORM\Column(length: 255, nullable: true)]
-    //#[Groups(['main'])]
-    private ?string $editorial_local = null;
-
-    /**
-     * @var Collection<int, Expansion>
-     */
-    #[ORM\OneToMany(targetEntity: Expansion::class, mappedBy: 'juego')]
-    private Collection $expansions;
+    #[ORM\ManyToMany(targetEntity: Autor::class, inversedBy: 'juegos')]
+    //#[ORM\JoinTable(name: 'juegos_autores')]
+    private Collection $autores;
 
     public function __construct()
     {
-        $this->expansions = new ArrayCollection();
+        $this->expansiones = new ArrayCollection();
+        $this->autores = new ArrayCollection();
     }
 
-    public function getId(): ?int
+    
+
+    public function getId(): int
     {
         return $this->id;
     }
 
-    public function getNombre(): ?string
+    public function getNombre(): string
     {
         return $this->nombre;
     }
 
-    public function setNombre(string $nombre): static
+    public function setNombre(string $nombre): self
     {
         $this->nombre = $nombre;
 
         return $this;
     }
 
-    public function getUrimagen(): ?string
+    public function getDescripcion(): string
     {
-        return $this->urimagen;
+        return $this->descripcion;
     }
 
-    public function setUrimagen(?string $urimagen): static
+    public function setDescripcion(string $descripcion): self
     {
-        $this->urimagen = $urimagen;
+        $this->descripcion = $descripcion;
 
         return $this;
     }
 
-    public function getDimensionesCaja(): ?string
+    public function isDispAutoma(): bool
     {
-        return $this->dimensiones_caja;
+        return $this->dispAutoma;
     }
 
-    public function setDimensionesCaja(?string $dimensiones_caja): static
+    public function setDispAutoma(bool $dispAutoma): self
     {
-        $this->dimensiones_caja = $dimensiones_caja;
+        $this->dispAutoma = $dispAutoma;
 
         return $this;
     }
 
-    public function getPrecio(): ?int
+    public function getExpansiones(): Collection
     {
-        return $this->precio;
+        return $this->expansiones;
     }
 
-    public function setPrecio(?int $precio): static
+    public function setExpansiones(Collection $expansiones): self
     {
-        $this->precio = $precio;
+        $this->expansiones = $expansiones;
 
         return $this;
     }
 
-    public function getRangoJugadores(): ?string
-    {
-        return $this->rango_jugadores;
-    }
-
-    public function setRangoJugadores(string $rango_jugadores): static
-    {
-        $this->rango_jugadores = $rango_jugadores;
-
-        return $this;
-    }
-
-    public function getAutores(): ?string
+    public function getAutores(): Collection
     {
         return $this->autores;
     }
 
-    public function setAutores(?string $autores): static
+    public function setAutores(Collection $autores): self
     {
         $this->autores = $autores;
-
-        return $this;
-    }
-
-    public function getEditorialMadre(): ?string
-    {
-        return $this->editorial_madre;
-    }
-
-    public function setEditorialMadre(?string $editorial_madre): static
-    {
-        $this->editorial_madre = $editorial_madre;
-
-        return $this;
-    }
-
-    public function getEditorialLocal(): ?string
-    {
-        return $this->editorial_local;
-    }
-
-    public function setEditorialLocal(?string $editorial_local): static
-    {
-        $this->editorial_local = $editorial_local;
-
-        return $this;
-    }
-
-    /**
-     * @return Collection<int, Expansion>
-     */
-    public function getExpansions(): Collection
-    {
-        return $this->expansions;
-    }
-
-    public function addExpansion(Expansion $expansion): static
-    {
-        if (!$this->expansions->contains($expansion)) {
-            $this->expansions->add($expansion);
-            $expansion->setJuego($this);
-        }
-
-        return $this;
-    }
-
-    public function removeExpansion(Expansion $expansion): static
-    {
-        if ($this->expansions->removeElement($expansion)) {
-            // set the owning side to null (unless already changed)
-            if ($expansion->getJuego() === $this) {
-                $expansion->setJuego(null);
-            }
-        }
 
         return $this;
     }
