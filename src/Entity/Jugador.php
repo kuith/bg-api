@@ -31,6 +31,9 @@ class Jugador
     #[ORM\ManyToMany(targetEntity: Partida::class, mappedBy: 'jugadores')]
     private Collection $partidas;
 
+    #[ORM\Column(length: 255)]
+    private ?string $password = null;
+
     public function __construct()
     {
         $this->partidasGanadas = new ArrayCollection();
@@ -87,8 +90,12 @@ class Jugador
         return $this->fechaRegistro;
     }
 
-    public function setFechaRegistro(\DateTime $fechaRegistro): self
+    public function setFechaRegistro($fechaRegistro): self
     {
+        if (is_string($fechaRegistro)) {
+            $fechaRegistro = new \DateTime($fechaRegistro);
+        }
+
         $this->fechaRegistro = $fechaRegistro;
 
         return $this;
@@ -114,6 +121,18 @@ class Jugador
     public function setPartidas(Collection $partidas): self
     {
         $this->partidas = $partidas;
+
+        return $this;
+    }
+
+    public function getPassword(): ?string
+    {
+        return $this->password;
+    }
+
+    public function setPassword(string $password): static
+    {
+        $this->password = $password;
 
         return $this;
     }

@@ -36,8 +36,6 @@ class Juego
         $this->autores = new ArrayCollection();
     }
 
-    
-
     public function getId(): int
     {
         return $this->id;

@@ -1,28 +1,26 @@
 <?php
 namespace App\Repository;
 
-use App\Entity\Jugador;
+use App\Entity\Juego;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
- * @extends ServiceEntityRepository<Jugador>
+ * @extends ServiceEntityRepository<Juego>
  * @method Jugador|null find($id, $lockMode = null, $lockVersion = null)
  * @method Jugador|null findOneBy(array $criteria, array $orderBy = null)
  * @method Jugador[]    findAll()
  * @method Jugador[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
 */
 
-class JugadorRepository extends ServiceEntityRepository
+class JuegoRepository extends ServiceEntityRepository
 {
-    public function __construct(ManagerRegistry $registry)
+     public function __construct(ManagerRegistry $registry)
     {
-        parent::__construct($registry, Jugador::class);
+        parent::__construct($registry, Juego::class);
     }
 
-    // Agrega aquí tus métodos personalizados, como consultas avanzadas.
-
-    public function findOneById($id): ?Jugador
+    public function findOneById($id): ?Juego
     {
         return $this->createQueryBuilder('j')
             ->andWhere('j.id = :val')
@@ -32,7 +30,7 @@ class JugadorRepository extends ServiceEntityRepository
         ;
     }
 
-    public function findOneByNombre($nombre): ?Jugador
+    public function findOneByNombre($nombre): ?Juego
     {
         return $this->createQueryBuilder('j')
             ->andWhere('j.nombre = :val')
@@ -42,21 +40,21 @@ class JugadorRepository extends ServiceEntityRepository
         ;
     }
 
-    public function findOneByEmail($email): ?Jugador
+    public function findByAutoma(): array
     {
         return $this->createQueryBuilder('j')
-            ->andWhere('j.email = :val')
-            ->setParameter('val', $email)
+            ->andWhere('j.dispAutoma = true')
+            ->orderBy('j.id', 'ASC')
+            ->setMaxResults(10)
             ->getQuery()
-            ->getOneOrNullResult()
+            ->getResult()
         ;
     }
 
-    public function findByRol($rol): array
+    public function findByNoAutoma(): array
     {
         return $this->createQueryBuilder('j')
-            ->andWhere('j.rol = :val')
-            ->setParameter('val', $rol)
+            ->andWhere('j.dispAutoma = false')
             ->orderBy('j.id', 'ASC')
             ->setMaxResults(10)
             ->getQuery()
