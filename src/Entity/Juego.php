@@ -30,6 +30,12 @@ class Juego
     //#[ORM\JoinTable(name: 'juegos_autores')]
     private Collection $autores;
 
+    #[ORM\Column(type: 'string', length: 255)]
+    private ?string $editorialMadre = null;
+
+    #[ORM\Column(type: 'string', length: 255)]
+    private ?string $editorialLocal = null;
+
     public function __construct()
     {
         $this->expansiones = new ArrayCollection();
@@ -94,10 +100,41 @@ class Juego
         return $this->autores;
     }
 
-    public function setAutores(Collection $autores): self
+    public function addAutor(Autor $autor): self
     {
-        $this->autores = $autores;
+        if (!$this->autores->contains($autor)) {
+            $this->autores->add($autor);
+        }
 
+        return $this;
+    }
+
+    public function removeAutor(Autor $autor): self
+    {
+        $this->autores->removeElement($autor);
+
+        return $this;
+    }
+
+    public function getEditorialMadre(): ?string
+    {
+        return $this->editorialMadre;
+    }
+
+    public function setEditorialMadre(string $editorialMadre): self
+    {
+        $this->editorialMadre = $editorialMadre;
+        return $this;
+    }
+
+    public function getEditorialLocal(): ?string
+    {
+        return $this->editorialLocal;
+    }
+
+    public function setEditorialLocal(string $editorialLocal): self
+    {
+        $this->editorialLocal = $editorialLocal;
         return $this;
     }
 }

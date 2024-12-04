@@ -1,9 +1,11 @@
 <?php
 namespace App\Entity;
 
+use App\Entity\Partida;
 use Doctrine\ORM\Mapping as ORM;
-use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
+use Doctrine\Common\Collections\ArrayCollection;
+use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity]
 class Jugador
@@ -31,7 +33,8 @@ class Jugador
     #[ORM\ManyToMany(targetEntity: Partida::class, mappedBy: 'jugadores')]
     private Collection $partidas;
 
-    #[ORM\Column(length: 255)]
+    #[ORM\Column(type: 'string', length: 255, nullable: false)]
+    #[Assert\NotBlank(message: "El campo contraseña no puede estar vacío.")]
     private ?string $password = null;
 
     public function __construct()

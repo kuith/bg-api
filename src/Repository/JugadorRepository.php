@@ -63,4 +63,16 @@ class JugadorRepository extends ServiceEntityRepository
             ->getResult()
         ;
     }
+
+    public function findPartidasGanadasPorJugador(int $jugadorId): array
+    {
+        return $this->createQueryBuilder('j')
+            ->join('j.partidasGanadas', 'p')
+            ->where('j.id = :jugadorId')
+            ->setParameter('jugadorId', $jugadorId)
+            ->getQuery()
+            ->getResult();
+    }
+
+
 }

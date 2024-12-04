@@ -1,0 +1,25 @@
+App\Entity\Partida:
+    attributes:
+        id:
+            groups: ['partida_lista']
+        fecha:
+            groups: ['partida_lista']
+        juego:
+            groups: ['partida_lista']
+        ganador:
+            groups: ['partida_lista']
+        jugadores:
+            groups: ['partida_lista']
+App\Entity\Juego:
+    attributes:
+        id:
+            groups: ['partida_lista']
+        nombre:
+            groups: ['partida_lista']
+App\Entity\Jugador:
+    attributes:
+        id:
+            groups: ['partida_lista']
+        nombre:
+            groups: ['partida_lista']
+

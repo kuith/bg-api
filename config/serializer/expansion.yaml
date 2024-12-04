@@ -1,0 +1,30 @@
+App\Entity\Expansion:
+    attributes:
+        id:
+            groups: ['expansion_lista']
+        nombre:
+            groups: ['expansion_lista']
+        descripcion:
+            groups: ['expansion_lista']
+        fechalanzamiento:
+            groups: ['expansion_lista']
+        autores:
+            groups: ['expansion_lista']
+        juego:
+            groups: ['expansion_lista']
+
+App\Entity\Autor:
+    attributes:
+        id:
+            groups: ['expansion_lista']
+        nombre:
+            groups: ['expansion_lista']
+            
+App\Entity\Juego:
+    attributes:
+        id:
+            groups: ['expansion_lista']
+        nombre:
+            groups: ['expansion_lista']
+        autores:
+            groups: ['expansion_lista']

@@ -84,9 +84,29 @@ class Expansion
         return $this->fechaLanzamiento;
     }
 
-    public function setFechaLanzamiento(\DateTime $fechaLanzamiento): self
+    public function setFechaLanzamiento(\DateTime|string $fechaLanzamiento): self
     {
+        if (is_string($fechaLanzamiento)) {
+            $fechaLanzamiento = new \DateTime($fechaLanzamiento);
+        }
         $this->fechaLanzamiento = $fechaLanzamiento;
+
+        return $this;
+
+    }
+
+    public function addAutor(Autor $autor): self
+    {
+        if (!$this->autores->contains($autor)) {
+            $this->autores->add($autor);
+        }
+
+        return $this;
+    }
+
+    public function removeAutor(Autor $autor): self
+    {
+        $this->autores->removeElement($autor);
 
         return $this;
     }
@@ -94,12 +114,5 @@ class Expansion
     public function getAutores(): Collection
     {
         return $this->autores;
-    }
-
-    public function setAutores(Collection $autores): self
-    {
-        $this->autores = $autores;
-
-        return $this;
     }
 }

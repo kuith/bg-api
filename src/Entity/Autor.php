@@ -53,9 +53,34 @@ class Autor
         return $this->juegos;
     }
 
-    public function setJuegos(Collection $juegos): self
+    public function addJuego(Juego $juego): self
     {
-        $this->juegos = $juegos;
+        if (!$this->juegos->contains($juego)) {
+            $this->juegos->add($juego);
+        }
+
+        return $this;
+    }
+
+    public function removeJuego(Juego $juego): self
+    {
+        $this->juegos->removeElement($juego);
+
+        return $this;
+    }
+
+    public function addExpansion(Juego $expansion): self
+    {
+        if (!$this->expansiones->contains($expansion)) {
+            $this->expansiones->add($expansion);
+        }
+
+        return $this;
+    }
+
+    public function removeExpansion(Juego $expansion): self
+    {
+        $this->juegos->removeElement($expansion);
 
         return $this;
     }
@@ -65,10 +90,5 @@ class Autor
         return $this->expansiones;
     }
 
-    public function setExpansiones(Collection $expansiones): self
-    {
-        $this->expansiones = $expansiones;
-
-        return $this;
-    }
+    
 }

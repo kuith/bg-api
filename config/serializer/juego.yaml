@@ -1,0 +1,21 @@
+App\Entity\Juego:
+    attributes:
+        id:
+            groups: ['juego_lista']
+        nombre:
+            groups: ['juego_lista']
+        autores:
+            groups: ['juego_lista']
+        editorialMadre:
+            groups: ['juego_lista']
+        editorialLocal:
+            groups: ['juego_lista']
+        dispAutoma:
+            groups: ['juego_lista']
+        
+App\Entity\Autor:
+    attributes:
+        id:
+            groups: ['juego_lista']
+        nombre:
+            groups: ['juego_lista']

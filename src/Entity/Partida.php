@@ -45,11 +45,15 @@ class Partida
         return $this->fecha;
     }
 
-    public function setFecha(\DateTime $fecha): self
+    public function setFecha(\DateTime|string $fecha): self
     {
+        if (is_string($fecha)) {
+            $fecha = new \DateTime($fecha);
+        }
         $this->fecha = $fecha;
 
         return $this;
+
     }
 
     public function getJuego(): Juego
@@ -76,9 +80,13 @@ class Partida
         return $this;
     }
 
-    public function getJugadores(): Collection
+    public function addJugadores(Autor $jugador): self
     {
-        return $this->jugadores;
+        if (!$this->jugadores->contains($jugador)) {
+            $this->jugadores->add($jugador);
+        }
+
+        return $this;
     }
 
     public function setJugadores(Collection $jugadores): self
@@ -86,5 +94,10 @@ class Partida
         $this->jugadores = $jugadores;
 
         return $this;
+    }
+
+    public function getJugadores(): Collection
+    {
+        return $this->jugadores;
     }
 }

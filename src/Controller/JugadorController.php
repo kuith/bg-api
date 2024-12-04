@@ -8,8 +8,11 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\HttpFoundation\JsonResponse;
-use Symfony\Component\Serializer\SerializerInterface;
+//use Symfony\Component\Serializer\SerializerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+//use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
+use Symfony\Component\Validator\Validator\ValidatorInterface;
+//use Symfony\Component\Validator\Constraints as Assert;
 
 
 #[Route('/api/jugadores')]
@@ -21,7 +24,8 @@ class JugadorController extends AbstractController
     {
         $jugadores = $repository->findAll();
 
-        return $this->json($jugadores);
+        //return $this->json($jugadores);
+        return $this->json($jugadores, Response::HTTP_OK, [], ['groups' => 'jugador_lista']);
     }
 
     #[Route('/search/{id<\d+>}', name: 'app_jugador_getById', methods: ['GET'])]
@@ -72,65 +76,64 @@ class JugadorController extends AbstractController
         return $this->json($jugadores);
     }
 
-    #[Route('/', name: 'app_jugador_crearJugador', methods: ['POST'])]
-    public function crearJugador (Request $request, EntityManagerInterface $entityManager, SerializerInterface $serializer): Response
+    #[Route('/search/ganadas/{id}', name: 'app_jugador_getByGanadasPorId', methods: ['GET'])]
+    public function getByGanadas(String $id, JugadorRepository $repository): Response
     {
+        $partidasGanadas = $repository->findPartidasGanadasPorJugador($id);
+
+        if (!$partidasGanadas) {
+            throw $this->createNotFoundException('Jugador no encontrado o no ha ganado partidas');
+        }
+
+        //return $this->json($partidas);
+        return $this->json($partidasGanadas, Response::HTTP_OK, [], ['groups' => 'jugador_ganadas']);
+    }
+
+    #[Route('/', name: 'jugador_create', methods: ['POST'])]
+    public function create(
+        Request $request,
+        EntityManagerInterface $em,
+        ValidatorInterface $validator
+    ): JsonResponse {
+        $data = json_decode($request->getContent(), true);
+
+        // Intenta obtener los datos JSON
+        try {
+            $data = $request->toArray();
+        } catch (\Exception $e) {
+            return new JsonResponse(['error' => 'Formato de datos inválido'], 400);
+        }
+
+        // Validar que los campos requeridos están presentes
+        if (!isset($data['nombre']) || !isset($data['password']) || !isset($data['correo']) || !isset($data['rol'])) {
+            return new JsonResponse($data, 400);
+        }
+
         $jugador = new Jugador();
-        $jugador->setNombre($request->get('nombre'));
-        $jugador->setCorreo($request->get('correo'));
-        $jugador->setPassword($request->get('password'));
-        $jugador->setRol($request->get('rol'));
-        $jugador->setFechaRegistro($request->get('fecharegistro'));
+        $jugador->setNombre($data['nombre']);
+        $jugador->setCorreo($data['correo']);
+        $jugador->setRol($data['rol']);
+        $jugador->setFechaRegistro(new \DateTime()); // Asigna la fecha actual como fecha de registro
+        $jugador->setPassword($data['password']);
 
-        if (!$jugador->getNombre() || !$jugador->getCorreo() || !$jugador->getPassword()) {
-            return new JsonResponse(['error' => 'Missing required fields'], 400);
+        // Validar el objeto Jugador (incluyendo las restricciones en correo, rol, etc.)
+        $errors = $validator->validate($jugador);
+        if (count($errors) > 0) {
+            $errorMessages = [];
+            foreach ($errors as $error) {
+                $errorMessages[] = $error->getMessage();
+            }
+            return new JsonResponse(['errors' => $errorMessages], 400);
         }
-   
-        $entityManager->persist($jugador);
-        $entityManager->flush();
+
+        // Guardar el jugador en la base de datos
+        $em->persist($jugador);
+        $em->flush();
+
+        return new JsonResponse(['message' => 'Jugador creado con éxito'], 201);
+    }
+
     
-        $data =  [
-            'id' => $jugador->getId(),
-            'nombre' => $jugador->getNombre(),
-            'correo' => $jugador->getCorreo(),
-            'password' => $jugador->getPassword(),
-            'rol' => $jugador->getRol(),
-            'fecharegistro' => $jugador->getFechaRegistro()
-        ];
-            
-        return $this->json($data, 200);
-    }
-
-    #[Route('/{id<\d+>}', name: 'jugador_edit', methods: ['PUT'])]
-    public function update(Request $request, EntityManagerInterface $entityManager, int $id): Response
-    {
-        $jugador = $entityManager->getRepository(Jugador::class)->findOneById($id);
-
-        if (!$jugador) {
-            throw $this->createNotFoundException(
-                'Jugador no encontrado: '.$id
-            );
-        }
-
-        $jugador->setNombre($request->get('nombre'));
-        $jugador->setCorreo($request->get('correo'));
-        $jugador->setPassword($request->get('password'));
-        $jugador->setRol($request->get('rol'));
-        $jugador->setFechaRegistro($request->get('fecharegistro'));
-        $entityManager->flush();
-
-        $data =  [
-            'id' => $jugador->getId(),
-            'nombre' => $jugador->getNombre(),
-            'correo' => $jugador->getCorreo(),
-            'password' => $jugador->getPassword(),
-            'rol' => $jugador->getRol(),
-            'fecharegistro' => $jugador->getFechaRegistro()
-        ];
-            
-        return $this->json($data, 200);
-    }
-
     #[Route('/{id<\d+>}', name: 'jugador_delete', methods: ['DELETE'])]
     public function delete(EntityManagerInterface $entityManager, int $id): Response
     {
@@ -147,5 +150,6 @@ class JugadorController extends AbstractController
             
         return new Response('Jugador eliminado!', 200);
     }
+
     
 }

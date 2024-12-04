@@ -1,13 +1,15 @@
 <?php
 
 namespace App\Controller;
+use App\Entity\Autor;
+use App\Entity\Juego;
 use App\Repository\JuegoRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\HttpFoundation\JsonResponse;
-use Symfony\Component\Serializer\SerializerInterface;
+use Symfony\Component\Validator\Validator\ValidatorInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
 
@@ -20,7 +22,8 @@ class JuegoController extends AbstractController
     {
         $juegos = $repository->findAll();
 
-        return $this->json($juegos);
+        //return $this->json($juegos);
+        return $this->json($juegos, Response::HTTP_OK, [], ['groups' => 'juego_lista']);
     }
 
     #[Route('/search/{id<\d+>}', name: 'app_juegos_getById', methods: ['GET'])]
@@ -32,7 +35,8 @@ class JuegoController extends AbstractController
             throw $this->createNotFoundException('Jugador no encontrado');
         }
 
-        return $this->json($juego);
+        //return $this->json($juego);
+         return $this->json($juego, Response::HTTP_OK, [], ['groups' => 'juego_lista']);
     }
 
     #[Route('/search/nombre/{nombre}', name: 'app_juego_getByNombre', methods: ['GET'])]
@@ -44,22 +48,94 @@ class JuegoController extends AbstractController
             throw $this->createNotFoundException('Jugador no encontrado');
         }
 
-        return $this->json($juego);
+        //return $this->json($juego);
+         return $this->json($juego, Response::HTTP_OK, [], ['groups' => 'juego_lista']);
     }
     
-    #[Route('/automa', name: 'app_juego_getAllAutoma', methods: ['GET'])]
+    #[Route('/search/automa', name: 'app_juego_getAllAutoma', methods: ['GET'])]
     public function getAllAutoma(JuegoRepository $repository): Response
     {
         $juegos = $repository->findByAutoma();
 
-        return $this->json($juegos);
+        //return $this->json($juegos);
+         return $this->json($juegos, Response::HTTP_OK, [], ['groups' => 'juego_lista']);
     }
 
-    #[Route('/noautoma', name: 'app_juego_getNoAllAutoma', methods: ['GET'])]
+    #[Route('/search/noautoma', name: 'app_juego_getNoAllAutoma', methods: ['GET'])]
     public function getAllNoAutoma(JuegoRepository $repository): Response
     {
         $juegos = $repository->findByNoAutoma();
 
-        return $this->json($juegos);
+        //return $this->json($juegos);
+         return $this->json($juegos, Response::HTTP_OK, [], ['groups' => 'juego_lista']);
+    }
+
+    #[Route('/', name: 'juego_create', methods: ['POST'])]
+    public function create(
+        Request $request,
+        EntityManagerInterface $em,
+        ValidatorInterface $validator
+    ): JsonResponse {
+        $data = json_decode($request->getContent(), true);
+
+        // Intenta obtener los datos JSON
+        try {
+            $data = $request->toArray();
+        } catch (\Exception $e) {
+            return new JsonResponse(['error' => 'Formato de datos inválido'], 400);
+        }
+
+        // Validar que los campos requeridos están presentes
+        if (!isset($data['nombre']) || !isset($data['descripcion']) || !isset($data['dispAutoma']) || !isset($data['autores'])) {
+            return new JsonResponse($data, 400);
+        }
+
+        $juego = new Juego();
+        $juego->setNombre($data['nombre']);
+        $juego->setDescripcion($data['descripcion']);
+        $juego->setDispAutoma($data['dispAutoma']);
+
+        foreach ($data['autores'] as $autorId) {
+            $autor = $em->getRepository(Autor::class)->findOneById($autorId);
+
+            if (!$autor) {
+                return new JsonResponse(['error' => "Autor con ID $autorId no encontrado"], Response::HTTP_NOT_FOUND);
+            }
+
+            $juego->addAutor($autor);
+        }
+
+        // Validar el objeto Juego
+        $errors = $validator->validate($juego);
+        if (count($errors) > 0) {
+            $errorMessages = [];
+            foreach ($errors as $error) {
+                $errorMessages[] = $error->getMessage();
+            }
+            return new JsonResponse(['errors' => $errorMessages], 400);
+        }
+        
+        // Guardar el jugador en la base de datos
+        $em->persist($juego);
+        $em->flush();
+
+        return new JsonResponse(['message' => 'Juego creado con éxito'], 201);
+    }
+
+    #[Route('/{id<\d+>}', name: 'juego_delete', methods: ['DELETE'])]
+    public function delete(EntityManagerInterface $entityManager, int $id): Response
+    {
+        $juego = $entityManager->getRepository(Juego::class)->findOneById($id);
+
+        if (!$juego) {
+            throw $this->createNotFoundException(
+                'Jugador no encontrado: '.$id
+            );
+        }
+
+        $entityManager->remove($juego);
+        $entityManager->flush();
+            
+        return new Response('Juego eliminado!', 200);
     }
 }
