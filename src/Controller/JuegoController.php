@@ -51,6 +51,34 @@ class JuegoController extends AbstractController
         //return $this->json($juego);
          return $this->json($juego, Response::HTTP_OK, [], ['groups' => 'juego_lista']);
     }
+
+    #[Route('/search/editorialLocal/{editorialLocal}', name: 'app_juego_getByEditorialLocal', methods: ['GET'])]
+    public function getByEditorialLocal(String $editorialLocal, JuegoRepository $repository): Response
+    {
+        $juegos = $repository->findByEditorialLocal($editorialLocal);
+
+         if (!$juegos) {
+            throw $this->createNotFoundException(
+                'No hay juegos de la editorial local proporcionada: '.$editorialLocal
+            );
+        }
+
+        //return $this->json($juegos);
+         return $this->json($juegos, Response::HTTP_OK, [], ['groups' => 'juego_lista']);
+    }
+
+    #[Route('/search/editorialMadre/{editorialMadre}', name: 'app_juego_getByEditorialMadre', methods: ['GET'])]
+    public function getByEditorialMadre(String $editorialMadre, JuegoRepository $repository): Response
+    {
+        $juegos = $repository->findByEditorialMadre($editorialMadre);
+        if (!$juegos) {
+            throw $this->createNotFoundException(
+                'No hay juegos de la editorial madre proporcionada: '.$editorialMadre
+            );
+        }
+        //return $this->json($juegos);
+         return $this->json($juegos, Response::HTTP_OK, [], ['groups' => 'juego_lista']);
+    }
     
     #[Route('/search/automa', name: 'app_juego_getAllAutoma', methods: ['GET'])]
     public function getAllAutoma(JuegoRepository $repository): Response

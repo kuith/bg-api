@@ -61,4 +61,41 @@ class JuegoRepository extends ServiceEntityRepository
             ->getResult()
         ;
     }
+
+    public function findByEditorialLocal($editorialLocal): array
+    {
+        return $this->createQueryBuilder('j')
+            ->andWhere('j.editorialLocal = :val')
+            ->setParameter('val', $editorialLocal)
+            ->orderBy('j.id', 'ASC')
+            ->setMaxResults(10)
+            ->getQuery()
+            ->getResult()
+        ;
+    }
+
+    public function findByEditorialMadre($editorialMadre): array
+    {
+        return $this->createQueryBuilder('j')
+            ->andWhere('j.editorialMadre = :val')
+            ->setParameter('val', $editorialMadre)
+            ->orderBy('j.id', 'ASC')
+            ->setMaxResults(10)
+            ->getQuery()
+            ->getResult()
+        ;
+    }
+
+    public function findInterPrices(float $minPrice, float $maxPrice): array
+    {
+        return $this->createQueryBuilder('j')
+            ->andWhere('j.precio >= :minPrice')
+            ->andWhere('j.precio <= :maxPrice')
+            ->setParameter('minPrice', $minPrice)
+            ->setParameter('maxPrice', $maxPrice)
+            ->orderBy('j.precio', 'ASC')
+            ->getQuery()
+            ->getResult();
+        ;
+    }
 }
