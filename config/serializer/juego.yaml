@@ -8,6 +8,8 @@ App\Entity\Juego:
             groups: ['juego_lista']
         descripcion:
             groups: ['juego_lista']
+        precio:
+            groups: ['juego_lista']
         editorialMadre:
             groups: ['juego_lista']
         editorialLocal:
@@ -15,6 +17,10 @@ App\Entity\Juego:
         dispAutoma:
             groups: ['juego_lista']
         expansiones:
+            groups: ['juego_lista']
+        minJugadores:
+            groups: ['juego_lista']
+        maxJugadores:
             groups: ['juego_lista']
         
 App\Entity\Autor:

@@ -86,7 +86,7 @@ class JuegoRepository extends ServiceEntityRepository
         ;
     }
 
-    public function findInterPrices(float $minPrice, float $maxPrice): array
+    public function findPriceRange(float $minPrice, float $maxPrice): array
     {
         return $this->createQueryBuilder('j')
             ->andWhere('j.precio >= :minPrice')
@@ -94,6 +94,41 @@ class JuegoRepository extends ServiceEntityRepository
             ->setParameter('minPrice', $minPrice)
             ->setParameter('maxPrice', $maxPrice)
             ->orderBy('j.precio', 'ASC')
+            ->getQuery()
+            ->getResult();
+        ;
+    }
+
+    public function findUnderPrice(float $price): array
+    {
+        return $this->createQueryBuilder('j')
+            ->andWhere('j.precio <= :price')
+            ->setParameter('price', $price)
+            ->orderBy('j.precio', 'ASC')
+            ->getQuery()
+            ->getResult();
+        ;
+    }
+
+    public function findOverPrice(float $price): array
+    {
+        return $this->createQueryBuilder('j')
+            ->andWhere('j.precio >= :price')
+            ->setParameter('price', $price)
+            ->orderBy('j.precio', 'ASC')
+            ->getQuery()
+            ->getResult();
+        ;
+    }
+
+    public function findPlayersRange(float $minPlayers, float $maxPlayers): array
+    {
+        return $this->createQueryBuilder('j')
+            ->andWhere('j.minJugadores >= :minPlayers')
+            ->andWhere('j.maxJugadores<= :maxPlayers')
+            ->setParameter('minJugadores', $minPlayers)
+            ->setParameter('maxJugadores', $maxPlayers)
+            ->orderBy('j.id', 'ASC')
             ->getQuery()
             ->getResult();
         ;

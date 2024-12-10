@@ -20,6 +20,15 @@ class Juego
     #[ORM\Column(type: 'text')]
     private string $descripcion;
 
+    #[ORM\Column(type: 'integer')]
+    private int $minJugadores;
+
+    #[ORM\Column(type: 'integer')]
+    private int $maxJugadores;
+
+    #[ORM\Column(type: 'float')]
+    private string $precio;
+
     #[ORM\Column(type: 'boolean')]
     private bool $dispAutoma;
 
@@ -64,9 +73,45 @@ class Juego
         return $this->descripcion;
     }
 
+    public function getMinJugadores(): int
+    {
+        return $this->minJugadores;
+    }
+
+    public function setMinJugadores(int $minJugadores): self
+    {
+        $this->minJugadores = $minJugadores;
+
+        return $this;
+    }
+
+    public function getMaxJugadores(): int
+    {
+        return $this->maxJugadores;
+    }
+
+    public function setMaxJugadores(int $maxJugadores): self
+    {
+        $this->maxJugadores = $maxJugadores;
+
+        return $this;
+    }
+
     public function setDescripcion(string $descripcion): self
     {
         $this->descripcion = $descripcion;
+
+        return $this;
+    }
+
+    public function getPrecio(): string
+    {
+        return $this->precio;
+    }
+
+    public function setPrecio(float $precio): self
+    {
+        $this->precio = $precio;
 
         return $this;
     }

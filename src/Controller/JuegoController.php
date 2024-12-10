@@ -79,8 +79,60 @@ class JuegoController extends AbstractController
         //return $this->json($juegos);
          return $this->json($juegos, Response::HTTP_OK, [], ['groups' => 'juego_lista']);
     }
+
+    #[Route('/search/priceRange/{minPrice}/{maxPrice}', name: 'app_juego_getByPriceRange', methods: ['GET'])]
+    public function getByPriceRange(float $minPrice, float $maxPrice, JuegoRepository $repository): Response
+    {
+        $juegos = $repository->findPriceRange($minPrice, $maxPrice);
+        if (!$juegos) {
+            throw $this->createNotFoundException(
+                'No hay juegos en ese rango de precios: ' .$minPrice .' - ' .$maxPrice
+            );
+        }
+        //return $this->json($juegos);
+         return $this->json($juegos, Response::HTTP_OK, [], ['groups' => 'juego_lista']);
+    }
+
+    #[Route('/search/underPrice/{price}', name: 'app_juego_getByUnderPrice', methods: ['GET'])]
+    public function getByUnderPrice(float $price, JuegoRepository $repository): Response
+    {
+        $juegos = $repository->findUnderPrice($price);
+        if (!$juegos) {
+            throw $this->createNotFoundException(
+                'No hay juegos por debajo de ese precio: ' .$price
+            );
+        }
+        //return $this->json($juegos);
+         return $this->json($juegos, Response::HTTP_OK, [], ['groups' => 'juego_lista']);
+    }
+
+    #[Route('/search/overPrice/{price}', name: 'app_juego_getByUnderPrice', methods: ['GET'])]
+    public function getByOverPrice(float $price, JuegoRepository $repository): Response
+    {
+        $juegos = $repository->findOverPrice($price);
+        if (!$juegos) {
+            throw $this->createNotFoundException(
+                'No hay juegos por encima de ese precio: ' .$price
+            );
+        }
+        //return $this->json($juegos);
+         return $this->json($juegos, Response::HTTP_OK, [], ['groups' => 'juego_lista']);
+    }
+
+    #[Route('/search/playersRange/{minPlayers}/{maxPlayers}', name: 'app_juego_getByPlayersRange', methods: ['GET'])]
+    public function getByPlayersRange(int $minPlayers, int $maxPlayers, JuegoRepository $repository): Response
+    {
+        $juegos = $repository->findPlayersRange($minPlayers, $maxPlayers);
+        if (!$juegos) {
+            throw $this->createNotFoundException(
+                'No hay juegos en ese rango de jugadores: ' .$minPlayers .' - ' .$maxPlayers
+            );
+        }
+        //return $this->json($juegos);
+         return $this->json($juegos, Response::HTTP_OK, [], ['groups' => 'juego_lista']);
+    }
     
-    #[Route('/search/automa', name: 'app_juego_getAllAutoma', methods: ['GET'])]
+    #[Route('/search/siautoma', name: 'app_juego_getAllAutoma', methods: ['GET'])]
     public function getAllAutoma(JuegoRepository $repository): Response
     {
         $juegos = $repository->findByAutoma();
@@ -122,6 +174,11 @@ class JuegoController extends AbstractController
         $juego->setNombre($data['nombre']);
         $juego->setDescripcion($data['descripcion']);
         $juego->setDispAutoma($data['dispAutoma']);
+        $juego->setEditorialLocal($data['editorialLocal']);
+        $juego->setEditorialMadre($data['editorialMadre']);
+        $juego->setPrecio($data['precio']);
+        $juego->setMinJugadores($data['minJugadores']);
+        $juego->setMaxJugadores($data['maxJugadores']);
 
         foreach ($data['autores'] as $autorId) {
             $autor = $em->getRepository(Autor::class)->findOneById($autorId);
