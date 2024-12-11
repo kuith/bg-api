@@ -121,16 +121,16 @@ class JuegoRepository extends ServiceEntityRepository
         ;
     }
 
-    public function findPlayersRange(float $minPlayers, float $maxPlayers): array
+    public function findPlayersRange(float $minJugadores, float $maxJugadores): array
     {
         return $this->createQueryBuilder('j')
-            ->andWhere('j.minJugadores >= :minPlayers')
-            ->andWhere('j.maxJugadores<= :maxPlayers')
-            ->setParameter('minJugadores', $minPlayers)
-            ->setParameter('maxJugadores', $maxPlayers)
-            ->orderBy('j.id', 'ASC')
+            ->Where('j.minJugadores >= :minJugadores')
+            ->andWhere('j.maxJugadores<= :maxJugadores')
+            ->setParameter('minJugadores', $minJugadores)
+            ->setParameter('maxJugadores', $maxJugadores)
             ->getQuery()
             ->getResult();
         ;
     }
+
 }

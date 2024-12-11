@@ -1,9 +1,9 @@
 App\Entity\Jugador:
     attributes:
         id:
-            groups: ['jugador_lista', 'jugador_ganadas']
+            groups: ['jugador_lista', 'jugador_ganadas', 'jugador_juegos']
         nombre:
-            groups: ['jugador_lista', 'jugador_ganadas']
+            groups: ['jugador_lista', 'jugador_ganadas',  'jugador_juegos']
         correo:
             groups: ['jugador_lista']
         rol:
@@ -13,25 +13,25 @@ App\Entity\Jugador:
         password:
             groups: ['jugador_lista']
         partidas:
-            groups: ['jugador_lista']
+            groups: ['jugador_lista', jugador_juegos]
         partidasGanadas:
             groups: ['jugador_lista', jugador_ganadas]
 
 App\Entity\Partida:
     attributes:
         id:
-            groups: ['jugador_lista', 'jugador_ganadas']
+            groups: ['jugador_lista', 'jugador_ganadas', jugador_juegos]
         juego:
-            groups: [jugador_ganadas]
+            groups: [jugador_ganadas, jugador_juegos]
         fecha:
             groups: [jugador_ganadas]
 
 App\Entity\Juego:
     attributes:
         id:
-            groups: ['jugador_ganadas']
+            groups: ['jugador_ganadas',  'jugador_juegos']
         nombre:
-            groups: [jugador_ganadas]
+            groups: [jugador_ganadas,  'jugador_juegos']
 
 
 

@@ -73,7 +73,18 @@ class JugadorController extends AbstractController
             throw $this->createNotFoundException('Rol no encontrado');
         }
 
-        return $this->json($jugadores);
+        return $this->json($jugadores, Response::HTTP_OK, [], ['groups' => 'jugador_lista']);
+    }
+    #[Route('/search/playersByGame/{juegoId}', name: 'app_jugador_getplayersByGame', methods: ['GET'])]
+    public function getplayersByGame(int $juegoId, JugadorRepository $repository): Response
+    {
+        $jugadores = $repository->findPlayersByGame($juegoId);
+
+        if (!$jugadores) {
+            throw $this->createNotFoundException('Juego no encontrado o no ha sido jugado');
+        }
+
+        return $this->json($jugadores, Response::HTTP_OK, [], ['groups' => 'jugador_juegos']);
     }
 
     #[Route('/search/ganadas/{id}', name: 'app_jugador_getByGanadasPorId', methods: ['GET'])]
