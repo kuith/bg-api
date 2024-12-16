@@ -4,3 +4,5 @@ App\Entity\Autor:
             groups: ['autor_detalle']
         nombre:
             groups: ['autor_detalle']
+        nacionalidad:
+            groups: ['autor_detalle']

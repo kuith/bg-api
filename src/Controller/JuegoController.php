@@ -129,9 +129,25 @@ class JuegoController extends AbstractController
             );
         }
         //return $this->json($juegos);
+        
+         return $this->json($juegos, Response::HTTP_OK, [], ['groups' => 'juego_lista']);
+    }
+
+    #[Route('/search/gamesByAutors/{id}', name: 'app_juego_getGamesByAutor', methods: ['GET'])]    
+    public function buscarJuegosPorAutores(int $id, JuegoRepository $repository): Response
+    {
+        $juegos = $repository->findByAuthor($id);
+        if (!$juegos) {
+            throw $this->createNotFoundException(
+                'No hay juegos de ese autor: ' .$id
+            );
+        }
+        //return $this->json($juegos);
          return $this->json($juegos, Response::HTTP_OK, [], ['groups' => 'juego_lista']);
     }
     
+
+
     #[Route('/search/siautoma', name: 'app_juego_getAllAutoma', methods: ['GET'])]
     public function getAllAutoma(JuegoRepository $repository): Response
     {
@@ -223,4 +239,6 @@ class JuegoController extends AbstractController
             
         return new Response('Juego eliminado!', 200);
     }
+
+    
 }

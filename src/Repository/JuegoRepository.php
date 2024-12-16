@@ -133,4 +133,14 @@ class JuegoRepository extends ServiceEntityRepository
         ;
     }
 
+    public function findByAuthor (int $autorId): array
+    {
+        return $this->createQueryBuilder('j')
+            ->join('j.autores', 'a')
+            ->andWhere('a.id = :autorId')
+            ->setParameter('autorId', $autorId)
+            ->getQuery()
+            ->getResult();
+    }
+
 }

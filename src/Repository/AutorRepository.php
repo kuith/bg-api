@@ -40,4 +40,15 @@ class AutorRepository extends ServiceEntityRepository
             ->getOneOrNullResult()
         ;
     }
+
+    public function findByNac($nacionalidad): array
+    {
+        return $this->createQueryBuilder('j')
+            ->andWhere('j.nacionalidad = :val')
+            ->setParameter('val', $nacionalidad)
+            ->setMaxResults(10)
+            ->getQuery()
+            ->getResult()
+        ;
+    }
 }

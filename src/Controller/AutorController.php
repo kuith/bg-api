@@ -41,12 +41,13 @@ class AutorController extends AbstractController
         }
 
         // Validar que los campos requeridos están presentes
-        if (!isset($data['nombre'])) {
+        if (!isset($data['nombre']) || !isset($data['nacionalidad'])) {
             return new JsonResponse($data, 400);
         }
 
         $autor = new Autor();
         $autor->setNombre($data['nombre']);
+        $autor->setNacionalidad($data['nacionalidad']);
 
         // Validar el objeto Autor
         $errors = $validator->validate($autor);
@@ -98,6 +99,19 @@ class AutorController extends AbstractController
     public function getByNombre(String $nombre, AutorRepository $repository): Response
     {
         $autor = $repository->findOneByNombre($nombre);
+
+        if (!$autor) {
+            throw $this->createNotFoundException('Autor no encontrado');
+        }
+
+        //return $this->json($juego);
+        return $this->json($autor, Response::HTTP_OK, [], ['groups' => 'autor_detalle']);
+    }
+
+    #[Route('/search/nacionalidad/{nacionalidad}', name: 'app_autor_getByNacionalidad', methods: ['GET'])]
+    public function getByNacionalidad(String $nacionalidad, AutorRepository $repository): Response
+    {
+        $autor = $repository->findByNac($nacionalidad);
 
         if (!$autor) {
             throw $this->createNotFoundException('Autor no encontrado');

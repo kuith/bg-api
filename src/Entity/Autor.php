@@ -2,9 +2,11 @@
 namespace App\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
-use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
+use Doctrine\Common\Collections\ArrayCollection;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 
+#[UniqueEntity(fields: ['nombre'], message: 'El nombre de autor debe ser único.')]
 #[ORM\Entity]
 class Autor
 {
@@ -15,6 +17,9 @@ class Autor
 
     #[ORM\Column(type: 'string', length: 100)]
     private string $nombre;
+
+    #[ORM\Column(type: 'string', length: 100)]
+    private ?string $nacionalidad = null;
 
     #[ORM\ManyToMany(targetEntity: Juego::class, mappedBy: 'autores')]
     //#[ORM\JoinTable(name: 'juegos_autores')]
@@ -45,6 +50,17 @@ class Autor
     {
         $this->nombre = $nombre;
 
+        return $this;
+    }
+
+    public function getNacionalidad(): ?string
+    {
+        return $this->nacionalidad;
+    }
+
+    public function setNacionalidad(?string $nacionalidad): self
+    {
+        $this->nacionalidad = $nacionalidad;
         return $this;
     }
 
