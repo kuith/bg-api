@@ -6,6 +6,8 @@ App\Entity\Expansion:
             groups: ['expansion_lista']
         descripcion:
             groups: ['expansion_lista']
+        precio:
+            groups: ['expansion_lista']
         fechalanzamiento:
             groups: ['expansion_lista']
         autores:

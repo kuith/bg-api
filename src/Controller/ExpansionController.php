@@ -32,7 +32,7 @@ class ExpansionController extends AbstractController
         $expansion = $repository->findOneById($id);
 
         if (!$expansion) {
-            throw $this->createNotFoundException('Expansion no encontrado');
+            throw $this->createNotFoundException('Expansion no encontrada');
         }
         //return $this->json($juego);
         return $this->json($expansion, Response::HTTP_OK, [], ['groups' => 'expansion_lista']);
@@ -74,6 +74,7 @@ class ExpansionController extends AbstractController
         $expansion->setNombre($data['nombre']);
         $expansion->setDescripcion($data['descripcion']);
         $expansion->setFechaLanzamiento($data['fecha_lanzamiento']);
+        $expansion->setPrecio($data['precio']);
 
         foreach ($data['autores'] as $autorId) {
             $autor = $em->getRepository(Autor::class)->findOneById($autorId);
