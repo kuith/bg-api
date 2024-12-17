@@ -132,6 +132,7 @@ class JuegoController extends AbstractController
         
          return $this->json($juegos, Response::HTTP_OK, [], ['groups' => 'juego_lista']);
     }
+    
 
     #[Route('/search/gamesByAutors/{id}', name: 'app_juego_getGamesByAutor', methods: ['GET'])]    
     public function buscarJuegosPorAutores(int $id, JuegoRepository $repository): Response
@@ -146,8 +147,6 @@ class JuegoController extends AbstractController
          return $this->json($juegos, Response::HTTP_OK, [], ['groups' => 'juego_lista']);
     }
     
-
-
     #[Route('/search/siautoma', name: 'app_juego_getAllAutoma', methods: ['GET'])]
     public function getAllAutoma(JuegoRepository $repository): Response
     {
@@ -164,6 +163,36 @@ class JuegoController extends AbstractController
 
         //return $this->json($juegos);
          return $this->json($juegos, Response::HTTP_OK, [], ['groups' => 'juego_lista']);
+    }
+
+    #[Route('/search/expansionesByJuego', name: 'app_juego_getExpansionesByJuego', methods: ['GET'])]
+    public function findExpansionesByJuego(int $id, JuegoRepository $repository): Response
+    {
+        $expansiones = $repository->getRepository($id);
+
+        if (!$expansiones) {
+            throw $this->createNotFoundException(
+                'No existen expansiones de ese juego: ' .$id
+            );
+        }
+
+        //return new JsonResponse($expansiones);
+        return $this->json($expansiones, Response::HTTP_OK, [], ['groups' => 'juego_lista']);
+    }
+
+    #[Route('/search/allExpansiones', name: 'app_juego_getAllExpansiones', methods: ['GET'])]
+    public function findAllExpansiones(JuegoRepository $repository): Response
+    {
+        $expansiones = $repository->findAllExpansiones();
+
+        if (!$expansiones) {
+            throw $this->createNotFoundException(
+                'No existen expansiones.'
+            );
+        }
+
+        //return new JsonResponse($expansiones);
+        return $this->json($expansiones, Response::HTTP_OK, [], ['groups' => 'juego_lista']);
     }
 
     #[Route('/', name: 'juego_create', methods: ['POST'])]

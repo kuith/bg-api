@@ -10,7 +10,7 @@ use Doctrine\Migrations\AbstractMigration;
 /**
  * Auto-generated Migration: Please modify to your needs!
  */
-final class Version20241201171803 extends AbstractMigration
+final class Version20241217193020 extends AbstractMigration
 {
     public function getDescription(): string
     {
@@ -20,12 +20,14 @@ final class Version20241201171803 extends AbstractMigration
     public function up(Schema $schema): void
     {
         // this up() migration is auto-generated, please modify it to your needs
-        $this->addSql('ALTER TABLE juego ADD editorial_madre VARCHAR(255) NOT NULL, ADD editorial_local VARCHAR(255) NOT NULL');
+        $this->addSql('ALTER TABLE juego ADD CONSTRAINT FK_F0EC403D6E5E864D FOREIGN KEY (juego_base_id) REFERENCES juego (id)');
+        $this->addSql('CREATE INDEX IDX_F0EC403D6E5E864D ON juego (juego_base_id)');
     }
 
     public function down(Schema $schema): void
     {
         // this down() migration is auto-generated, please modify it to your needs
-        $this->addSql('ALTER TABLE juego DROP editorial_madre, DROP editorial_local');
+        $this->addSql('ALTER TABLE juego DROP FOREIGN KEY FK_F0EC403D6E5E864D');
+        $this->addSql('DROP INDEX IDX_F0EC403D6E5E864D ON juego');
     }
 }

@@ -143,4 +143,24 @@ class JuegoRepository extends ServiceEntityRepository
             ->getResult();
     }
 
+    public function findExpansionesByJuego (int $juegoId): array
+    {
+        return $this->createQueryBuilder('j')
+            ->andWhere('j.juegoBase = :juegoId')  // Relación con el juego base
+            ->andWhere('j.tipo = :tipo')  // Asegura que sea una expansión
+            ->setParameter('juegoId', $juegoId)
+            ->setParameter('tipo', 'expansion')
+            ->getQuery()
+            ->getResult();
+    }
+
+    public function findAllExpansiones (): array
+    {
+        return $this->createQueryBuilder('j')
+            ->andWhere('j.tipo = :tipo')  // Asegura que sea una expansión
+            ->setParameter('tipo', 'expansion')
+            ->getQuery()
+            ->getResult();
+    }
+
 }

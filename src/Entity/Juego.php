@@ -7,6 +7,9 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 
 #[ORM\Entity]
+#[ORM\InheritanceType('SINGLE_TABLE')]
+#[ORM\DiscriminatorColumn(name: 'tipo', type: 'string')]
+#[ORM\DiscriminatorMap(['juego' => Juego::class, 'expansion' => Expansion::class])]
 class Juego
 {
     #[ORM\Id]
