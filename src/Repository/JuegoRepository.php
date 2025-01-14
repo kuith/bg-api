@@ -154,6 +154,30 @@ class JuegoRepository extends ServiceEntityRepository
             ->getResult();
     }
 
+    public function findExpansionById (int $id): array
+    {
+        return $this->createQueryBuilder('j')
+            ->andWhere('j.tipo = :tipo')  // Asegura que sea una expansión
+            ->setParameter('juegoId', $id)
+            ->setParameter('tipo', 'expansion')
+            ->getQuery()
+            ->getResult();
+    }
+
+    public function findExpansionByPlayersRange(float $minJugadores, float $maxJugadores): array
+    {
+        return $this->createQueryBuilder('j')
+            ->Where('j.minJugadores >= :minJugadores')
+            ->andWhere('j.maxJugadores<= :maxJugadores')
+            ->andWhere('j.tipo = :tipo')
+            ->setParameter('tipo', 'expansion')
+            ->setParameter('minJugadores', $minJugadores)
+            ->setParameter('maxJugadores', $maxJugadores)
+            ->getQuery()
+            ->getResult();
+        ;
+    }
+
     public function findAllExpansiones (): array
     {
         return $this->createQueryBuilder('j')

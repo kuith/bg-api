@@ -35,7 +35,7 @@ class Juego
     #[ORM\Column(type: 'boolean')]
     private bool $dispAutoma;
 
-    #[ORM\OneToMany(mappedBy: 'juego', targetEntity: Expansion::class)]
+    #[ORM\OneToMany(mappedBy: 'juegoBase', targetEntity: Expansion::class)]
     private Collection $expansiones;
 
     #[ORM\ManyToMany(targetEntity: Autor::class, inversedBy: 'juegos')]

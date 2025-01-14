@@ -16,12 +16,12 @@ App\Entity\Juego:
             groups: ['juego_lista']
         dispAutoma:
             groups: ['juego_lista']
-        expansiones:
-            groups: ['juego_lista']
         minJugadores:
             groups: ['juego_lista']
         maxJugadores:
             groups: ['juego_lista']
+        expansiones:
+            groups: ['juego_lista']        
         
 App\Entity\Autor:
     attributes:
@@ -33,6 +33,8 @@ App\Entity\Autor:
 App\Entity\Expansion:
     attributes:
         id:
-            groups: ['juego_lista']
-        nombre:
-            groups: ['juego_lista']
+            groups: ['juego_lista', 'juego_detalle']
+        juegoBase:
+            groups: ['juego_lista', 'juego_detalle']
+
+    
