@@ -2,8 +2,9 @@
 namespace App\Repository;
 
 use App\Entity\Juego;
-use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use App\Entity\Expansion;
 use Doctrine\Persistence\ManagerRegistry;
+use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 
 /**
  * @extends ServiceEntityRepository<Juego>
@@ -180,11 +181,19 @@ class JuegoRepository extends ServiceEntityRepository
 
     public function findAllExpansiones (): array
     {
-        return $this->createQueryBuilder('j')
-            ->andWhere('j.tipo = :tipo')  // Asegura que sea una expansión
-            ->setParameter('tipo', 'expansion')
+        
+        /* return $this->createQueryBuilder('j')
+
+            ->andWhere('j INSTANCE OF :tipo')  // Comprobamos el tipo con INSTANCE OF
+            ->setParameter('tipo', Expansion::class)  // Usa la clase asociada al tipo
             ->getQuery()
+            ->getResult(); */ 
+        
+        return $this->getEntityManager()
+            ->createQuery('SELECT j FROM App\Entity\Juego j WHERE j.tipo = :tipo')
+            ->setParameter('tipo', 'expansion')
             ->getResult();
     }
+
 
 }

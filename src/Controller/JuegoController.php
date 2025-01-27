@@ -165,63 +165,6 @@ class JuegoController extends AbstractController
          return $this->json($juegos, Response::HTTP_OK, [], ['groups' => 'juego_lista']);
     }
 
-    #[Route('/search/expansionesByJuego', name: 'app_juego_getExpansionesByJuego', methods: ['GET'])]
-    public function findExpansionesByJuego(int $juegoId, JuegoRepository $repository): Response
-    {
-        $expansiones = $repository->getRepository($juegoId);
-
-        if (!$expansiones) {
-            throw $this->createNotFoundException(
-                'No existen expansiones de ese juego: ' .$juegoId
-            );
-        }
-
-        //return new JsonResponse($expansiones);
-        return $this->json($expansiones, Response::HTTP_OK, [], ['groups' => 'juego_lista']);
-    }
-
-    #[Route('/search/expansionById/{id<\d+>}', name: 'app_expansion_getById', methods: ['GET'])]
-    public function getExpansionById(int $id, JuegoRepository $repository): Response
-    {
-        $expansion = $repository->findExpansionById($id);
-
-        if (!$expansion) {
-            throw $this->createNotFoundException('Expansión no encontrada');
-        }
-
-        //return $this->json($juego);
-         return $this->json($expansion, Response::HTTP_OK, [], ['groups' => 'juego_lista']);
-    }
-
-    #[Route('/search/expansionsByPlayersRange/{minPlayers}/{maxPlayers}', name: 'app_expansion_getByPlayersRange', methods: ['GET'])]
-    public function findExpansionByPlayersRange(int $minPlayers, int $maxPlayers, JuegoRepository $repository): Response
-    {
-        $expansiones = $repository->findPlayersRange($minPlayers, $maxPlayers);
-        if (!$expansiones) {
-            throw $this->createNotFoundException(
-                'No hay expansiones en ese rango de jugadores: ' .$minPlayers .' - ' .$maxPlayers
-            );
-        }
-        //return $this->json($juegos);
-        
-         return $this->json($expansiones, Response::HTTP_OK, [], ['groups' => 'juego_lista']);
-    }
-
-    #[Route('/search/allExpansiones', name: 'app_juego_getAllExpansiones', methods: ['GET'])]
-    public function findAllExpansiones(JuegoRepository $repository): Response
-    {
-        $expansiones = $repository->findAllExpansiones();
-
-        if (!$expansiones) {
-            throw $this->createNotFoundException(
-                'No existen expansiones.'
-            );
-        }
-
-        //return new JsonResponse($expansiones);
-        return $this->json($expansiones, Response::HTTP_OK, [], ['groups' => 'juego_lista']);
-    }
-
     #[Route('/', name: 'juego_create', methods: ['POST'])]
     public function create(
         Request $request,

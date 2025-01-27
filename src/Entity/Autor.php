@@ -22,16 +22,11 @@ class Autor
     private ?string $nacionalidad = null;
 
     #[ORM\ManyToMany(targetEntity: Juego::class, mappedBy: 'autores')]
-    //#[ORM\JoinTable(name: 'juegos_autores')]
     private Collection $juegos;
-
-    #[ORM\ManyToMany(targetEntity: Expansion::class, mappedBy: 'autores')]
-    private Collection $expansiones;
 
     public function __construct()
     {
         $this->juegos = new ArrayCollection();
-        $this->expansiones = new ArrayCollection();
     }
 
     // Getters y Setters
@@ -84,27 +79,4 @@ class Autor
 
         return $this;
     }
-
-    public function addExpansion(Juego $expansion): self
-    {
-        if (!$this->expansiones->contains($expansion)) {
-            $this->expansiones->add($expansion);
-        }
-
-        return $this;
-    }
-
-    public function removeExpansion(Juego $expansion): self
-    {
-        $this->juegos->removeElement($expansion);
-
-        return $this;
-    }
-
-    public function getExpansiones(): Collection
-    {
-        return $this->expansiones;
-    }
-
-    
 }

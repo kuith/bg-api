@@ -1,6 +1,6 @@
 App\Entity\Expansion:
     attributes:
         id:
-            groups: ['juego_lista', 'juego_detalle']
+            groups: ['expansion_lista']
         juegoBase:
-            groups: ['juego_lista', 'juego_detalle']
+            groups: ['expansion_lista']

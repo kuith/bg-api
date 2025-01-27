@@ -7,9 +7,8 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 
 #[ORM\Entity]
-#[ORM\InheritanceType('SINGLE_TABLE')]
-#[ORM\DiscriminatorColumn(name: 'tipo', type: 'string')]
-#[ORM\DiscriminatorMap(['juego' => Juego::class, 'expansion' => Expansion::class])]
+#[ORM\Table(name: 'juego')]
+
 class Juego
 {
     #[ORM\Id]
@@ -19,6 +18,9 @@ class Juego
 
     #[ORM\Column(type: 'string', length: 100, unique: true)]
     private string $nombre;
+
+    #[ORM\Column(type: 'string', length: 255, nullable: false)]
+    private string $tipo; // Puede ser "base" o "expansion"
 
     #[ORM\Column(type: 'text')]
     private string $descripcion;
@@ -30,13 +32,10 @@ class Juego
     private int $maxJugadores;
 
     #[ORM\Column(type: 'float')]
-    private string $precio;
+    private float $precio;
 
     #[ORM\Column(type: 'boolean')]
     private bool $dispAutoma;
-
-    #[ORM\OneToMany(mappedBy: 'juegoBase', targetEntity: Expansion::class)]
-    private Collection $expansiones;
 
     #[ORM\ManyToMany(targetEntity: Autor::class, inversedBy: 'juegos')]
     //#[ORM\JoinTable(name: 'juegos_autores')]
@@ -50,7 +49,6 @@ class Juego
 
     public function __construct()
     {
-        $this->expansiones = new ArrayCollection();
         $this->autores = new ArrayCollection();
     }
 
@@ -69,6 +67,20 @@ class Juego
         $this->nombre = $nombre;
 
         return $this;
+    }
+
+    public function setTipo(string $tipo): void
+    {
+        if (!in_array($tipo, ['base', 'expansion'])) {
+            throw new \InvalidArgumentException('El tipo debe ser "base" o "expansion".');
+        }
+        $this->tipo = $tipo;
+    }
+
+    
+    public function getTipo(): string
+    {
+        return $this->tipo;
     }
 
     public function getDescripcion(): string
@@ -127,18 +139,6 @@ class Juego
     public function setDispAutoma(bool $dispAutoma): self
     {
         $this->dispAutoma = $dispAutoma;
-
-        return $this;
-    }
-
-    public function getExpansiones(): Collection
-    {
-        return $this->expansiones;
-    }
-
-    public function setExpansiones(Collection $expansiones): self
-    {
-        $this->expansiones = $expansiones;
 
         return $this;
     }
