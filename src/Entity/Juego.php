@@ -20,7 +20,14 @@ class Juego
     private string $nombre;
 
     #[ORM\Column(type: 'string', length: 255, nullable: false)]
-    private string $tipo; // Puede ser "base" o "expansion"
+    private string $baseExpansion; // Puede ser "base" o "expansion"
+
+    #[ORM\ManyToOne(targetEntity: self::class)]
+    #[ORM\JoinColumn(nullable: true, onDelete: "SET NULL")]
+    private ?Juego $juegoBase = null;
+
+    #[ORM\Column(type: 'text')]
+    private string $tipo;
 
     #[ORM\Column(type: 'text')]
     private string $descripcion;
@@ -69,23 +76,52 @@ class Juego
         return $this;
     }
 
-    public function setTipo(string $tipo): void
+    public function setBaseExpansion(string $baseExpansion): void
     {
-        if (!in_array($tipo, ['base', 'expansion'])) {
+        if (!in_array($baseExpansion, ['base', 'expansion'])) {
             throw new \InvalidArgumentException('El tipo debe ser "base" o "expansion".');
         }
-        $this->tipo = $tipo;
+        $this->baseExpansion = $baseExpansion;
+    }
+    
+    public function getBaseExpansion(): string
+    {
+        return $this->baseExpansion;
     }
 
-    
-    public function getTipo(): string
+    public function setJuegoBase(?Juego $juegoBase): self
     {
-        return $this->tipo;
+        $this->juegoBase = $juegoBase;
+        return $this;
+    }
+
+    public function getJuegoBase(): ?Juego
+    {
+        return $this->juegoBase;
     }
 
     public function getDescripcion(): string
     {
         return $this->descripcion;
+    }
+
+     public function setDescripcion(string $descripcion): self
+    {
+        $this->descripcion = $descripcion;
+
+        return $this;
+    }
+
+    public function setTipo(string $tipo): self
+    {
+        $this->tipo = $tipo;
+
+        return $this;
+    }
+
+    public function getTipo(): string
+    {
+        return $this->tipo;
     }
 
     public function getMinJugadores(): int
@@ -108,13 +144,6 @@ class Juego
     public function setMaxJugadores(int $maxJugadores): self
     {
         $this->maxJugadores = $maxJugadores;
-
-        return $this;
-    }
-
-    public function setDescripcion(string $descripcion): self
-    {
-        $this->descripcion = $descripcion;
 
         return $this;
     }

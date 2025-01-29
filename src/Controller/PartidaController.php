@@ -37,7 +37,7 @@ class PartidaController extends AbstractController
         }
 
         // Validar que los campos requeridos están presentes
-        if (!isset($data['fecha']) || !isset($data['juego']) || !isset($data['jugadores_ids']) || !isset($data['ganador_id'])) {
+        if (!isset($data['fecha']) || !isset($data['juego_id']) || !isset($data['jugadores_ids']) || !isset($data['ganadores_ids'])) {
             return new JsonResponse($data, 400);
         }
 
@@ -45,7 +45,7 @@ class PartidaController extends AbstractController
         $partida->setFecha(new \DateTime($data['fecha']));
         //$partida->setJuego($data['juego']);
 
-        // Establecer ganador
+        /* // Establecer ganador
        foreach ($data['ganador_id'] as $ganadorId) {
             $ganador = $em->getRepository(Jugador::class)->findOneById($ganadorId);
 
@@ -54,6 +54,15 @@ class PartidaController extends AbstractController
             }
 
             $partida->setGanador($ganador);
+        } */
+
+        // Establecer ganadores
+        foreach ($data['ganadores_ids'] as $ganadorId) {
+            $jugador = $em->getRepository(Jugador::class)->find($ganadorId);
+            if ($jugador) {
+                $partida->getGanadores()->add($jugador);
+                //$jugador->getPartidas()->add($partida); // Relación inversa
+            }
         }
 
         // Establecer jugadores
@@ -66,7 +75,7 @@ class PartidaController extends AbstractController
         }
 
         //Establecer juego
-        foreach ($data['juego'] as $juegoId) {
+        foreach ($data['juego_id'] as $juegoId) {
             $juego = $em->getRepository(Juego::class)->findOneById($juegoId);
 
             if (!$juego) {

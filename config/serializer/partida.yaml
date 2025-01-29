@@ -6,7 +6,7 @@ App\Entity\Partida:
             groups: ['partida_lista']
         juego:
             groups: ['partida_lista']
-        ganador:
+        ganadores:
             groups: ['partida_lista']
         jugadores:
             groups: ['partida_lista']

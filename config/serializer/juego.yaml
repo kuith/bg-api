@@ -4,6 +4,12 @@ App\Entity\Juego:
             groups: ['juego_lista']
         nombre:
             groups: ['juego_lista']
+        baseExpansion:
+            groups: ['juego_lista']
+        juegoBase:
+            groups: ['juego_lista']
+        tipo:
+            groups: ['juego_lista']
         autores:
             groups: ['juego_lista']
         descripcion:
@@ -20,8 +26,6 @@ App\Entity\Juego:
             groups: ['juego_lista']
         maxJugadores:
             groups: ['juego_lista']
-        # expansiones:
-        #     groups: ['juego_lista']     
         
 App\Entity\Autor:
     attributes:
@@ -30,11 +34,5 @@ App\Entity\Autor:
         nombre:
             groups: ['juego_lista']
 
-App\Entity\Expansion:
-    attributes:
-        id:
-            groups: ['juego_lista']
-        juegoBase:
-            groups: ['juego_lista']
 
     

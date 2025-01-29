@@ -169,7 +169,8 @@ class JuegoController extends AbstractController
     public function create(
         Request $request,
         EntityManagerInterface $em,
-        ValidatorInterface $validator
+        ValidatorInterface $validator,
+        JuegoRepository $juegoRepository
     ): JsonResponse {
         $data = json_decode($request->getContent(), true);
 
@@ -181,12 +182,29 @@ class JuegoController extends AbstractController
         }
 
         // Validar que los campos requeridos están presentes
-        if (!isset($data['nombre']) || !isset($data['descripcion']) || !isset($data['dispAutoma']) || !isset($data['autores'])) {
+        if (!isset($data['nombre']) || !isset($data['baseExpansion']) || !isset($data['dispAutoma'])) {
             return new JsonResponse($data, 400);
         }
 
         $juego = new Juego();
         $juego->setNombre($data['nombre']);
+        $juego->setBaseExpansion($data['baseExpansion']);
+
+        // Si es una expansión, buscar el juego base
+        if ($data['baseExpansion'] === 'expansion') {
+            if (!isset($data['juegoBaseId'])) {
+                return new JsonResponse(['error' => 'Debe proporcionar el juego base para una expansión'], 400);
+            }
+
+            $juegoBase = $juegoRepository->find($data['juegoBaseId']);
+            if (!$juegoBase || $juegoBase->getBaseExpansion() !== 'base') {
+                return new JsonResponse(['error' => 'El juego base no es válido'], 400);
+            }
+
+            $juego->setJuegoBase($juegoBase);
+        }
+
+        $juego->setTipo($data['tipo']);
         $juego->setDescripcion($data['descripcion']);
         $juego->setDispAutoma($data['dispAutoma']);
         $juego->setEditorialLocal($data['editorialLocal']);
@@ -212,7 +230,7 @@ class JuegoController extends AbstractController
             foreach ($errors as $error) {
                 $errorMessages[] = $error->getMessage();
             }
-            return new JsonResponse(['errors' => $errorMessages], 400);
+            return new JsonResponse("['errors' => $errorMessages]", 400);
         }
         
         // Guardar el jugador en la base de datos

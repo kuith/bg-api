@@ -8,10 +8,10 @@ use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 
 /**
  * @extends ServiceEntityRepository<Juego>
- * @method Jugador|null find($id, $lockMode = null, $lockVersion = null)
- * @method Jugador|null findOneBy(array $criteria, array $orderBy = null)
- * @method Jugador[]    findAll()
- * @method Jugador[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
+ * @method Juego|null find($id, $lockMode = null, $lockVersion = null)
+ * @method Juego|null findOneBy(array $criteria, array $orderBy = null)
+ * @method Juego[]    findAll()
+ * @method Juego[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
 */
 
 class JuegoRepository extends ServiceEntityRepository

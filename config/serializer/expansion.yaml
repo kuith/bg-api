@@ -1,6 +1,0 @@
-App\Entity\Expansion:
-    attributes:
-        id:
-            groups: ['expansion_lista']
-        juegoBase:
-            groups: ['expansion_lista']

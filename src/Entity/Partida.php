@@ -20,9 +20,13 @@ class Partida
     #[ORM\JoinColumn(nullable: false)]
     private Juego $juego;
 
-    #[ORM\ManyToOne(targetEntity: Jugador::class, inversedBy:'partidasGanadas')]
+    /* #[ORM\ManyToOne(targetEntity: Jugador::class, inversedBy:'partidasGanadas')]
     #[ORM\JoinColumn(nullable: false)]
-    private Jugador $ganador;
+    private Jugador $ganador; */
+
+    #[ORM\ManyToMany(targetEntity: Jugador::class, inversedBy:'partidasGanadas')]
+    //#[ORM\JoinColumn(nullable: false)]
+    private Collection $ganadores;
 
     #[ORM\ManyToMany(targetEntity: Jugador::class, inversedBy: 'partidas')]
     #[ORM\JoinTable(name: 'partidas_jugadores')]
@@ -31,6 +35,7 @@ class Partida
     public function __construct()
     {
         $this->jugadores = new ArrayCollection();
+        $this->ganadores = new ArrayCollection();
     }
 
     // Getters y Setters para cada propiedad
@@ -68,7 +73,7 @@ class Partida
         return $this;
     }
 
-    public function getGanador(): Jugador
+/*     public function getGanador(): Jugador
     {
         return $this->ganador;
     }
@@ -78,15 +83,28 @@ class Partida
         $this->ganador = $ganador;
 
         return $this;
-    }
+    } */
 
-    public function addJugadores(Autor $jugador): self
+
+
+    /* public function addJugadores(Autor $jugador): self
     {
         if (!$this->jugadores->contains($jugador)) {
             $this->jugadores->add($jugador);
         }
 
         return $this;
+    } */
+
+    public function setGanadores(Collection $ganadores): self
+    {
+        $this->jugadores = $ganadores;
+        return $this;
+    }
+
+    public function getGanadores(): Collection
+    {
+        return $this->ganadores;
     }
 
     public function setJugadores(Collection $jugadores): self
