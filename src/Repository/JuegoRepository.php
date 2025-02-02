@@ -2,7 +2,6 @@
 namespace App\Repository;
 
 use App\Entity\Juego;
-use App\Entity\Expansion;
 use Doctrine\Persistence\ManagerRegistry;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 
@@ -181,19 +180,41 @@ class JuegoRepository extends ServiceEntityRepository
 
     public function findAllExpansiones (): array
     {
-        
-        /* return $this->createQueryBuilder('j')
-
-            ->andWhere('j INSTANCE OF :tipo')  // Comprobamos el tipo con INSTANCE OF
-            ->setParameter('tipo', Expansion::class)  // Usa la clase asociada al tipo
-            ->getQuery()
-            ->getResult(); */ 
-        
         return $this->getEntityManager()
             ->createQuery('SELECT j FROM App\Entity\Juego j WHERE j.tipo = :tipo')
             ->setParameter('tipo', 'expansion')
             ->getResult();
     }
 
+    public function findJuegosByJugadorId(int $jugadorId): array
+    {
+        return $this->createQueryBuilder('j')
+            ->innerJoin('j.partidas', 'p')
+            ->innerJoin('p.jugadores', 'jug')
+            ->where('jug.id = :jugadorId')
+            ->setParameter('jugadorId', $jugadorId)
+            ->getQuery()
+            ->getResult();
+    }
+
+    public function findJuegosByPartidaId(int $partidaId): array
+    {
+        return $this->createQueryBuilder('j')
+            ->innerJoin('j.partidas', 'p')
+            ->where('p.id = :partidaId')
+            ->setParameter('partidaId', $partidaId)
+            ->getQuery()
+            ->getResult();
+    }
+
+    public function findJueosBycategoria(int $categoriaId): array
+    {
+        return $this->createQueryBuilder('j')
+            ->innerJoin('j.categorias', 'c')
+            ->where('c.id = :categoriaId')
+            ->setParameter('categoriaId', $categoriaId)
+            ->getQuery()
+            ->getResult();
+    }
 
 }

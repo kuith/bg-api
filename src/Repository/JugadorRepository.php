@@ -42,11 +42,11 @@ class JugadorRepository extends ServiceEntityRepository
         ;
     }
 
-    public function findOneByEmail($email): ?Jugador
+    public function findOneByEmail($correo): ?Jugador
     {
         return $this->createQueryBuilder('j')
-            ->andWhere('j.email = :val')
-            ->setParameter('val', $email)
+            ->andWhere('j.correo = :val')
+            ->setParameter('val', $correo)
             ->getQuery()
             ->getOneOrNullResult()
         ;
@@ -84,6 +84,8 @@ class JugadorRepository extends ServiceEntityRepository
             ->getQuery()
             ->getResult();
     }
+
+    
 
 
 }

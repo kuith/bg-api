@@ -27,7 +27,7 @@ class Jugador
     #[ORM\Column(type: 'date')]
     private \DateTime $fechaRegistro;
 
-    #[ORM\OneToMany(mappedBy: 'ganador', targetEntity: Partida::class)]
+    #[ORM\ManyToMany(mappedBy: 'ganadores', targetEntity: Partida::class)]
     private Collection $partidasGanadas;
 
     #[ORM\ManyToMany(targetEntity: Partida::class, mappedBy: 'jugadores')]

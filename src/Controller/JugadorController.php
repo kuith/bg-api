@@ -8,12 +8,8 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\HttpFoundation\JsonResponse;
-//use Symfony\Component\Serializer\SerializerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-//use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
-//use Symfony\Component\Validator\Constraints as Assert;
-
 
 #[Route('/api/jugadores')]
 
@@ -37,7 +33,8 @@ class JugadorController extends AbstractController
             throw $this->createNotFoundException('Jugador no encontrado');
         }
 
-        return $this->json($jugador);
+        //return $this->json($jugador);
+        return $this->json($jugador, Response::HTTP_OK, [], ['groups' => 'jugador_lista']);
     }
 
     #[Route('/search/nombre/{nombre}', name: 'app_jugador_getByNombre', methods: ['GET'])]
@@ -49,19 +46,19 @@ class JugadorController extends AbstractController
             throw $this->createNotFoundException('Jugador no encontrado');
         }
 
-        return $this->json($jugador);
+        return $this->json($jugador, Response::HTTP_OK, [], ['groups' => 'jugador_lista']);
     }
 
-    #[Route('/search/email/{email}', name: 'app_jugador_getByEmail', methods: ['GET'])]
-    public function getByEmail(String $email, JugadorRepository $repository): Response
+    #[Route('/search/correo/{correo}', name: 'app_jugador_getByCorreo', methods: ['GET'])]
+    public function getByEmail(String $correo, JugadorRepository $repository): Response
     {
-        $jugador = $repository->findOneByEmail($email);
+        $jugador = $repository->findOneByEmail($correo);
 
         if (!$jugador) {
             throw $this->createNotFoundException('Jugador no encontrado');
         }
 
-        return $this->json($jugador);
+        return $this->json($jugador, Response::HTTP_OK, [], ['groups' => 'jugador_lista']);
     }
 
     #[Route('/search/rol/{rol}', name: 'app_jugador_getByRol', methods: ['GET'])]
@@ -87,10 +84,10 @@ class JugadorController extends AbstractController
         return $this->json($jugadores, Response::HTTP_OK, [], ['groups' => 'jugador_juegos']);
     }
 
-    #[Route('/search/ganadas/{id}', name: 'app_jugador_getByGanadasPorId', methods: ['GET'])]
-    public function getByGanadas(String $id, JugadorRepository $repository): Response
+    #[Route('/search/ganadas/{idJugador}', name: 'app_jugador_getByGanadasPorId', methods: ['GET'])]
+    public function getByGanadas(String $idJugador, JugadorRepository $repository): Response
     {
-        $partidasGanadas = $repository->findPartidasGanadasPorJugador($id);
+        $partidasGanadas = $repository->findPartidasGanadasPorJugador($idJugador);
 
         if (!$partidasGanadas) {
             throw $this->createNotFoundException('Jugador no encontrado o no ha ganado partidas');
@@ -161,6 +158,43 @@ class JugadorController extends AbstractController
             
         return new Response('Jugador eliminado!', 200);
     }
+
+    #[Route('/jugador/{id}', name: 'actualizar_jugador', methods: ['PATCH'])]
+public function actualizarJugador(int $id, Request $request, JugadorRepository $jugadorRepository, EntityManagerInterface $em): JsonResponse
+{
+    $jugador = $jugadorRepository->find($id);
+
+    if (!$jugador) {
+        return new JsonResponse(['error' => 'Jugador no encontrado'], 404);
+    }
+
+    // Obtener datos del request
+    $data = json_decode($request->getContent(), true);
+
+    // Modificar solo si los valores existen en la petición
+
+    if (isset($data['nombre'])) {
+        $jugador->setNombre($data['nombre']);
+    }
+    if (isset($data['password'])) {
+        $jugador->setPassword($data['password']);
+    }
+    if (isset($data['correo'])) {
+        $jugador->setCorreo($data['correo']);
+    }
+    if (isset($data['rol'])) {
+        $jugador->setRol($data['rol']);
+    }
+    if (isset($data['fecha_registro'])) {
+        $jugador->setFechaRegistro(new \DateTime($data['fecha_registro']));
+    }
+
+    // Guardar cambios en la base de datos
+    $em->flush();
+
+    return $this->json($jugador, 200);
+}
+
 
     
 }

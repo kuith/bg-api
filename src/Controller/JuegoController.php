@@ -45,14 +45,14 @@ class JuegoController extends AbstractController
         $juego = $repository->findOneByNombre($nombre);
 
         if (!$juego) {
-            throw $this->createNotFoundException('Jugador no encontrado');
+            throw $this->createNotFoundException('Juego no encontrado');
         }
 
         //return $this->json($juego);
          return $this->json($juego, Response::HTTP_OK, [], ['groups' => 'juego_lista']);
     }
 
-    #[Route('/search/editorialLocal/{editorialLocal}', name: 'app_juego_getByEditorialLocal', methods: ['GET'])]
+    #[Route('/search/editoriallocal/{editorialLocal}', name: 'app_juego_getByEditorialLocal', methods: ['GET'])]
     public function getByEditorialLocal(String $editorialLocal, JuegoRepository $repository): Response
     {
         $juegos = $repository->findByEditorialLocal($editorialLocal);
@@ -80,7 +80,7 @@ class JuegoController extends AbstractController
          return $this->json($juegos, Response::HTTP_OK, [], ['groups' => 'juego_lista']);
     }
 
-    #[Route('/search/priceRange/{minPrice}/{maxPrice}', name: 'app_juego_getByPriceRange', methods: ['GET'])]
+    #[Route('/search/pricerange/{minPrice}/{maxPrice}', name: 'app_juego_getByPriceRange', methods: ['GET'])]
     public function getByPriceRange(float $minPrice, float $maxPrice, JuegoRepository $repository): Response
     {
         $juegos = $repository->findPriceRange($minPrice, $maxPrice);
@@ -93,7 +93,7 @@ class JuegoController extends AbstractController
          return $this->json($juegos, Response::HTTP_OK, [], ['groups' => 'juego_lista']);
     }
 
-    #[Route('/search/underPrice/{price}', name: 'app_juego_getByUnderPrice', methods: ['GET'])]
+    #[Route('/search/underprice/{price}', name: 'app_juego_getdebajoDePrecio', methods: ['GET'])]
     public function getByUnderPrice(float $price, JuegoRepository $repository): Response
     {
         $juegos = $repository->findUnderPrice($price);
@@ -106,7 +106,7 @@ class JuegoController extends AbstractController
          return $this->json($juegos, Response::HTTP_OK, [], ['groups' => 'juego_lista']);
     }
 
-    #[Route('/search/overPrice/{price}', name: 'app_juego_getByUnderPrice', methods: ['GET'])]
+    #[Route('/search/overprice/{price}', name: 'app_juego_getByUnderPrice', methods: ['GET'])]
     public function getByOverPrice(float $price, JuegoRepository $repository): Response
     {
         $juegos = $repository->findOverPrice($price);
