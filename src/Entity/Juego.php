@@ -29,6 +29,9 @@ class Juego
     #[ORM\Column(type: 'text')]
     private string $tipo;
 
+    #[ORM\Column(type: 'integer')]
+    private int $anioPublicacion;
+
     #[ORM\Column(type: 'text')]
     private string $descripcion;
 
@@ -98,6 +101,17 @@ class Juego
     public function getJuegoBase(): ?Juego
     {
         return $this->juegoBase;
+    }
+
+    public function getAnioPublicacion(): int
+    {
+        return $this->anioPublicacion;
+    }
+
+    public function setAnioPublicacion(int $anioPublicacion): self
+    {
+        $this->anioPublicacion = $anioPublicacion;
+        return $this;
     }
 
     public function getDescripcion(): string

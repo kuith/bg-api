@@ -24,6 +24,55 @@ class PartidaController extends AbstractController
         return $this->json($partidas, Response::HTTP_OK, [], ['groups' => 'partida_lista']);
     }
 
+    #[Route('/search/{id<\d+>}', name: 'app_partida_getById', methods: ['GET'])]
+    public function getById(int $id, PartidaRepository $repository): Response
+    {
+        $partida = $repository->findOneById($id);
+
+        if (!$partida) {
+            throw $this->createNotFoundException('Partida no encontrada');
+        }
+
+        //return $this->json($jugador);
+        return $this->json($partida, Response::HTTP_OK, [], ['groups' => 'partida_lista']);
+    }
+
+    #[Route('/search/fecha/{fecha}', name: 'app_partida_getByFecha', methods: ['GET'])]
+    public function findByFecha(String $fecha, PartidaRepository $repository): Response
+    {
+        $partida = $repository->findByFecha($fecha);
+
+        if (!$partida) {
+            throw $this->createNotFoundException('Partida no encontrada.');
+        }
+
+        return $this->json($partida, Response::HTTP_OK, [], ['groups' => 'partida_lista']);
+    }
+
+    #[Route('/search/rankingGanadores', name: 'app_partida_getRanking', methods: ['GET'])]
+    public function getRankingDeGanadores(PartidaRepository $repository): Response
+    {
+        $partida = $repository->getRankingDeGanadores();
+
+        if (!$partida) {
+            throw $this->createNotFoundException('Partida no encontrada.');
+        }
+
+        return $this->json($partida, Response::HTTP_OK, [], ['groups' => 'partida_ganador']);
+    }
+
+    #[Route('/search/jugador/{jugadorId}', name: 'app_partida_getByJugadorId', methods: ['GET'])]
+    public function findByJugador(String $jugadorId, PartidaRepository $repository): Response
+    {
+        $partida = $repository->findByJugador($jugadorId);
+
+        if (!$partida) {
+            throw $this->createNotFoundException('Partidas no encontradas para ese jugador.' .$jugadorId);
+        }
+
+        return $this->json($partida, Response::HTTP_OK, [], ['groups' => 'partida_jugador']);
+    }
+
     #[Route('/', name: 'crear_partida', methods: ['POST'])]
     public function crearPartida(Request $request, EntityManagerInterface $em): JsonResponse
     {
@@ -43,35 +92,24 @@ class PartidaController extends AbstractController
 
         $partida = new Partida();
         $partida->setFecha(new \DateTime($data['fecha']));
-        //$partida->setJuego($data['juego']);
-
-        /* // Establecer ganador
-       foreach ($data['ganador_id'] as $ganadorId) {
-            $ganador = $em->getRepository(Jugador::class)->findOneById($ganadorId);
-
-            if (!$ganador) {
-                return new JsonResponse(['error' => "Jugador ganador con ID $ganadorId no encontrado"], Response::HTTP_NOT_FOUND);
-            }
-
-            $partida->setGanador($ganador);
-        } */
-
-        // Establecer ganadores
-        foreach ($data['ganadores_ids'] as $ganadorId) {
-            $jugador = $em->getRepository(Jugador::class)->find($ganadorId);
-            if ($jugador) {
-                $partida->getGanadores()->add($jugador);
-                //$jugador->getPartidas()->add($partida); // Relación inversa
-            }
-        }
 
         // Establecer jugadores
         foreach ($data['jugadores_ids'] as $jugadorId) {
             $jugador = $em->getRepository(Jugador::class)->find($jugadorId);
-            if ($jugador) {
-                $partida->getJugadores()->add($jugador);
-                //$jugador->getPartidas()->add($partida); // Relación inversa
+            if (!$jugador) {
+                throw $this->createNotFoundException('Jugador no encontrado');
             }
+        $partida->getJugadores()->add($jugador);
+
+        }
+
+        // Establecer ganadores
+        foreach ($data['ganadores_ids'] as $ganadorId) {
+            $jugador = $em->getRepository(Jugador::class)->find($ganadorId);
+            if (!$jugador) {
+                throw $this->createNotFoundException('Jugador ganador no encontrado');
+            }
+            $partida->getGanadores()->add($jugador);
         }
 
         //Establecer juego
@@ -89,7 +127,6 @@ class PartidaController extends AbstractController
         $em->flush();
 
         return new JsonResponse(['mensaje' => 'Partida creada correctamente'], 201);
-        //return $this->json($partida, Response::HTTP_OK, [], ['groups' => 'partida_lista']);
     }
 
     #[Route('/{id<\d+>}', name: 'partida_delete', methods: ['DELETE'])]

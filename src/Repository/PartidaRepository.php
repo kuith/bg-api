@@ -31,4 +31,41 @@ class PartidaRepository extends ServiceEntityRepository
             ->getOneOrNullResult()
         ;
     }
+
+    public function findByFecha($fecha): array
+    {
+        return $this->createQueryBuilder('j')
+            ->andWhere('j.fecha = :val')
+            ->setParameter('val', $fecha)
+            ->orderBy('j.id', 'ASC')
+            ->setMaxResults(10)
+            ->getQuery()
+            ->getResult()
+        ;
+    }
+
+    public function findByJugador($jugadorId): array
+    {
+        return $this->createQueryBuilder('j')
+            ->innerJoin('j.jugadores', 'jug')  // Relación con los jugadores
+            ->andWhere('jug.id = :val')
+            ->setParameter('val', $jugadorId)
+            ->orderBy('j.id', 'ASC')
+            ->setMaxResults(10)
+            ->getQuery()
+            ->getResult();
+    }
+
+    public function getRankingDeGanadores(): array
+    {
+        return $this->createQueryBuilder('p')
+            ->select('jug.nombre, COUNT(p.id) as victorias')
+            ->innerJoin('p.ganadores', 'jug')  // Relación con el jugador ganador
+            ->groupBy('jug.id')
+            ->orderBy('victorias', 'DESC')
+            ->getQuery()
+            ->getResult();
+    }
+
+
 }

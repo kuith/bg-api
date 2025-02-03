@@ -133,6 +133,28 @@ class JuegoRepository extends ServiceEntityRepository
         ;
     }
 
+    public function findByMinPlayers(float $minJugadores): array
+    {
+        return $this->createQueryBuilder('j')
+            ->andWhere('j.minJugadores >= :minJugadores')
+            ->setParameter('minJugadores', $minJugadores)
+            ->orderBy('j.minJugadores', 'ASC')
+            ->getQuery()
+            ->getResult();
+        ;
+    }
+
+    public function findByMaxPlayers(float $maxJugadores): array
+    {
+        return $this->createQueryBuilder('j')
+            ->andWhere('j.maxJugadores <= :maxJugadores')
+            ->setParameter('maxJugadores', $maxJugadores)
+            ->orderBy('j.maxJugadores', 'ASC')
+            ->getQuery()
+            ->getResult();
+        ;
+    }
+
     public function findByAuthor (int $autorId): array
     {
         return $this->createQueryBuilder('j')
@@ -143,78 +165,69 @@ class JuegoRepository extends ServiceEntityRepository
             ->getResult();
     }
 
-    public function findExpansionesByJuego (int $juegoId): array
+    public function findExpansionesByJuegoId (int $juegoId): array
     {
         return $this->createQueryBuilder('j')
             ->andWhere('j.juegoBase = :juegoId')  // Relación con el juego base
-            ->andWhere('j.tipo = :tipo')  // Asegura que sea una expansión
+            ->andWhere('j.baseExpansion = :baseExpansion')  // Asegura que sea una expansión
             ->setParameter('juegoId', $juegoId)
-            ->setParameter('tipo', 'expansion')
+            ->setParameter('baseExpansion', 'expansion')
             ->getQuery()
             ->getResult();
-    }
-
-    public function findExpansionById (int $id): array
-    {
-        return $this->createQueryBuilder('j')
-            ->andWhere('j.tipo = :tipo')  // Asegura que sea una expansión
-            ->setParameter('juegoId', $id)
-            ->setParameter('tipo', 'expansion')
-            ->getQuery()
-            ->getResult();
-    }
-
-    public function findExpansionByPlayersRange(float $minJugadores, float $maxJugadores): array
-    {
-        return $this->createQueryBuilder('j')
-            ->Where('j.minJugadores >= :minJugadores')
-            ->andWhere('j.maxJugadores<= :maxJugadores')
-            ->andWhere('j.tipo = :tipo')
-            ->setParameter('tipo', 'expansion')
-            ->setParameter('minJugadores', $minJugadores)
-            ->setParameter('maxJugadores', $maxJugadores)
-            ->getQuery()
-            ->getResult();
-        ;
     }
 
     public function findAllExpansiones (): array
     {
-        return $this->getEntityManager()
-            ->createQuery('SELECT j FROM App\Entity\Juego j WHERE j.tipo = :tipo')
-            ->setParameter('tipo', 'expansion')
-            ->getResult();
+        return $this->createQueryBuilder('j')
+        ->andWhere('j.baseExpansion = :baseExpansion')  // Filtra solo expansiones
+        ->setParameter('baseExpansion', 'expansion')
+        ->getQuery()
+        ->getResult();
     }
 
-    public function findJuegosByJugadorId(int $jugadorId): array
+    public function findAllExpansionesConAutoma (): array
     {
         return $this->createQueryBuilder('j')
-            ->innerJoin('j.partidas', 'p')
-            ->innerJoin('p.jugadores', 'jug')
-            ->where('jug.id = :jugadorId')
-            ->setParameter('jugadorId', $jugadorId)
-            ->getQuery()
-            ->getResult();
+        ->andWhere('j.baseExpansion = :baseExpansion')  // Filtra solo expansiones
+        ->andWhere('j.dispAutoma = :dispAutoma')
+        ->setParameter('baseExpansion', 'expansion')
+        ->setParameter('dispAutoma', true)
+        ->getQuery()
+        ->getResult();
     }
 
-    public function findJuegosByPartidaId(int $partidaId): array
+    public function findAllExpansionesSinAutoma (): array
     {
         return $this->createQueryBuilder('j')
-            ->innerJoin('j.partidas', 'p')
-            ->where('p.id = :partidaId')
-            ->setParameter('partidaId', $partidaId)
-            ->getQuery()
-            ->getResult();
+        ->andWhere('j.baseExpansion = :baseExpansion')  // Filtra solo expansiones
+        ->andWhere('j.dispAutoma = :dispAutoma')
+        ->setParameter('baseExpansion', 'expansion')
+        ->setParameter('dispAutoma', false)
+        ->getQuery()
+        ->getResult();
     }
 
-    public function findJueosBycategoria(int $categoriaId): array
+    public function findByTipo($tipo): array
     {
         return $this->createQueryBuilder('j')
-            ->innerJoin('j.categorias', 'c')
-            ->where('c.id = :categoriaId')
-            ->setParameter('categoriaId', $categoriaId)
+            ->andWhere('j.tipo = :val')
+            ->setParameter('val', $tipo)
+            ->orderBy('j.id', 'ASC')
+            ->setMaxResults(10)
             ->getQuery()
-            ->getResult();
+            ->getResult()
+        ;
     }
 
+    public function findByAnio($anioPublicacion): array
+    {
+        return $this->createQueryBuilder('j')
+            ->andWhere('j.anioPublicacion = :val')
+            ->setParameter('val', $anioPublicacion)
+            ->orderBy('j.id', 'ASC')
+            ->setMaxResults(10)
+            ->getQuery()
+            ->getResult()
+        ;
+    }
 }

@@ -5,21 +5,21 @@ App\Entity\Partida:
         fecha:
             groups: ['partida_lista']
         juego:
-            groups: ['partida_lista']
+            groups: ['partida_lista', partida_lista_jugadores, partida_jugador]
         ganadores:
-            groups: ['partida_lista']
+            groups: ['partida_lista', partida_lista_jugadores, partida_jugador, partida_ganador]
         jugadores:
-            groups: ['partida_lista']
+            groups: ['partida_lista', partida_lista_jugadores, partida_jugador]
 App\Entity\Juego:
     attributes:
         id:
-            groups: ['partida_lista']
+            groups: ['partida_lista', partida_lista_jugadores, partida_jugador]
         nombre:
-            groups: ['partida_lista']
+            groups: ['partida_lista', partida_lista_jugadores, partida_jugador]
 App\Entity\Jugador:
     attributes:
         id:
-            groups: ['partida_lista']
+            groups: ['partida_lista', partida_lista_jugadores, partida_jugador]
         nombre:
-            groups: ['partida_lista']
+            groups: ['partida_lista', partida_lista_jugadores, partida_jugador]
 

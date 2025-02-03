@@ -73,29 +73,6 @@ class Partida
         return $this;
     }
 
-/*     public function getGanador(): Jugador
-    {
-        return $this->ganador;
-    }
-
-    public function setGanador(Jugador $ganador): self
-    {
-        $this->ganador = $ganador;
-
-        return $this;
-    } */
-
-
-
-    /* public function addJugadores(Autor $jugador): self
-    {
-        if (!$this->jugadores->contains($jugador)) {
-            $this->jugadores->add($jugador);
-        }
-
-        return $this;
-    } */
-
     public function setGanadores(Collection $ganadores): self
     {
         $this->jugadores = $ganadores;

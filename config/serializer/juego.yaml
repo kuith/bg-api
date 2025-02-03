@@ -14,6 +14,8 @@ App\Entity\Juego:
             groups: ['juego_lista']
         descripcion:
             groups: ['juego_lista']
+        anioPublicacion:
+            groups: ['juego_lista']
         precio:
             groups: ['juego_lista']
         editorialMadre:
@@ -26,6 +28,7 @@ App\Entity\Juego:
             groups: ['juego_lista']
         maxJugadores:
             groups: ['juego_lista']
+        
         
 App\Entity\Autor:
     attributes:

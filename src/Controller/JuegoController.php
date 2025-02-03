@@ -52,6 +52,19 @@ class JuegoController extends AbstractController
          return $this->json($juego, Response::HTTP_OK, [], ['groups' => 'juego_lista']);
     }
 
+    #[Route('/search/aniopublicacion/{anio}', name: 'app_juego_getByNombre', methods: ['GET'])]
+    public function findByAnio(String $anio, JuegoRepository $repository): Response
+    {
+        $juego = $repository->findByAnio($anio);
+
+        if (!$juego) {
+            throw $this->createNotFoundException('Juego no encontrado.');
+        }
+
+        //return $this->json($juego);
+         return $this->json($juego, Response::HTTP_OK, [], ['groups' => 'juego_lista']);
+    }
+
     #[Route('/search/editoriallocal/{editorialLocal}', name: 'app_juego_getByEditorialLocal', methods: ['GET'])]
     public function getByEditorialLocal(String $editorialLocal, JuegoRepository $repository): Response
     {
@@ -132,6 +145,34 @@ class JuegoController extends AbstractController
         
          return $this->json($juegos, Response::HTTP_OK, [], ['groups' => 'juego_lista']);
     }
+
+    #[Route('/search/minplayers/{minjugadores}', name: 'app_juego_getByMinPlayers', methods: ['GET'])]
+    public function findByMinPlayers(int $minjugadores, JuegoRepository $repository): Response
+    {
+        $juegos = $repository->findByMinPlayers($minjugadores);
+        if (!$juegos) {
+            throw $this->createNotFoundException(
+                'No hay juegos en ese mínimo de jugadores: ' .$minjugadores
+            );
+        }
+        //return $this->json($juegos);
+        
+         return $this->json($juegos, Response::HTTP_OK, [], ['groups' => 'juego_lista']);
+    }
+
+    #[Route('/search/maxplayers/{maxJugadores}', name: 'app_juego_getByMaxPlayers', methods: ['GET'])]
+    public function findByMaxPlayers(int $maxJugadores, JuegoRepository $repository): Response
+    {
+        $juegos = $repository->findByMaxPlayers($maxJugadores);
+        if (!$juegos) {
+            throw $this->createNotFoundException(
+                'No hay juegos en ese máximo de jugadores: ' .$maxJugadores
+            );
+        }
+        //return $this->json($juegos);
+        
+         return $this->json($juegos, Response::HTTP_OK, [], ['groups' => 'juego_lista']);
+    }
     
 
     #[Route('/search/gamesByAutors/{id}', name: 'app_juego_getGamesByAutor', methods: ['GET'])]    
@@ -151,6 +192,11 @@ class JuegoController extends AbstractController
     public function getAllAutoma(JuegoRepository $repository): Response
     {
         $juegos = $repository->findByAutoma();
+         if (!$juegos) {
+            throw $this->createNotFoundException(
+                'No hay juegos con automa.'
+            );
+        }
 
         //return $this->json($juegos);
          return $this->json($juegos, Response::HTTP_OK, [], ['groups' => 'juego_lista']);
@@ -160,9 +206,73 @@ class JuegoController extends AbstractController
     public function getAllNoAutoma(JuegoRepository $repository): Response
     {
         $juegos = $repository->findByNoAutoma();
-
+        if (!$juegos) {
+            throw $this->createNotFoundException(
+                'No hay juegos sin automa.'
+            );
+        }
         //return $this->json($juegos);
-         return $this->json($juegos, Response::HTTP_OK, [], ['groups' => 'juego_lista']);
+        return $this->json($juegos, Response::HTTP_OK, [], ['groups' => 'juego_lista']);
+    }
+
+    #[Route('/search/tipo/{tipo}', name: 'app_juego_getByTipo', methods: ['GET'])]
+    public function getByTipo(String $tipo, JuegoRepository $repository): Response
+    {
+        $juegos = $repository->findByTipo($tipo);
+        if (!$juegos) {
+            throw $this->createNotFoundException(
+                'No hay juegos det tipo proporcionado: '.$tipo
+            );
+        }
+        return $this->json($juegos, Response::HTTP_OK, [], ['groups' => 'juego_lista']);
+    }
+
+    #[Route('/search/expansionesByJuego/{idJuego}', name: 'app_juego_expansionesByJuego', methods: ['GET'])]
+    public function findExpansionesByJuegoId(String $idJuego, JuegoRepository $repository): Response
+    {
+        $juegos = $repository->findExpansionesByJuegoId($idJuego);
+        if (!$juegos) {
+            throw $this->createNotFoundException(
+                'No hay expansiones para el juego proporcionado: '.$idJuego
+            );
+        }
+        return $this->json($juegos, Response::HTTP_OK, [], ['groups' => 'juego_lista']);
+    }
+
+    #[Route('/search/expansiones', name: 'app_juego_AllExpansiones', methods: ['GET'])]
+    public function findAllExpansiones(JuegoRepository $repository): Response
+    {
+        $juegos = $repository->findAllExpansiones();
+        if (!$juegos) {
+            throw $this->createNotFoundException(
+                'No hay expansiones.'
+            );
+        }
+        return $this->json($juegos, Response::HTTP_OK, [], ['groups' => 'juego_lista']);
+    }
+
+    #[Route('/search/expansionesConAutoma', name: 'app_juego_AllExpansionesConAutoma', methods: ['GET'])]
+    public function findAllExpansionesConAutoma(JuegoRepository $repository): Response
+    {
+        $juegos = $repository->findAllExpansionesConAutoma();
+        if (!$juegos) {
+            throw $this->createNotFoundException(
+                'No hay expansiones con automa.'
+            );
+        }
+        return $this->json($juegos, Response::HTTP_OK, [], ['groups' => 'juego_lista']);
+    }
+
+    #[Route('/search/expansionesSinAutoma', name: 'app_juego_AllExpansionesSinAutoma', methods: ['GET'])]
+    public function findAllExpansionesSinAutoma(JuegoRepository $repository): Response
+    {
+        $juegos = $repository->findAllExpansionesSinAutoma();
+        if (!$juegos) {
+            throw $this->createNotFoundException(
+                'No hay expansiones sin automa.'
+            );
+        }
+        return $this->json($juegos, Response::HTTP_OK, [], ['groups' => 'juego_lista']);
     }
 
     #[Route('/', name: 'juego_create', methods: ['POST'])]
@@ -206,6 +316,7 @@ class JuegoController extends AbstractController
 
         $juego->setTipo($data['tipo']);
         $juego->setDescripcion($data['descripcion']);
+        $juego->setAnioPublicacion($data['aniopublicacion']);
         $juego->setDispAutoma($data['dispAutoma']);
         $juego->setEditorialLocal($data['editorialLocal']);
         $juego->setEditorialMadre($data['editorialMadre']);
@@ -247,7 +358,7 @@ class JuegoController extends AbstractController
 
         if (!$juego) {
             throw $this->createNotFoundException(
-                'Jugador no encontrado: '.$id
+                'Juego no encontrado: '.$id
             );
         }
 
