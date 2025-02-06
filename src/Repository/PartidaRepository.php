@@ -66,6 +66,4 @@ class PartidaRepository extends ServiceEntityRepository
             ->getQuery()
             ->getResult();
     }
-
-
 }

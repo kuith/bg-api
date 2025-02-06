@@ -230,4 +230,16 @@ class JuegoRepository extends ServiceEntityRepository
             ->getResult()
         ;
     }
+
+        public function findJuegosPorJugador(int $jugadorId): array
+    {
+        return $this->createQueryBuilder('jugador')
+            ->select('DISTINCT j') // Se selecciona la entidad Juego
+            ->join('jugador.partidas', 'p') // Jugador tiene relación con Partida
+            ->join('p.juego', 'j') // Partida tiene relación con Juego
+            ->where('jugador.id = :jugadorId')
+            ->setParameter('jugadorId', $jugadorId)
+            ->getQuery()
+            ->getResult();
+    }
 }

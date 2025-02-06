@@ -146,4 +146,23 @@ class PartidaController extends AbstractController
         return new Response('Partida eliminada!', 200);
     }
 
+     #[Route('/search/juegosPorJugador/{jugadorId}', name: 'app_partida_getJuegosPorJugador', methods: ['GET'])]
+        public function juegosPorJugador(String $jugadorId, PartidaRepository $repository): Response
+    {
+        $partidas = $repository->findByJugador($jugadorId);
+
+        if (!$partidas) {
+            throw $this->createNotFoundException('Partidas no encontradas para ese jugador.' .$jugadorId);
+        }
+
+        // Extraer los juegos únicos de las partidas
+        $juegos = [];
+        foreach ($partidas as $partida) {
+            $juegos[] = $partida->getJuego();
+        }
+
+        // Eliminar duplicados
+        $juegosUnicos = array_unique($juegos, SORT_REGULAR);
+        return $this->json($juegosUnicos, Response::HTTP_OK, [], ['groups' => 'jugador_juegos']);
+    }
 }

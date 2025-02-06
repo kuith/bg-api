@@ -74,18 +74,9 @@ class JugadorRepository extends ServiceEntityRepository
             ->getResult();
     }
 
-    public function findPlayersByGame(int $juegoId)
-    {
-        return $this->createQueryBuilder('j') // Alias para Jugador
-            ->innerJoin('j.partidas', 'p')   // Relaciona Jugador con Partida
-            ->innerJoin('p.juego', 'g')     // Relaciona Partida con Juego
-            ->where('g.id = :juegoId')      // Filtra por el ID del juego
-            ->setParameter('juegoId', $juegoId) // Asigna el parámetro
-            ->getQuery()
-            ->getResult();
-    }
 
-    
+
+
 
 
 }

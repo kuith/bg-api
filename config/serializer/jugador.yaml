@@ -31,8 +31,7 @@ App\Entity\Juego:
             groups: [jugador_juegos]
         nombre:
             groups: [jugador_juegos]
-        descripcion:
-            groups: [jugador_juegos]
+
 
 
 

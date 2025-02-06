@@ -13,13 +13,13 @@ App\Entity\Partida:
 App\Entity\Juego:
     attributes:
         id:
-            groups: ['partida_lista', partida_lista_jugadores, partida_jugador]
+            groups: ['partida_lista', partida_lista_jugadores, partida_jugador, jugador_juegos]
         nombre:
-            groups: ['partida_lista', partida_lista_jugadores, partida_jugador]
+            groups: ['partida_lista', partida_lista_jugadores, partida_jugador, jugador_juegos]
 App\Entity\Jugador:
     attributes:
         id:
-            groups: ['partida_lista', partida_lista_jugadores, partida_jugador]
+            groups: ['partida_lista', partida_lista_jugadores, partida_jugador, jugador_juegos]
         nombre:
-            groups: ['partida_lista', partida_lista_jugadores, partida_jugador]
+            groups: ['partida_lista', partida_lista_jugadores, partida_jugador, jugador_juegos]
 

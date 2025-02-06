@@ -195,6 +195,8 @@ public function actualizarJugador(int $id, Request $request, JugadorRepository $
     return $this->json($jugador, 200);
 }
 
+  
+
 
     
 }
