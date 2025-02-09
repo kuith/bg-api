@@ -165,4 +165,48 @@ class PartidaController extends AbstractController
         $juegosUnicos = array_unique($juegos, SORT_REGULAR);
         return $this->json($juegosUnicos, Response::HTTP_OK, [], ['groups' => 'jugador_juegos']);
     }
+
+    #[Route('/search/jugadoresPorJuego/{juegoId}', name: 'app_partida_getJugadoresPorjuego', methods: ['GET'])]
+        public function findPlayersByGame(String $juegoId, PartidaRepository $repository): Response
+    {
+    $partidas = $repository->findPlayersByGame($juegoId);
+
+        if (!$partidas) {
+            throw $this->createNotFoundException('Partidas no encontradas para ese juego.' . $juegoId);
+        }
+
+        // Extraer los jugadores únicos de las partidas
+        $jugadores = [];
+        foreach ($partidas as $partida) {
+            foreach ($partida->getJugadores() as $jugador) {
+                $jugadores[$jugador->getId()] = $jugador;
+            }
+        }
+
+        // Convertir a array y eliminar duplicados
+        $jugadoresUnicos = array_values($jugadores);
+        return $this->json($jugadoresUnicos, Response::HTTP_OK, [], ['groups' => 'jugador_juegos']);
+    }
+
+    #[Route('/search/ganadoresPorJuego/{juegoId}', name: 'app_partida_getJugadoresPorjuego', methods: ['GET'])]
+        public function getGanadoresByJuegoId(String $juegoId, PartidaRepository $repository): Response
+    {
+    $partidas = $repository->getGanadoresByJuegoId($juegoId);
+
+        if (!$partidas) {
+            throw $this->createNotFoundException('Partidas no encontradas para ese juego.' . $juegoId);
+        }
+
+        // Extraer los jugadores únicos de las partidas
+        $jugadores = [];
+        foreach ($partidas as $partida) {
+            foreach ($partida->getGanadores() as $ganador) {
+                $ganadores[$ganador->getId()] = $ganador;
+            }
+        }
+
+        // Convertir a array y eliminar duplicados
+        $ganadoresUnicos = array_values($ganadores);
+        return $this->json($ganadoresUnicos, Response::HTTP_OK, [], ['groups' => 'jugador_juegos']);
+    }
 }

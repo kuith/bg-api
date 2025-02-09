@@ -44,13 +44,39 @@ class PartidaRepository extends ServiceEntityRepository
         ;
     }
 
-    public function findByJugador($jugadorId): array
+    public function findByJugador($jugadorId): array //Juegos a los que ha jugado un determinado jugador
     {
         return $this->createQueryBuilder('j')
             ->innerJoin('j.jugadores', 'jug')  // Relación con los jugadores
             ->andWhere('jug.id = :val')
             ->setParameter('val', $jugadorId)
             ->orderBy('j.id', 'ASC')
+            ->setMaxResults(10)
+            ->getQuery()
+            ->getResult();
+    }
+
+    public function findPlayersByGame ($juegoId): array // Jugadores que han jugado a un determinado juego
+    {
+        return $this->createQueryBuilder('p')
+            ->innerJoin('p.jugadores', 'jug')  // Relación con los jugadores
+            ->innerJoin('p.juego', 'jueg')  // Relación con los juegos
+            ->andWhere('jueg.id = :val')
+            ->setParameter('val', $juegoId)
+            ->orderBy('jug.id', 'ASC')
+            ->setMaxResults(10)
+            ->getQuery()
+            ->getResult();
+    }
+
+    public function getGanadoresByJuegoId($juegoId): array //ganadores a un determinado juego
+    {
+        return $this->createQueryBuilder('p')
+            ->innerJoin('p.ganadores', 'gan')  // Relación con los ganadores
+            ->innerJoin('p.juego', 'jueg')  // Relación con los juegos
+            ->andWhere('jueg.id = :val')
+            ->setParameter('val', $juegoId)
+            ->orderBy('gan.id', 'ASC')
             ->setMaxResults(10)
             ->getQuery()
             ->getResult();
