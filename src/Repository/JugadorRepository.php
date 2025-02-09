@@ -22,7 +22,7 @@ class JugadorRepository extends ServiceEntityRepository
 
     // Agrega aquí tus métodos personalizados, como consultas avanzadas.
 
-    public function findOneById($id): ?Jugador
+    public function findPlayerById($id): ?Jugador
     {
         return $this->createQueryBuilder('j')
             ->andWhere('j.id = :val')
@@ -32,7 +32,7 @@ class JugadorRepository extends ServiceEntityRepository
         ;
     }
 
-    public function findOneByNombre($nombre): ?Jugador
+    public function findPlayerByName($nombre): ?Jugador
     {
         return $this->createQueryBuilder('j')
             ->andWhere('j.nombre = :val')
@@ -42,7 +42,7 @@ class JugadorRepository extends ServiceEntityRepository
         ;
     }
 
-    public function findOneByEmail($correo): ?Jugador
+    public function findPlayerByEmail($correo): ?Jugador
     {
         return $this->createQueryBuilder('j')
             ->andWhere('j.correo = :val')
@@ -52,7 +52,7 @@ class JugadorRepository extends ServiceEntityRepository
         ;
     }
 
-    public function findByRol($rol): array
+    public function findPlayerByRol($rol): array
     {
         return $this->createQueryBuilder('j')
             ->andWhere('j.rol = :val')
@@ -64,7 +64,7 @@ class JugadorRepository extends ServiceEntityRepository
         ;
     }
 
-    public function findPartidasGanadasPorJugador(int $jugadorId): array
+    public function findWonMatchesByPlayer(int $jugadorId): array
     {
         return $this->createQueryBuilder('j')
             ->join('j.partidasGanadas', 'p')

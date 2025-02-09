@@ -15,32 +15,18 @@ use Symfony\Component\Validator\Validator\ValidatorInterface;
 
 class JugadorController extends AbstractController
 {
-    #[Route('/', name: 'app_jugador_getAll', methods: ['GET'])]
-    public function getAll(JugadorRepository $repository): Response
+    #[Route('/', name: 'jugadores_list', methods: ['GET'])]
+    public function index(JugadorRepository $repository): Response
     {
         $jugadores = $repository->findAll();
 
-        //return $this->json($jugadores);
         return $this->json($jugadores, Response::HTTP_OK, [], ['groups' => 'jugador_lista']);
     }
 
-    #[Route('/search/{id<\d+>}', name: 'app_jugador_getById', methods: ['GET'])]
-    public function getById(int $id, JugadorRepository $repository): Response
+    #[Route('/id/{id<\d+>}', name: 'jugador_show', methods: ['GET'])]
+    public function show(int $id, JugadorRepository $repository): Response
     {
-        $jugador = $repository->findOneById($id);
-
-        if (!$jugador) {
-            throw $this->createNotFoundException('Jugador no encontrado');
-        }
-
-        //return $this->json($jugador);
-        return $this->json($jugador, Response::HTTP_OK, [], ['groups' => 'jugador_lista']);
-    }
-
-    #[Route('/search/nombre/{nombre}', name: 'app_jugador_getByNombre', methods: ['GET'])]
-    public function getByNombre(String $nombre, JugadorRepository $repository): Response
-    {
-        $jugador = $repository->findOneByNombre($nombre);
+        $jugador = $repository->findPlayerById($id);
 
         if (!$jugador) {
             throw $this->createNotFoundException('Jugador no encontrado');
@@ -49,10 +35,10 @@ class JugadorController extends AbstractController
         return $this->json($jugador, Response::HTTP_OK, [], ['groups' => 'jugador_lista']);
     }
 
-    #[Route('/search/correo/{correo}', name: 'app_jugador_getByCorreo', methods: ['GET'])]
-    public function getByEmail(String $correo, JugadorRepository $repository): Response
+    #[Route('/nombre/{nombre}', name: 'jugador_findByNombre', methods: ['GET'])]
+    public function findByNombre(String $nombre, JugadorRepository $repository): Response
     {
-        $jugador = $repository->findOneByEmail($correo);
+        $jugador = $repository->findPlayerByName($nombre);
 
         if (!$jugador) {
             throw $this->createNotFoundException('Jugador no encontrado');
@@ -61,10 +47,22 @@ class JugadorController extends AbstractController
         return $this->json($jugador, Response::HTTP_OK, [], ['groups' => 'jugador_lista']);
     }
 
-    #[Route('/search/rol/{rol}', name: 'app_jugador_getByRol', methods: ['GET'])]
-    public function getByRol(String $rol, JugadorRepository $repository): Response
+    #[Route('/correo/{correo}', name: 'jugador_findByEmail', methods: ['GET'])]
+    public function findByEmail(String $correo, JugadorRepository $repository): Response
     {
-        $jugadores = $repository->findByRol($rol);
+        $jugador = $repository->findPlayerByEmail($correo);
+
+        if (!$jugador) {
+            throw $this->createNotFoundException('Jugador no encontrado');
+        }
+
+        return $this->json($jugador, Response::HTTP_OK, [], ['groups' => 'jugador_lista']);
+    }
+
+    #[Route('/rol/{rol}', name: 'jugador_findByRol', methods: ['GET'])]
+    public function findByRol(String $rol, JugadorRepository $repository): Response
+    {
+        $jugadores = $repository->findPlayerByRol($rol);
 
         if (!$jugadores) {
             throw $this->createNotFoundException('Rol no encontrado');
@@ -72,8 +70,8 @@ class JugadorController extends AbstractController
 
         return $this->json($jugadores, Response::HTTP_OK, [], ['groups' => 'jugador_lista']);
     }
-    #[Route('/search/playersByGame/{juegoId}', name: 'app_jugador_getplayersByGame', methods: ['GET'])]
-    public function getplayersByGame(int $juegoId, JugadorRepository $repository): Response
+    #[Route('/juegos/{juegoId}/jugadores', name: 'jugadores_por_juego', methods: ['GET'])]
+    public function findPlayersByGame(int $juegoId, JugadorRepository $repository): Response
     {
         $jugadores = $repository->findPlayersByGame($juegoId);
 
@@ -84,8 +82,8 @@ class JugadorController extends AbstractController
         return $this->json($jugadores, Response::HTTP_OK, [], ['groups' => 'jugador_juegos']);
     }
 
-    #[Route('/search/ganadas/{idJugador}', name: 'app_jugador_getByGanadasPorId', methods: ['GET'])]
-    public function getByGanadas(String $idJugador, JugadorRepository $repository): Response
+    #[Route('/{idJugador}/partidas/ganadas', name: 'jugador_partidas_ganadas', methods: ['GET'])]
+    public function findPartidasGanadas(String $idJugador, JugadorRepository $repository): Response
     {
         $partidasGanadas = $repository->findPartidasGanadasPorJugador($idJugador);
 
@@ -145,7 +143,7 @@ class JugadorController extends AbstractController
     #[Route('/{id<\d+>}', name: 'jugador_delete', methods: ['DELETE'])]
     public function delete(EntityManagerInterface $entityManager, int $id): Response
     {
-        $jugador = $entityManager->getRepository(Jugador::class)->findOneById($id);
+        $jugador = $entityManager->getRepository(Jugador::class)->findPlayerById($id);
 
         if (!$jugador) {
             throw $this->createNotFoundException(
@@ -159,44 +157,40 @@ class JugadorController extends AbstractController
         return new Response('Jugador eliminado!', 200);
     }
 
-    #[Route('/jugador/{id}', name: 'actualizar_jugador', methods: ['PATCH'])]
-public function actualizarJugador(int $id, Request $request, JugadorRepository $jugadorRepository, EntityManagerInterface $em): JsonResponse
-{
-    $jugador = $jugadorRepository->find($id);
+    #[Route('/{id}', name: 'actualizar_jugador', methods: ['PATCH'])]
+    public function actualizarJugador(int $id, Request $request, JugadorRepository $jugadorRepository, EntityManagerInterface $em): JsonResponse
+    {
+        $jugador = $jugadorRepository->find($id);
 
-    if (!$jugador) {
-        return new JsonResponse(['error' => 'Jugador no encontrado'], 404);
+        if (!$jugador) {
+            return new JsonResponse(['error' => 'Jugador no encontrado'], 404);
+        }
+
+        // Obtener datos del request
+        $data = json_decode($request->getContent(), true);
+
+        // Modificar solo si los valores existen en la petición
+
+        if (isset($data['nombre'])) {
+            $jugador->setNombre($data['nombre']);
+        }
+        if (isset($data['password'])) {
+            $jugador->setPassword($data['password']);
+        }
+        if (isset($data['correo'])) {
+            $jugador->setCorreo($data['correo']);
+        }
+        if (isset($data['rol'])) {
+            $jugador->setRol($data['rol']);
+        }
+        if (isset($data['fecha_registro'])) {
+            $jugador->setFechaRegistro(new \DateTime($data['fecha_registro']));
+        }
+
+        // Guardar cambios en la base de datos
+        $em->flush();
+
+        return $this->json($jugador, 200);
     }
-
-    // Obtener datos del request
-    $data = json_decode($request->getContent(), true);
-
-    // Modificar solo si los valores existen en la petición
-
-    if (isset($data['nombre'])) {
-        $jugador->setNombre($data['nombre']);
-    }
-    if (isset($data['password'])) {
-        $jugador->setPassword($data['password']);
-    }
-    if (isset($data['correo'])) {
-        $jugador->setCorreo($data['correo']);
-    }
-    if (isset($data['rol'])) {
-        $jugador->setRol($data['rol']);
-    }
-    if (isset($data['fecha_registro'])) {
-        $jugador->setFechaRegistro(new \DateTime($data['fecha_registro']));
-    }
-
-    // Guardar cambios en la base de datos
-    $em->flush();
-
-    return $this->json($jugador, 200);
-}
-
-  
-
-
-    
+   
 }
