@@ -22,7 +22,7 @@ class PartidaRepository extends ServiceEntityRepository
         parent::__construct($registry, Partida::class);
     }
 
-    public function findOneById($id): ?Partida
+    public function findMatchById($id): ?Partida
     {
         return $this->createQueryBuilder('j')
             ->andWhere('j.id = :val')
@@ -32,7 +32,7 @@ class PartidaRepository extends ServiceEntityRepository
         ;
     }
 
-    public function findByFecha($fecha): array
+    public function findMatchByDate($fecha): array
     {
         return $this->createQueryBuilder('j')
             ->andWhere('j.fecha = :val')
@@ -44,7 +44,7 @@ class PartidaRepository extends ServiceEntityRepository
         ;
     }
 
-    public function findByJugador($jugadorId): array //Juegos a los que ha jugado un determinado jugador
+    public function findMatchByPlayer($jugadorId): array //Juegos a los que ha jugado un determinado jugador
     {
         return $this->createQueryBuilder('j')
             ->innerJoin('j.jugadores', 'jug')  // Relación con los jugadores
@@ -69,7 +69,7 @@ class PartidaRepository extends ServiceEntityRepository
             ->getResult();
     }
 
-    public function getGanadoresByJuegoId($juegoId): array //ganadores a un determinado juego
+    public function findGanadoresByJuegoId($juegoId): array //ganadores a un determinado juego
     {
         return $this->createQueryBuilder('p')
             ->innerJoin('p.ganadores', 'gan')  // Relación con los ganadores
@@ -82,7 +82,7 @@ class PartidaRepository extends ServiceEntityRepository
             ->getResult();
     }
 
-    public function getRankingDeGanadores(): array
+    public function getWinnersRanking(): array
     {
         return $this->createQueryBuilder('p')
             ->select('jug.nombre, COUNT(p.id) as victorias')

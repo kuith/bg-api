@@ -27,7 +27,7 @@ class PartidaController extends AbstractController
     #[Route('/search/{id<\d+>}', name: 'app_partida_getById', methods: ['GET'])]
     public function getById(int $id, PartidaRepository $repository): Response
     {
-        $partida = $repository->findOneById($id);
+        $partida = $repository->findMatchById($id);
 
         if (!$partida) {
             throw $this->createNotFoundException('Partida no encontrada');
@@ -38,9 +38,9 @@ class PartidaController extends AbstractController
     }
 
     #[Route('/search/fecha/{fecha}', name: 'app_partida_getByFecha', methods: ['GET'])]
-    public function findByFecha(String $fecha, PartidaRepository $repository): Response
+    public function findMatchByDate(String $fecha, PartidaRepository $repository): Response
     {
-        $partida = $repository->findByFecha($fecha);
+        $partida = $repository->findMatchByDate($fecha);
 
         if (!$partida) {
             throw $this->createNotFoundException('Partida no encontrada.');
@@ -50,9 +50,9 @@ class PartidaController extends AbstractController
     }
 
     #[Route('/search/rankingGanadores', name: 'app_partida_getRanking', methods: ['GET'])]
-    public function getRankingDeGanadores(PartidaRepository $repository): Response
+    public function getWinnersRanking(PartidaRepository $repository): Response
     {
-        $partida = $repository->getRankingDeGanadores();
+        $partida = $repository->getWinnersRanking();
 
         if (!$partida) {
             throw $this->createNotFoundException('Partida no encontrada.');
@@ -62,9 +62,9 @@ class PartidaController extends AbstractController
     }
 
     #[Route('/search/jugador/{jugadorId}', name: 'app_partida_getByJugadorId', methods: ['GET'])]
-    public function findByJugador(String $jugadorId, PartidaRepository $repository): Response
+    public function findMatchByPlayer(String $jugadorId, PartidaRepository $repository): Response
     {
-        $partida = $repository->findByJugador($jugadorId);
+        $partida = $repository->findMatchByPlayer($jugadorId);
 
         if (!$partida) {
             throw $this->createNotFoundException('Partidas no encontradas para ese jugador.' .$jugadorId);
@@ -114,7 +114,7 @@ class PartidaController extends AbstractController
 
         //Establecer juego
         foreach ($data['juego_id'] as $juegoId) {
-            $juego = $em->getRepository(Juego::class)->findOneById($juegoId);
+            $juego = $em->getRepository(Juego::class)->findGameById($juegoId);
 
             if (!$juego) {
                 return new JsonResponse(['error' => "Juego con ID $juegoId no encontrado"], Response::HTTP_NOT_FOUND);
@@ -132,7 +132,7 @@ class PartidaController extends AbstractController
     #[Route('/{id<\d+>}', name: 'partida_delete', methods: ['DELETE'])]
     public function delete(EntityManagerInterface $entityManager, int $id): Response
     {
-        $partida = $entityManager->getRepository(Partida::class)->findOneById($id);
+        $partida = $entityManager->getRepository(Partida::class)->findMatchById($id);
 
         if (!$partida) {
             throw $this->createNotFoundException(
@@ -189,9 +189,9 @@ class PartidaController extends AbstractController
     }
 
     #[Route('/search/ganadoresPorJuego/{juegoId}', name: 'app_partida_getJugadoresPorjuego', methods: ['GET'])]
-        public function getGanadoresByJuegoId(String $juegoId, PartidaRepository $repository): Response
+        public function findGanadoresByJuegoId(String $juegoId, PartidaRepository $repository): Response
     {
-    $partidas = $repository->getGanadoresByJuegoId($juegoId);
+    $partidas = $repository->findGanadoresByJuegoId($juegoId);
 
         if (!$partidas) {
             throw $this->createNotFoundException('Partidas no encontradas para ese juego.' . $juegoId);
