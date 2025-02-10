@@ -20,7 +20,7 @@ class JuegoRepository extends ServiceEntityRepository
         parent::__construct($registry, Juego::class);
     }
 
-    public function findOneById($id): ?Juego
+    public function findGameById($id): ?Juego
     {
         return $this->createQueryBuilder('j')
             ->andWhere('j.id = :val')
@@ -30,7 +30,7 @@ class JuegoRepository extends ServiceEntityRepository
         ;
     }
 
-    public function findOneByNombre($nombre): ?Juego
+    public function findGameByName($nombre): ?Juego
     {
         return $this->createQueryBuilder('j')
             ->andWhere('j.nombre = :val')
@@ -40,7 +40,7 @@ class JuegoRepository extends ServiceEntityRepository
         ;
     }
 
-    public function findByAutoma(): array
+    public function findGameByAutoma(): array
     {
         return $this->createQueryBuilder('j')
             ->andWhere('j.dispAutoma = true')
@@ -51,7 +51,7 @@ class JuegoRepository extends ServiceEntityRepository
         ;
     }
 
-    public function findByNoAutoma(): array
+    public function findGameByNoAutoma(): array
     {
         return $this->createQueryBuilder('j')
             ->andWhere('j.dispAutoma = false')
@@ -62,7 +62,7 @@ class JuegoRepository extends ServiceEntityRepository
         ;
     }
 
-    public function findByEditorialLocal($editorialLocal): array
+    public function findGameByEditorialLocal($editorialLocal): array
     {
         return $this->createQueryBuilder('j')
             ->andWhere('j.editorialLocal = :val')
@@ -74,7 +74,7 @@ class JuegoRepository extends ServiceEntityRepository
         ;
     }
 
-    public function findByEditorialMadre($editorialMadre): array
+    public function findGameByEditorialMadre($editorialMadre): array
     {
         return $this->createQueryBuilder('j')
             ->andWhere('j.editorialMadre = :val')
@@ -86,7 +86,7 @@ class JuegoRepository extends ServiceEntityRepository
         ;
     }
 
-    public function findPriceRange(float $minPrice, float $maxPrice): array
+    public function findGamePriceRange(float $minPrice, float $maxPrice): array
     {
         return $this->createQueryBuilder('j')
             ->andWhere('j.precio >= :minPrice')
@@ -99,7 +99,7 @@ class JuegoRepository extends ServiceEntityRepository
         ;
     }
 
-    public function findUnderPrice(float $price): array
+    public function findGamesUnderPrice(float $price): array
     {
         return $this->createQueryBuilder('j')
             ->andWhere('j.precio <= :price')
@@ -110,7 +110,7 @@ class JuegoRepository extends ServiceEntityRepository
         ;
     }
 
-    public function findOverPrice(float $price): array
+    public function findGamesOverPrice(float $price): array
     {
         return $this->createQueryBuilder('j')
             ->andWhere('j.precio >= :price')
@@ -121,7 +121,7 @@ class JuegoRepository extends ServiceEntityRepository
         ;
     }
 
-    public function findPlayersRange(float $minJugadores, float $maxJugadores): array
+    public function findGamesByPlayersRange(float $minJugadores, float $maxJugadores): array
     {
         return $this->createQueryBuilder('j')
             ->Where('j.minJugadores >= :minJugadores')
@@ -133,7 +133,7 @@ class JuegoRepository extends ServiceEntityRepository
         ;
     }
 
-    public function findByMinPlayers(float $minJugadores): array
+    public function findGamesByMinPlayers(float $minJugadores): array
     {
         return $this->createQueryBuilder('j')
             ->andWhere('j.minJugadores >= :minJugadores')
@@ -144,7 +144,7 @@ class JuegoRepository extends ServiceEntityRepository
         ;
     }
 
-    public function findByMaxPlayers(float $maxJugadores): array
+    public function findGamesByMaxPlayers(float $maxJugadores): array
     {
         return $this->createQueryBuilder('j')
             ->andWhere('j.maxJugadores <= :maxJugadores')
@@ -155,7 +155,7 @@ class JuegoRepository extends ServiceEntityRepository
         ;
     }
 
-    public function findByAuthor (int $autorId): array
+    public function findGamesByAuthor (int $autorId): array
     {
         return $this->createQueryBuilder('j')
             ->join('j.autores', 'a')
@@ -165,7 +165,7 @@ class JuegoRepository extends ServiceEntityRepository
             ->getResult();
     }
 
-    public function findExpansionesByJuegoId (int $juegoId): array
+    public function findExpansionsByJuegoId (int $juegoId): array
     {
         return $this->createQueryBuilder('j')
             ->andWhere('j.juegoBase = :juegoId')  // Relación con el juego base
@@ -176,7 +176,7 @@ class JuegoRepository extends ServiceEntityRepository
             ->getResult();
     }
 
-    public function findAllExpansiones (): array
+    public function findAllExpansions (): array
     {
         return $this->createQueryBuilder('j')
         ->andWhere('j.baseExpansion = :baseExpansion')  // Filtra solo expansiones
@@ -185,7 +185,7 @@ class JuegoRepository extends ServiceEntityRepository
         ->getResult();
     }
 
-    public function findAllExpansionesConAutoma (): array
+    public function findAllExpansionsWithConAutoma (): array
     {
         return $this->createQueryBuilder('j')
         ->andWhere('j.baseExpansion = :baseExpansion')  // Filtra solo expansiones
@@ -196,7 +196,7 @@ class JuegoRepository extends ServiceEntityRepository
         ->getResult();
     }
 
-    public function findAllExpansionesSinAutoma (): array
+    public function findAllExpansionsWithoutAutoma (): array
     {
         return $this->createQueryBuilder('j')
         ->andWhere('j.baseExpansion = :baseExpansion')  // Filtra solo expansiones
@@ -207,7 +207,7 @@ class JuegoRepository extends ServiceEntityRepository
         ->getResult();
     }
 
-    public function findByTipo($tipo): array
+    public function findGamesByType($tipo): array
     {
         return $this->createQueryBuilder('j')
             ->andWhere('j.tipo = :val')
@@ -219,7 +219,7 @@ class JuegoRepository extends ServiceEntityRepository
         ;
     }
 
-    public function findByAnio($anioPublicacion): array
+    public function findGamesByAnio($anioPublicacion): array
     {
         return $this->createQueryBuilder('j')
             ->andWhere('j.anioPublicacion = :val')
@@ -231,7 +231,7 @@ class JuegoRepository extends ServiceEntityRepository
         ;
     }
 
-        public function findJuegosPorJugador(int $jugadorId): array
+/*         public function findGamesByPlayer(int $jugadorId): array
     {
         return $this->createQueryBuilder('jugador')
             ->select('DISTINCT j') // Se selecciona la entidad Juego
@@ -241,5 +241,5 @@ class JuegoRepository extends ServiceEntityRepository
             ->setParameter('jugadorId', $jugadorId)
             ->getQuery()
             ->getResult();
-    }
+    } */
 }

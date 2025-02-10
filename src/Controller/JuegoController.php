@@ -17,8 +17,8 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
 class JuegoController extends AbstractController
 {
-    #[Route('/', name: 'app_juego_getAll', methods: ['GET'])]
-    public function getAll(JuegoRepository $repository): Response
+    #[Route('/', name: 'game_list', methods: ['GET'])]
+    public function index(JuegoRepository $repository): Response
     {
         $juegos = $repository->findAll();
 
@@ -26,10 +26,10 @@ class JuegoController extends AbstractController
         return $this->json($juegos, Response::HTTP_OK, [], ['groups' => 'juego_lista']);
     }
 
-    #[Route('/search/{id<\d+>}', name: 'app_juegos_getById', methods: ['GET'])]
-    public function getById(int $id, JuegoRepository $repository): Response
+    #[Route('/id/{id<\d+>}', name: 'game_show', methods: ['GET'])]
+    public function show(int $id, JuegoRepository $repository): Response
     {
-        $juego = $repository->findOneById($id);
+        $juego = $repository->findGameById($id);
 
         if (!$juego) {
             throw $this->createNotFoundException('Juego no encontrado');
@@ -39,10 +39,10 @@ class JuegoController extends AbstractController
          return $this->json($juego, Response::HTTP_OK, [], ['groups' => 'juego_lista']);
     }
 
-    #[Route('/search/nombre/{nombre}', name: 'app_juego_getByNombre', methods: ['GET'])]
-    public function getByNombre(String $nombre, JuegoRepository $repository): Response
+    #[Route('/nombre/{nombre}', name: 'game_findByName', methods: ['GET'])]
+    public function findByName(String $nombre, JuegoRepository $repository): Response
     {
-        $juego = $repository->findOneByNombre($nombre);
+        $juego = $repository->findGameByName($nombre);
 
         if (!$juego) {
             throw $this->createNotFoundException('Juego no encontrado');
@@ -52,10 +52,10 @@ class JuegoController extends AbstractController
          return $this->json($juego, Response::HTTP_OK, [], ['groups' => 'juego_lista']);
     }
 
-    #[Route('/search/aniopublicacion/{anio}', name: 'app_juego_getByNombre', methods: ['GET'])]
-    public function findByAnio(String $anio, JuegoRepository $repository): Response
+    #[Route('/anio/{anio}', name: 'game_findByYear', methods: ['GET'])]
+    public function findByYear(String $anio, JuegoRepository $repository): Response
     {
-        $juego = $repository->findByAnio($anio);
+        $juego = $repository->findGamesByAnio($anio);
 
         if (!$juego) {
             throw $this->createNotFoundException('Juego no encontrado.');
@@ -65,10 +65,10 @@ class JuegoController extends AbstractController
          return $this->json($juego, Response::HTTP_OK, [], ['groups' => 'juego_lista']);
     }
 
-    #[Route('/search/editoriallocal/{editorialLocal}', name: 'app_juego_getByEditorialLocal', methods: ['GET'])]
-    public function getByEditorialLocal(String $editorialLocal, JuegoRepository $repository): Response
+    #[Route('/editoriallocal/{editorialLocal}', name: 'game_findByLocalEditorial', methods: ['GET'])]
+    public function findByLocalEditorial(String $editorialLocal, JuegoRepository $repository): Response
     {
-        $juegos = $repository->findByEditorialLocal($editorialLocal);
+        $juegos = $repository->findGameByEditorialLocal($editorialLocal);
 
          if (!$juegos) {
             throw $this->createNotFoundException(
@@ -80,10 +80,10 @@ class JuegoController extends AbstractController
          return $this->json($juegos, Response::HTTP_OK, [], ['groups' => 'juego_lista']);
     }
 
-    #[Route('/search/editorialMadre/{editorialMadre}', name: 'app_juego_getByEditorialMadre', methods: ['GET'])]
-    public function getByEditorialMadre(String $editorialMadre, JuegoRepository $repository): Response
+    #[Route('/editorialMadre/{editorialMadre}', name: 'game_findByOriginEditorial', methods: ['GET'])]
+    public function findByOriginEditorial(String $editorialMadre, JuegoRepository $repository): Response
     {
-        $juegos = $repository->findByEditorialMadre($editorialMadre);
+        $juegos = $repository->findGameByEditorialMadre($editorialMadre);
         if (!$juegos) {
             throw $this->createNotFoundException(
                 'No hay juegos de la editorial madre proporcionada: '.$editorialMadre
@@ -93,10 +93,10 @@ class JuegoController extends AbstractController
          return $this->json($juegos, Response::HTTP_OK, [], ['groups' => 'juego_lista']);
     }
 
-    #[Route('/search/pricerange/{minPrice}/{maxPrice}', name: 'app_juego_getByPriceRange', methods: ['GET'])]
-    public function getByPriceRange(float $minPrice, float $maxPrice, JuegoRepository $repository): Response
+    #[Route('/pricerange/{minPrice}/{maxPrice}', name: 'game_findByPriceRange', methods: ['GET'])]
+    public function findByPriceRange(float $minPrice, float $maxPrice, JuegoRepository $repository): Response
     {
-        $juegos = $repository->findPriceRange($minPrice, $maxPrice);
+        $juegos = $repository->findGamePriceRange($minPrice, $maxPrice);
         if (!$juegos) {
             throw $this->createNotFoundException(
                 'No hay juegos en ese rango de precios: ' .$minPrice .' - ' .$maxPrice
@@ -106,10 +106,10 @@ class JuegoController extends AbstractController
          return $this->json($juegos, Response::HTTP_OK, [], ['groups' => 'juego_lista']);
     }
 
-    #[Route('/search/underprice/{price}', name: 'app_juego_getdebajoDePrecio', methods: ['GET'])]
-    public function getByUnderPrice(float $price, JuegoRepository $repository): Response
+    #[Route('/underprice/{price}', name: 'game_findBelowPrice', methods: ['GET'])]
+    public function findBelowPrice(float $price, JuegoRepository $repository): Response
     {
-        $juegos = $repository->findUnderPrice($price);
+        $juegos = $repository->findGamesUnderPrice($price);
         if (!$juegos) {
             throw $this->createNotFoundException(
                 'No hay juegos por debajo de ese precio: ' .$price
@@ -119,10 +119,10 @@ class JuegoController extends AbstractController
          return $this->json($juegos, Response::HTTP_OK, [], ['groups' => 'juego_lista']);
     }
 
-    #[Route('/search/overprice/{price}', name: 'app_juego_getByUnderPrice', methods: ['GET'])]
-    public function getByOverPrice(float $price, JuegoRepository $repository): Response
+    #[Route('/search/overprice/{price}', name: 'game_findOverPrice', methods: ['GET'])]
+    public function findOverPrice(float $price, JuegoRepository $repository): Response
     {
-        $juegos = $repository->findOverPrice($price);
+        $juegos = $repository->findGamesOverPrice($price);
         if (!$juegos) {
             throw $this->createNotFoundException(
                 'No hay juegos por encima de ese precio: ' .$price
@@ -132,10 +132,10 @@ class JuegoController extends AbstractController
          return $this->json($juegos, Response::HTTP_OK, [], ['groups' => 'juego_lista']);
     }
 
-    #[Route('/search/playersRange/{minPlayers}/{maxPlayers}', name: 'app_juego_getByPlayersRange', methods: ['GET'])]
-    public function getByPlayersRange(int $minPlayers, int $maxPlayers, JuegoRepository $repository): Response
+    #[Route('/playersRange/{minPlayers}/{maxPlayers}', name: 'game_findByPlayesRange', methods: ['GET'])]
+    public function findByPalersRange(int $minPlayers, int $maxPlayers, JuegoRepository $repository): Response
     {
-        $juegos = $repository->findPlayersRange($minPlayers, $maxPlayers);
+        $juegos = $repository->findGamesByPlayersRange($minPlayers, $maxPlayers);
         if (!$juegos) {
             throw $this->createNotFoundException(
                 'No hay juegos en ese rango de jugadores: ' .$minPlayers .' - ' .$maxPlayers
@@ -146,10 +146,10 @@ class JuegoController extends AbstractController
          return $this->json($juegos, Response::HTTP_OK, [], ['groups' => 'juego_lista']);
     }
 
-    #[Route('/search/minplayers/{minjugadores}', name: 'app_juego_getByMinPlayers', methods: ['GET'])]
+    #[Route('/minplayers/{minjugadores}', name: 'game_findByMinPlayes', methods: ['GET'])]
     public function findByMinPlayers(int $minjugadores, JuegoRepository $repository): Response
     {
-        $juegos = $repository->findByMinPlayers($minjugadores);
+        $juegos = $repository->findGamesByMinPlayers($minjugadores);
         if (!$juegos) {
             throw $this->createNotFoundException(
                 'No hay juegos en ese mínimo de jugadores: ' .$minjugadores
@@ -160,10 +160,10 @@ class JuegoController extends AbstractController
          return $this->json($juegos, Response::HTTP_OK, [], ['groups' => 'juego_lista']);
     }
 
-    #[Route('/search/maxplayers/{maxJugadores}', name: 'app_juego_getByMaxPlayers', methods: ['GET'])]
+    #[Route('/maxplayers/{maxJugadores}', name: 'game_findByMaxPlayers', methods: ['GET'])]
     public function findByMaxPlayers(int $maxJugadores, JuegoRepository $repository): Response
     {
-        $juegos = $repository->findByMaxPlayers($maxJugadores);
+        $juegos = $repository->findGamesByMaxPlayers($maxJugadores);
         if (!$juegos) {
             throw $this->createNotFoundException(
                 'No hay juegos en ese máximo de jugadores: ' .$maxJugadores
@@ -175,10 +175,10 @@ class JuegoController extends AbstractController
     }
     
 
-    #[Route('/search/gamesByAutors/{id}', name: 'app_juego_getGamesByAutor', methods: ['GET'])]    
-    public function buscarJuegosPorAutores(int $id, JuegoRepository $repository): Response
+    #[Route('/gamesbyautors/{id}', name: 'game_findByAuthors', methods: ['GET'])]    
+    public function findByAuthors(int $id, JuegoRepository $repository): Response
     {
-        $juegos = $repository->findByAuthor($id);
+        $juegos = $repository->findGamesByAuthor($id);
         if (!$juegos) {
             throw $this->createNotFoundException(
                 'No hay juegos de ese autor: ' .$id
@@ -188,10 +188,10 @@ class JuegoController extends AbstractController
          return $this->json($juegos, Response::HTTP_OK, [], ['groups' => 'juego_lista']);
     }
     
-    #[Route('/search/siautoma', name: 'app_juego_getAllAutoma', methods: ['GET'])]
-    public function getAllAutoma(JuegoRepository $repository): Response
+    #[Route('/siautoma', name: 'game_findByYesAutoma', methods: ['GET'])]
+    public function findYesAutoma(JuegoRepository $repository): Response
     {
-        $juegos = $repository->findByAutoma();
+        $juegos = $repository->findGameByAutoma();
          if (!$juegos) {
             throw $this->createNotFoundException(
                 'No hay juegos con automa.'
@@ -202,10 +202,10 @@ class JuegoController extends AbstractController
          return $this->json($juegos, Response::HTTP_OK, [], ['groups' => 'juego_lista']);
     }
 
-    #[Route('/search/noautoma', name: 'app_juego_getNoAllAutoma', methods: ['GET'])]
-    public function getAllNoAutoma(JuegoRepository $repository): Response
+    #[Route('/noautoma', name: 'game_findByNoAutoma', methods: ['GET'])]
+    public function findNoAutoma(JuegoRepository $repository): Response
     {
-        $juegos = $repository->findByNoAutoma();
+        $juegos = $repository->findGameByNoAutoma();
         if (!$juegos) {
             throw $this->createNotFoundException(
                 'No hay juegos sin automa.'
@@ -215,10 +215,10 @@ class JuegoController extends AbstractController
         return $this->json($juegos, Response::HTTP_OK, [], ['groups' => 'juego_lista']);
     }
 
-    #[Route('/search/tipo/{tipo}', name: 'app_juego_getByTipo', methods: ['GET'])]
-    public function getByTipo(String $tipo, JuegoRepository $repository): Response
+    #[Route('/tipo/{tipo}', name: 'game_findByType', methods: ['GET'])]
+    public function findByType(String $tipo, JuegoRepository $repository): Response
     {
-        $juegos = $repository->findByTipo($tipo);
+        $juegos = $repository->findGamesByType($tipo);
         if (!$juegos) {
             throw $this->createNotFoundException(
                 'No hay juegos det tipo proporcionado: '.$tipo
@@ -227,10 +227,10 @@ class JuegoController extends AbstractController
         return $this->json($juegos, Response::HTTP_OK, [], ['groups' => 'juego_lista']);
     }
 
-    #[Route('/search/expansionesByJuego/{idJuego}', name: 'app_juego_expansionesByJuego', methods: ['GET'])]
-    public function findExpansionesByJuegoId(String $idJuego, JuegoRepository $repository): Response
+    #[Route('/expansionsByJuego/{idJuego}', name: 'game_findExpansionsByGame', methods: ['GET'])]
+    public function findExpansionsByGame(String $idJuego, JuegoRepository $repository): Response
     {
-        $juegos = $repository->findExpansionesByJuegoId($idJuego);
+        $juegos = $repository->findExpansionsByJuegoId($idJuego);
         if (!$juegos) {
             throw $this->createNotFoundException(
                 'No hay expansiones para el juego proporcionado: '.$idJuego
@@ -239,10 +239,10 @@ class JuegoController extends AbstractController
         return $this->json($juegos, Response::HTTP_OK, [], ['groups' => 'juego_lista']);
     }
 
-    #[Route('/search/expansiones', name: 'app_juego_AllExpansiones', methods: ['GET'])]
-    public function findAllExpansiones(JuegoRepository $repository): Response
+    #[Route('/expansions', name: 'game_findAllExpansions', methods: ['GET'])]
+    public function findAllExpansions(JuegoRepository $repository): Response
     {
-        $juegos = $repository->findAllExpansiones();
+        $juegos = $repository->findAllExpansions();
         if (!$juegos) {
             throw $this->createNotFoundException(
                 'No hay expansiones.'
@@ -251,10 +251,10 @@ class JuegoController extends AbstractController
         return $this->json($juegos, Response::HTTP_OK, [], ['groups' => 'juego_lista']);
     }
 
-    #[Route('/search/expansionesConAutoma', name: 'app_juego_AllExpansionesConAutoma', methods: ['GET'])]
-    public function findAllExpansionesConAutoma(JuegoRepository $repository): Response
+    #[Route('/expansionesWithAutoma', name: 'game_findExpansionsWithAutoma', methods: ['GET'])]
+    public function findExpansionsWithAutoma(JuegoRepository $repository): Response
     {
-        $juegos = $repository->findAllExpansionesConAutoma();
+        $juegos = $repository->findAllExpansionsWithConAutoma();
         if (!$juegos) {
             throw $this->createNotFoundException(
                 'No hay expansiones con automa.'
@@ -263,10 +263,10 @@ class JuegoController extends AbstractController
         return $this->json($juegos, Response::HTTP_OK, [], ['groups' => 'juego_lista']);
     }
 
-    #[Route('/search/expansionesSinAutoma', name: 'app_juego_AllExpansionesSinAutoma', methods: ['GET'])]
-    public function findAllExpansionesSinAutoma(JuegoRepository $repository): Response
+    #[Route('/expansionesWithoutAutoma', name: 'game_findExpansionsWithoutAutoma', methods: ['GET'])]
+    public function findExpansionsWithoutAutoma(JuegoRepository $repository): Response
     {
-        $juegos = $repository->findAllExpansionesSinAutoma();
+        $juegos = $repository->findAllExpansionsWithoutAutoma();
         if (!$juegos) {
             throw $this->createNotFoundException(
                 'No hay expansiones sin automa.'
@@ -275,7 +275,7 @@ class JuegoController extends AbstractController
         return $this->json($juegos, Response::HTTP_OK, [], ['groups' => 'juego_lista']);
     }
 
-    #[Route('/', name: 'juego_create', methods: ['POST'])]
+    #[Route('/', name: 'game_create', methods: ['POST'])]
     public function create(
         Request $request,
         EntityManagerInterface $em,
@@ -325,7 +325,7 @@ class JuegoController extends AbstractController
         $juego->setMaxJugadores($data['maxJugadores']);
 
         foreach ($data['autores'] as $autorId) {
-            $autor = $em->getRepository(Autor::class)->findOneById($autorId);
+            $autor = $em->getRepository(Autor::class)->findGameById($autorId);
 
             if (!$autor) {
                 return new JsonResponse(['error' => "Autor con ID $autorId no encontrado"], Response::HTTP_NOT_FOUND);
@@ -351,10 +351,10 @@ class JuegoController extends AbstractController
         return new JsonResponse(['message' => 'Juego creado con éxito'], 201);
     }
 
-    #[Route('/{id<\d+>}', name: 'juego_delete', methods: ['DELETE'])]
+    #[Route('/{id<\d+>}', name: 'game_delete', methods: ['DELETE'])]
     public function delete(EntityManagerInterface $entityManager, int $id): Response
     {
-        $juego = $entityManager->getRepository(Juego::class)->findOneById($id);
+        $juego = $entityManager->getRepository(Juego::class)->findGameById($id);
 
         if (!$juego) {
             throw $this->createNotFoundException(

@@ -31,7 +31,7 @@ class AutorRepository extends ServiceEntityRepository
         ;
     }
 
-    public function findAuthorByNombre($nombre): ?Autor
+    public function findAuthorByName($nombre): ?Autor
     {
         return $this->createQueryBuilder('j')
             ->andWhere('j.nombre = :val')

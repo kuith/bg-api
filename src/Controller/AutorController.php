@@ -16,7 +16,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
 class AutorController extends AbstractController
 {
-    #[Route('/', name: 'authors_list', methods: ['GET'])]
+    #[Route('/', name: 'author_list', methods: ['GET'])]
     public function index(AutorRepository $repository): Response
     {
         $autores = $repository->findAll();
@@ -66,7 +66,7 @@ class AutorController extends AbstractController
         return new JsonResponse(['message' => 'Autor creado con éxito'], 201);
     }
 
-    #[Route('/{id<\d+>}', name: 'autor_delete', methods: ['DELETE'])]
+    #[Route('/{id<\d+>}', name: 'author_delete', methods: ['DELETE'])]
     public function delete(EntityManagerInterface $entityManager, int $id): Response
     {
         $autor = $entityManager->getRepository(Autor::class)->findAuthorById($id);
@@ -95,16 +95,15 @@ class AutorController extends AbstractController
         return $this->json($autor, Response::HTTP_OK, [], ['groups' => 'autor_detalle']);
     }
 
-    #[Route('/nombre/{nombre}', name: 'author_findBynombre', methods: ['GET'])]
-    public function findByNombre(String $nombre, AutorRepository $repository): Response
+    #[Route('/nombre/{nombre}', name: 'author_findByname', methods: ['GET'])]
+    public function findByName(String $nombre, AutorRepository $repository): Response
     {
-        $autor = $repository->findAuthorByNombre($nombre);
+        $autor = $repository->findAuthorByName($nombre);
 
         if (!$autor) {
             throw $this->createNotFoundException('Autor no encontrado');
         }
 
-        //return $this->json($juego);
         return $this->json($autor, Response::HTTP_OK, [], ['groups' => 'autor_detalle']);
     }
 

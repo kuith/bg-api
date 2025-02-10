@@ -15,7 +15,7 @@ use Symfony\Component\Validator\Validator\ValidatorInterface;
 
 class JugadorController extends AbstractController
 {
-    #[Route('/', name: 'jugadores_list', methods: ['GET'])]
+    #[Route('/', name: 'player_list', methods: ['GET'])]
     public function index(JugadorRepository $repository): Response
     {
         $jugadores = $repository->findAll();
@@ -23,7 +23,7 @@ class JugadorController extends AbstractController
         return $this->json($jugadores, Response::HTTP_OK, [], ['groups' => 'jugador_lista']);
     }
 
-    #[Route('/id/{id<\d+>}', name: 'jugador_show', methods: ['GET'])]
+    #[Route('/id/{id<\d+>}', name: 'player_show', methods: ['GET'])]
     public function show(int $id, JugadorRepository $repository): Response
     {
         $jugador = $repository->findPlayerById($id);
@@ -35,8 +35,8 @@ class JugadorController extends AbstractController
         return $this->json($jugador, Response::HTTP_OK, [], ['groups' => 'jugador_lista']);
     }
 
-    #[Route('/nombre/{nombre}', name: 'jugador_findByNombre', methods: ['GET'])]
-    public function findByNombre(String $nombre, JugadorRepository $repository): Response
+    #[Route('/nombre/{nombre}', name: 'player_findByName', methods: ['GET'])]
+    public function findByName(String $nombre, JugadorRepository $repository): Response
     {
         $jugador = $repository->findPlayerByName($nombre);
 
@@ -47,7 +47,7 @@ class JugadorController extends AbstractController
         return $this->json($jugador, Response::HTTP_OK, [], ['groups' => 'jugador_lista']);
     }
 
-    #[Route('/correo/{correo}', name: 'jugador_findByEmail', methods: ['GET'])]
+    #[Route('/correo/{correo}', name: 'player_findByEmail', methods: ['GET'])]
     public function findByEmail(String $correo, JugadorRepository $repository): Response
     {
         $jugador = $repository->findPlayerByEmail($correo);
@@ -59,7 +59,7 @@ class JugadorController extends AbstractController
         return $this->json($jugador, Response::HTTP_OK, [], ['groups' => 'jugador_lista']);
     }
 
-    #[Route('/rol/{rol}', name: 'jugador_findByRol', methods: ['GET'])]
+    #[Route('/rol/{rol}', name: 'player_findByRol', methods: ['GET'])]
     public function findByRol(String $rol, JugadorRepository $repository): Response
     {
         $jugadores = $repository->findPlayerByRol($rol);
@@ -70,7 +70,7 @@ class JugadorController extends AbstractController
 
         return $this->json($jugadores, Response::HTTP_OK, [], ['groups' => 'jugador_lista']);
     }
-    #[Route('/juegos/{juegoId}/jugadores', name: 'jugadores_por_juego', methods: ['GET'])]
+    #[Route('/juegos/{juegoId}/jugadores', name: 'players_findByGame', methods: ['GET'])]
     public function findPlayersByGame(int $juegoId, JugadorRepository $repository): Response
     {
         $jugadores = $repository->findPlayersByGame($juegoId);
@@ -82,7 +82,7 @@ class JugadorController extends AbstractController
         return $this->json($jugadores, Response::HTTP_OK, [], ['groups' => 'jugador_juegos']);
     }
 
-    #[Route('/{idJugador}/partidas/ganadas', name: 'jugador_partidas_ganadas', methods: ['GET'])]
+    #[Route('/{idJugador}/partidas/ganadas', name: 'playar_findByWonMatches', methods: ['GET'])]
     public function findPartidasGanadas(String $idJugador, JugadorRepository $repository): Response
     {
         $partidasGanadas = $repository->findPartidasGanadasPorJugador($idJugador);
@@ -95,7 +95,7 @@ class JugadorController extends AbstractController
         return $this->json($partidasGanadas, Response::HTTP_OK, [], ['groups' => 'jugador_ganadas']);
     }
 
-    #[Route('/', name: 'jugador_create', methods: ['POST'])]
+    #[Route('/', name: 'player_create', methods: ['POST'])]
     public function create(
         Request $request,
         EntityManagerInterface $em,
@@ -140,7 +140,7 @@ class JugadorController extends AbstractController
     }
 
     
-    #[Route('/{id<\d+>}', name: 'jugador_delete', methods: ['DELETE'])]
+    #[Route('/{id<\d+>}', name: 'player_delete', methods: ['DELETE'])]
     public function delete(EntityManagerInterface $entityManager, int $id): Response
     {
         $jugador = $entityManager->getRepository(Jugador::class)->findPlayerById($id);
@@ -157,7 +157,7 @@ class JugadorController extends AbstractController
         return new Response('Jugador eliminado!', 200);
     }
 
-    #[Route('/{id}', name: 'actualizar_jugador', methods: ['PATCH'])]
+    #[Route('/{id}', name: 'plarer_update', methods: ['PATCH'])]
     public function actualizarJugador(int $id, Request $request, JugadorRepository $jugadorRepository, EntityManagerInterface $em): JsonResponse
     {
         $jugador = $jugadorRepository->find($id);
