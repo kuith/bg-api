@@ -102,7 +102,7 @@ class JuegoRepository extends ServiceEntityRepository
     public function findGamesUnderPrice(float $price): array
     {
         return $this->createQueryBuilder('j')
-            ->andWhere('j.precio <= :price')
+            ->andWhere('j.precio < :price')
             ->setParameter('price', $price)
             ->orderBy('j.precio', 'ASC')
             ->getQuery()
@@ -113,7 +113,7 @@ class JuegoRepository extends ServiceEntityRepository
     public function findGamesOverPrice(float $price): array
     {
         return $this->createQueryBuilder('j')
-            ->andWhere('j.precio >= :price')
+            ->andWhere('j.precio > :price')
             ->setParameter('price', $price)
             ->orderBy('j.precio', 'ASC')
             ->getQuery()
