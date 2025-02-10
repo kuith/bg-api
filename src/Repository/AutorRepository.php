@@ -21,7 +21,7 @@ class AutorRepository extends ServiceEntityRepository
         parent::__construct($registry, Autor::class);
     }
 
-    public function findOneById($id): ?Autor
+    public function findAuthorById($id): ?Autor
     {
         return $this->createQueryBuilder('j')
             ->andWhere('j.id = :val')
@@ -31,7 +31,7 @@ class AutorRepository extends ServiceEntityRepository
         ;
     }
 
-    public function findOneByNombre($nombre): ?Autor
+    public function findAuthorByNombre($nombre): ?Autor
     {
         return $this->createQueryBuilder('j')
             ->andWhere('j.nombre = :val')
@@ -41,7 +41,7 @@ class AutorRepository extends ServiceEntityRepository
         ;
     }
 
-    public function findByNac($nacionalidad): array
+    public function findAuthorByNac($nacionalidad): array
     {
         return $this->createQueryBuilder('j')
             ->andWhere('j.nacionalidad = :val')

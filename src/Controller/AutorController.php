@@ -16,8 +16,8 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
 class AutorController extends AbstractController
 {
-    #[Route('/', name: 'app_autor_getAll', methods: ['GET'])]
-    public function getAll(AutorRepository $repository): Response
+    #[Route('/', name: 'authors_list', methods: ['GET'])]
+    public function index(AutorRepository $repository): Response
     {
         $autores = $repository->findAll();
 
@@ -69,7 +69,7 @@ class AutorController extends AbstractController
     #[Route('/{id<\d+>}', name: 'autor_delete', methods: ['DELETE'])]
     public function delete(EntityManagerInterface $entityManager, int $id): Response
     {
-        $autor = $entityManager->getRepository(Autor::class)->findOneById($id);
+        $autor = $entityManager->getRepository(Autor::class)->findAuthorById($id);
 
         if (!$autor) {
             throw $this->createNotFoundException(
@@ -83,10 +83,10 @@ class AutorController extends AbstractController
         return new Response('Autor eliminado!', 200);
     }
 
-    #[Route('/search/{id<\d+>}', name: 'app_autor_getById', methods: ['GET'])]
-    public function getById(int $id, AutorRepository $repository): Response
+    #[Route('/id/{id<\d+>}', name: 'author_show', methods: ['GET'])]
+    public function show(int $id, AutorRepository $repository): Response
     {
-        $autor = $repository->findOneById($id);
+        $autor = $repository->findAuthorById($id);
 
         if (!$autor) {
             throw $this->createNotFoundException('Autor no encontrado');
@@ -95,10 +95,10 @@ class AutorController extends AbstractController
         return $this->json($autor, Response::HTTP_OK, [], ['groups' => 'autor_detalle']);
     }
 
-    #[Route('/search/nombre/{nombre}', name: 'app_autor_getByNombre', methods: ['GET'])]
-    public function getByNombre(String $nombre, AutorRepository $repository): Response
+    #[Route('/nombre/{nombre}', name: 'author_findBynombre', methods: ['GET'])]
+    public function findByNombre(String $nombre, AutorRepository $repository): Response
     {
-        $autor = $repository->findOneByNombre($nombre);
+        $autor = $repository->findAuthorByNombre($nombre);
 
         if (!$autor) {
             throw $this->createNotFoundException('Autor no encontrado');
@@ -108,10 +108,10 @@ class AutorController extends AbstractController
         return $this->json($autor, Response::HTTP_OK, [], ['groups' => 'autor_detalle']);
     }
 
-    #[Route('/search/nacionalidad/{nacionalidad}', name: 'app_autor_getByNacionalidad', methods: ['GET'])]
-    public function getByNacionalidad(String $nacionalidad, AutorRepository $repository): Response
+    #[Route('/nacionalidad/{nacionalidad}', name: 'author_findByNac', methods: ['GET'])]
+    public function findByNac(String $nacionalidad, AutorRepository $repository): Response
     {
-        $autor = $repository->findByNac($nacionalidad);
+        $autor = $repository->findAuthorByNac($nacionalidad);
 
         if (!$autor) {
             throw $this->createNotFoundException('Autor no encontrado');
