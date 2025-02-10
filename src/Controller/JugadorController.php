@@ -11,7 +11,7 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
 
-#[Route('/api/jugadores')]
+#[Route('/api/players')]
 
 class JugadorController extends AbstractController
 {
@@ -35,7 +35,7 @@ class JugadorController extends AbstractController
         return $this->json($jugador, Response::HTTP_OK, [], ['groups' => 'jugador_lista']);
     }
 
-    #[Route('/nombre/{nombre}', name: 'player_findByName', methods: ['GET'])]
+    #[Route('/name/{nombre}', name: 'player_findByName', methods: ['GET'])]
     public function findByName(String $nombre, JugadorRepository $repository): Response
     {
         $jugador = $repository->findPlayerByName($nombre);
@@ -47,7 +47,7 @@ class JugadorController extends AbstractController
         return $this->json($jugador, Response::HTTP_OK, [], ['groups' => 'jugador_lista']);
     }
 
-    #[Route('/correo/{correo}', name: 'player_findByEmail', methods: ['GET'])]
+    #[Route('/mail/{correo}', name: 'player_findByEmail', methods: ['GET'])]
     public function findByEmail(String $correo, JugadorRepository $repository): Response
     {
         $jugador = $repository->findPlayerByEmail($correo);
@@ -70,7 +70,7 @@ class JugadorController extends AbstractController
 
         return $this->json($jugadores, Response::HTTP_OK, [], ['groups' => 'jugador_lista']);
     }
-    #[Route('/juegos/{juegoId}/jugadores', name: 'players_findByGame', methods: ['GET'])]
+    #[Route('/games/{juegoId}/players', name: 'players_findByGame', methods: ['GET'])]
     public function findPlayersByGame(int $juegoId, JugadorRepository $repository): Response
     {
         $jugadores = $repository->findPlayersByGame($juegoId);
@@ -82,7 +82,7 @@ class JugadorController extends AbstractController
         return $this->json($jugadores, Response::HTTP_OK, [], ['groups' => 'jugador_juegos']);
     }
 
-    #[Route('/{idJugador}/partidas/ganadas', name: 'playar_findByWonMatches', methods: ['GET'])]
+    #[Route('/{idJugador}/matches/won', name: 'playar_findByWonMatches', methods: ['GET'])]
     public function findPartidasGanadas(String $idJugador, JugadorRepository $repository): Response
     {
         $partidasGanadas = $repository->findPartidasGanadasPorJugador($idJugador);

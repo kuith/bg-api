@@ -69,7 +69,7 @@ class PartidaRepository extends ServiceEntityRepository
             ->getResult();
     }
 
-    public function findGanadoresByJuegoId($juegoId): array //ganadores a un determinado juego
+    public function findWinnersByJuego($juegoId): array //ganadores a un determinado juego
     {
         return $this->createQueryBuilder('p')
             ->innerJoin('p.ganadores', 'gan')  // Relación con los ganadores

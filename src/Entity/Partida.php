@@ -20,12 +20,7 @@ class Partida
     #[ORM\JoinColumn(nullable: false)]
     private Juego $juego;
 
-    /* #[ORM\ManyToOne(targetEntity: Jugador::class, inversedBy:'partidasGanadas')]
-    #[ORM\JoinColumn(nullable: false)]
-    private Jugador $ganador; */
-
     #[ORM\ManyToMany(targetEntity: Jugador::class, inversedBy:'partidasGanadas')]
-    //#[ORM\JoinColumn(nullable: false)]
     private Collection $ganadores;
 
     #[ORM\ManyToMany(targetEntity: Jugador::class, inversedBy: 'partidas')]
