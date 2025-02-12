@@ -15,8 +15,8 @@ $kernel->boot();
 /**$entityManager = $kernel->getContainer()->get(EntityManagerInterface::class);*/
 $metadata = $entityManager->getMetadataFactory()->getAllMetadata();
 
-$schemaTool = new SchemaTool($entityManager);
-$schemaTool->dropSchema($metadata);
-$schemaTool->createSchema($metadata);
+//$schemaTool = new SchemaTool($entityManager);
+//$schemaTool->dropSchema($metadata);
+//$schemaTool->createSchema($metadata);
 
 
