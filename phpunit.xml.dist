@@ -10,8 +10,11 @@
         </testsuite>
     </testsuites>
 
-    <php>  <server name="KERNEL_CLASS" value="App\Kernel"/>
-        <server name="APP_ENV" value="test"/>  <server name="SHELL_VERBOSITY" value="-1"/> <ini name="error_reporting" value="-1"/> 
+    <php>
+        <server name="KERNEL_CLASS" value="App\Kernel"/>
+        <server name="APP_ENV" value="test"/>
+        <server name="SHELL_VERBOSITY" value="-1"/>
+        <ini name="error_reporting" value="-1"/>
+        <env name="DATABASE_URL" value="sqlite:///:memory:" />
     </php>
-
 </phpunit>
