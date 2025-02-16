@@ -36,7 +36,7 @@ class JugadorControllerTest extends WebTestCase
         foreach ($data as $jugador) {
             $this->assertArrayHasKey('id', $jugador);
             $this->assertArrayHasKey('nombre', $jugador);
-            $this->assertArrayHasKey('mail', $jugador); // Corregido a 'mail'
+            $this->assertArrayHasKey('correo', $jugador); // Corregido a 'mail'
             $this->assertArrayHasKey('rol', $jugador); // Corregido a 'rol'
             // ... otras propiedades
         }
