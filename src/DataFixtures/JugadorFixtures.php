@@ -6,7 +6,7 @@ use App\Entity\Jugador;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Persistence\ObjectManager;
 
-class JugadorFixture extends Fixture
+class JugadorFixtures extends Fixture
 {
     public function load(ObjectManager $manager): void
     {
@@ -61,5 +61,23 @@ class JugadorFixture extends Fixture
         }
 
         $manager->flush();
-    }
+     }    
 }
+
+/* 
+class JugadorFixtures extends Fixture
+{
+    public function load(ObjectManager $manager): void
+    {
+        $jugador = new Jugador();
+        $jugador->setNombre('Jugador de prueba');
+        $jugador->setCorreo('jugador@prueba.com');
+        $jugador->setRol('jugador');
+        $jugador->setFechaRegistro(new \DateTime('now'));
+        $jugador->setPassword('password'); 
+            
+
+        $manager->persist($jugador);
+        $manager->flush();
+    }
+} */
