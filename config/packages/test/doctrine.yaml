@@ -1,13 +1,12 @@
 doctrine:
     dbal:
         driver: 'pdo_sqlite'
-        url: '%env(DATABASE_URL)%'  # Esta línea usa la variable de entorno
-        memory: true  # Esta es la clave para indicar que queremos SQLite en memoria
-        charset: UTF8
-        path: '%kernel.project_dir%/var/data.db'  # Añadir esta línea
+        url: 'sqlite:///:memory:'  # SQLite en memoria
+        logging: false
+        #memory: true  # Esto activa la base de datos en memoria
     orm:
         auto_generate_proxy_classes: true
-        naming_strategy: doctrine.orm.naming_strategy.underscore_number_aware
+        naming_strategy: doctrine.orm.naming_strategy.underscore
         auto_mapping: true
         controller_resolver:
             auto_mapping: true
