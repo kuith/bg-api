@@ -157,7 +157,7 @@ class JugadorController extends AbstractController
         return new Response('Jugador eliminado!', 200);
     }
 
-    #[Route('/{id}', name: 'plarer_update', methods: ['PATCH'])]
+    #[Route('/{id}', name: 'player_update', methods: ['PATCH'])]
     public function actualizarJugador(int $id, Request $request, JugadorRepository $jugadorRepository, EntityManagerInterface $em): JsonResponse
     {
         $jugador = $jugadorRepository->find($id);
