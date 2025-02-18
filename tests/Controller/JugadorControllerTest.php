@@ -30,7 +30,25 @@ class JugadorControllerTest extends BaseWebTestCase
 
     public function testObtenerJugadorPorId()
     {
-        
+        // Crear el cliente y obtener la URL generada para el endpoint
+        $client = $this->client;
+        $url = $this->getUrl('player_show', ['id' => 1]); // Usamos un ID que sabemos que existe en la base de datos
+
+
+        // Hacer la solicitud GET
+        $client->request('GET', $url, [], [], ['HTTP_X-DEBUG' => '1']);
+        //echo "Generated URL: " . $url . "\n";  // Aquí se imprimirá la URL generada
+
+        // Verificar la respuesta
+        $this->VerifyResponse($client);
+
+        // Verificar que la respuesta tenga la estructura correcta
+        $data = json_decode($client->getResponse()->getContent(), true);
+        $this->verifyReponseExtrucre($client, $data);
+
+        // Validar que el jugador recibido tiene el ID correcto
+        $this->assertEquals(1, $data['id']); // Verificamos que el ID sea el que pedimos
+
     }
 
     ///Métodos auxiliares////
@@ -47,10 +65,10 @@ class JugadorControllerTest extends BaseWebTestCase
     }
 
     //GetUrl
-    private function getUrl(string $routeName): string
+    private function getUrl(string $routeName, array $parameters = []): string
     {
         $router = $this->client->getContainer()->get('router');
-        return $router->generate($routeName, [], \Symfony\Component\Routing\Generator\UrlGeneratorInterface::ABSOLUTE_PATH);
+        return $router->generate($routeName, $parameters, \Symfony\Component\Routing\Generator\UrlGeneratorInterface::ABSOLUTE_PATH);
     }
 
     //Validar respuesta
