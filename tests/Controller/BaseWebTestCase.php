@@ -2,6 +2,7 @@
 namespace App\Tests\Controller;
 
 use App\DataFixtures\JugadorFixtures;
+use App\DataFixtures\AutorFixtures;
 use Doctrine\Common\DataFixtures\Executor\ORMExecutor;
 use Doctrine\Common\DataFixtures\Loader;
 use Doctrine\Common\DataFixtures\Purger\ORMPurger;
@@ -40,6 +41,7 @@ abstract class BaseWebTestCase extends WebTestCase
 
         $loader = new Loader();
         $loader->addFixture(new JugadorFixtures());
+        $loader->addFixture(new AutorFixtures());
 
         $purger = new ORMPurger($entityManager);
         $executor = new ORMExecutor($entityManager, $purger);

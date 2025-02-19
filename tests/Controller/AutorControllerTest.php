@@ -1,15 +1,15 @@
 <?php
 namespace App\Tests\Controller;
-use App\Repository\JugadorRepository;
+use App\Repository\AutorRepository;
 
-class JugadorControllerTest extends BaseWebTestCase
+class AutorControllerTest extends BaseWebTestCase
 {
     protected $client;
-    public function testObtenerListaJugadores()
+    public function testObtenerListaAutores()
     {
         // Crear el cliente y obtener la URL generada para el endpoint
         $client = $this->client;
-        $url = $this->getUrl('player_list');
+        $url = $this->getUrl('author_list');
 
         // Hacer la solicitud GET
         $client->request('GET', $url, [], [], ['HTTP_X-DEBUG' => '1']);
@@ -22,17 +22,17 @@ class JugadorControllerTest extends BaseWebTestCase
         $this->verifyReponseExtrucre($client, $data);
 
         // Validar la estructura de los jugadores
-        $this->validateJugadorStructure($data);
+        $this->validateAutorStructure($data);
 
         // Comparar el número de jugadores
-        $this->assertCountJugadores($client, $data);
+        $this->assertCountAutores($client, $data);
     }
 
-    public function testObtenerJugadorPorId()
+    public function testObtenerAutorPorId()
     {
         // Crear el cliente y obtener la URL generada para el endpoint
         $client = $this->client;
-        $url = $this->getUrl('player_show', ['id' => 1]); // Usamos un ID que sabemos que existe en la base de datos
+        $url = $this->getUrl('author_show', ['id' => 1]); // Usamos un ID que sabemos que existe en la base de datos
 
 
         // Hacer la solicitud GET
@@ -51,11 +51,11 @@ class JugadorControllerTest extends BaseWebTestCase
 
     }
 
-    Public function testObtenerJugadorPorNombre ()
+    Public function testObtenerAutorPorNombre ()
     {
         // Crear el cliente y obtener la URL generada para el endpoint
         $client = $this->client;
-        $url = $this->getUrl('player_findByName', ['nombre' => 'Rafa']); // Usamos un ID que sabemos que existe en la base de datos
+        $url = $this->getUrl('author_findByname', ['nombre' => 'Uwe Rosenberg']);
 
         // Hacer la solicitud GET
         $client->request('GET', $url, [], [], ['HTTP_X-DEBUG' => '1']);
@@ -67,15 +67,15 @@ class JugadorControllerTest extends BaseWebTestCase
         $data = json_decode($client->getResponse()->getContent(), true);
         $this->verifyReponseExtrucre($client, $data);
 
-        // Validar que el jugador recibido tiene el NOMBRE correcto
-        $this->assertEquals("Rafa", $data['nombre']); 
+        // Validar que el autor recibido tiene el NOMBRE correcto
+        $this->assertEquals('Uwe Rosenberg', $data['nombre']); 
     }
 
-    Public function testObtenerJugadorPorCorreo()
+    Public function testObtenerAutorPorNacionalidad()
     {
         // Crear el cliente y obtener la URL generada para el endpoint
         $client = $this->client;
-        $url = $this->getUrl('player_findByEmail', ['correo' => 'rafa.com']); // Usamos un ID que sabemos que existe en la base de datos
+        $url = $this->getUrl('author_findByNac', ['nacionalidad' => 'Alemania']);
 
         // Hacer la solicitud GET
         $client->request('GET', $url, [], [], ['HTTP_X-DEBUG' => '1']);
@@ -87,60 +87,11 @@ class JugadorControllerTest extends BaseWebTestCase
         $data = json_decode($client->getResponse()->getContent(), true);
         $this->verifyReponseExtrucre($client, $data);
 
-        // Validar que el jugador recibido tiene el CORREO correcto
-        $this->assertEquals("rafa.com", $data['correo']); 
-    }
-
-    Public function testObtenerJugadorPorRol()
-    {
-        // Crear el cliente y obtener la URL generada para el endpoint
-        $client = $this->client;
-        $url = $this->getUrl('player_findByRol', ['rol' => 'admin']);
-
-        // Hacer la solicitud GET
-        $client->request('GET', $url, [], [], ['HTTP_X-DEBUG' => '1']);
-        
-        // Verificar la respuesta
-        $this->VerifyResponse($client);
-
-        // Verificar que la respuesta tenga la estructura correcta
-        $data = json_decode($client->getResponse()->getContent(), true);
-        $this->verifyReponseExtrucre($client, $data);
-
-        // Validar que el jugador recibido tiene el ROL correcto
-        foreach ($data as $jugador) {
-            $this->assertEquals("admin", $jugador['rol'], "Se encontró un jugador con un rol distinto a 'admin'");
+        // Validar que el autor recibido tiene el ROL correcto
+        foreach ($data as $autor) {
+            $this->assertEquals("Alemania", $autor['nacionalidad'], "Se encontró ningún autor con un una nacionalidad distint a 'Alemania'");
         }
-
     }
-
-/*     public function testCrearJugador()
-    {
-        // Crear el cliente y obtener la URL generada para el endpoint
-        $client = $this->client;
-        $url = $this->getUrl('player_create');
-
-        //datos validos
-        $jugadorData = [
-            "nombre" => "Rafa",
-            "correo" => "rafa@example.com",
-            "rol" => "admin",
-            "password" => "1234"
-        ];
-
-        // Hacer la solicitud GET
-        $client->request('GET', $url, [], [], ['CONTENT_TYPE' => 'application/json'], json_encode($jugadorData));
-
-        // Verificar que la respuesta sea 201 (Created)
-        $this->assertEquals(201, $client->getResponse()->getStatusCode());
-
-        // Verificar el contenido de la respuesta
-        $data = json_decode($client->getResponse()->getContent(), true);
-        $this->assertEquals('Jugador creado con éxito', $data['message']);
-
-    } */
-
-
 
     ///Métodos auxiliares////
 
@@ -172,24 +123,21 @@ class JugadorControllerTest extends BaseWebTestCase
     }
 
     //Validar estructura de un jugador
-    private function validateJugadorStructure(array $data): void
+    private function validateAutorStructure(array $data): void
     {
         foreach ($data as $jugador) {
             $this->assertArrayHasKey('id', $jugador);
             $this->assertArrayHasKey('nombre', $jugador);
-            $this->assertArrayHasKey('correo', $jugador);
-            $this->assertArrayHasKey('rol', $jugador);
-            $this->assertArrayHasKey('fechaRegistro', $jugador);
-            $this->assertArrayHasKey('password', $jugador);
+            $this->assertArrayHasKey('nacionalidad', $jugador);
         }
     }
 
-    // Método para verificar que el número de jugadores coincide con la base de datos
-    private function assertCountJugadores($client, array $data): void
+    // Método para verificar que el número de autores coincide con la base de datos
+    private function assertCountAutores($client, array $data): void
     {
-        $jugadorRepository = $client->getContainer()->get(JugadorRepository::class);
-        $numeroJugadoresEnBD = count($jugadorRepository->findAll());
-        $this->assertCount($numeroJugadoresEnBD, $data);
+        $autorRepository = $client->getContainer()->get(AutorRepository::class);
+        $numeroAutoresEnBD = count($autorRepository->findAll());
+        $this->assertCount($numeroAutoresEnBD, $data);
     }
 }
 
