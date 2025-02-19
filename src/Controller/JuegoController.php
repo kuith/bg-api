@@ -146,13 +146,13 @@ class JuegoController extends AbstractController
          return $this->json($juegos, Response::HTTP_OK, [], ['groups' => 'juego_lista']);
     }
 
-    #[Route('/minplayers/{minjugadores}', name: 'game_findByMinPlayes', methods: ['GET'])]
-    public function findByMinPlayers(int $minjugadores, JuegoRepository $repository): Response
+    #[Route('/minplayers/{minJugadores}', name: 'game_findByMinPlayes', methods: ['GET'])]
+    public function findByMinPlayers(int $minJugadores, JuegoRepository $repository): Response
     {
-        $juegos = $repository->findGamesByMinPlayers($minjugadores);
+        $juegos = $repository->findGamesByMinPlayers($minJugadores);
         if (!$juegos) {
             throw $this->createNotFoundException(
-                'No hay juegos en ese mínimo de jugadores: ' .$minjugadores
+                'No hay juegos en ese mínimo de jugadores: ' .$minJugadores
             );
         }
         //return $this->json($juegos);
@@ -174,7 +174,6 @@ class JuegoController extends AbstractController
          return $this->json($juegos, Response::HTTP_OK, [], ['groups' => 'juego_lista']);
     }
     
-
     #[Route('/gamesByAutors/{id}', name: 'game_findByAuthors', methods: ['GET'])]    
     public function findByAuthors(int $id, JuegoRepository $repository): Response
     {
