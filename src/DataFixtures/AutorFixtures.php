@@ -45,6 +45,7 @@ class AutorFixtures extends Fixture
         $manager->persist($autor5);
         $this->addReference('autor5', $autor5);
 
+
         $manager->flush();
      }    
 }
