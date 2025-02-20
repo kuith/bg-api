@@ -59,6 +59,7 @@ class JuegoFixtures extends Fixture
         $juego3->setNombre('La flota perdida');
         $juego3->setBaseExpansion('expansion');
         $juego2 = $this->getReference('juego2', Juego::class); //Gaia Project
+        //$juego3->setJuegoBaseId($juegoBase->getId()); // Aquí asignas el juego base
         $juego3->setJuegoBase($juego2);
         $juego3->setTipo('Estrategia');
         $juego3->setDescripcion('Expansión para Gaia Project');
@@ -120,6 +121,27 @@ class JuegoFixtures extends Fixture
         $manager->persist($juego5);
         $this->addReference('juego5', $juego5);
 
+///////////////////////////////////////////////
+        $juego6 = new Juego();
+        $juego6->setNombre('La flota perdida 2');
+        $juego6->setBaseExpansion('expansion');
+        $juego2 = $this->getReference('juego2', Juego::class); //Gaia Project
+        $juego6->setJuegoBase($juego2);
+        $juego6->setTipo('Estrategia');
+        $juego6->setDescripcion('Expansión para Gaia Project');
+        $juego6->setAnioPublicacion(2018);
+        $juego6->setDispAutoma(false);
+        $juego6->setEditorialLocal('Maldito Games');
+        $juego6->setEditorialMadre('Stronghold Games');
+        $juego6->setPrecio(20);
+        $juego6->setMinJugadores(1);
+        $juego6->setMaxJugadores(5);
+        //Obtener los autores desde `AutorFixtures`
+        $autor1 = $this->getReference('autor1', Autor::class);
+        $juego6->addAutor($autor1);
+
+        $manager->persist($juego6);
+        $this->addReference('juego6', $juego6);
 
 //////////////////////////////////////////////
         

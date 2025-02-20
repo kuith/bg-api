@@ -388,10 +388,110 @@ class JuegoControllerTest extends BaseWebTestCase
         // Validar la estructura de los juegos
         $this->validateAutorStructure($data);
 
-        // Validar que los juegos recibidos tienen el juegobase correcto
+        // Validar que cada expansión tenga el 'juegoBase' correcto
         foreach ($data as $juego) {
-            $this->assertArrayHasKey('juegoBaseId', $juego, "El campo 'juegoBaseId' no está presente en el juego");
-            $this->assertEquals(2, $juego['juegoBaseId'], "Se encontró un juego con un id distinto a 2");
+            $this->assertArrayHasKey('juegoBase', $juego, "El campo 'juegoBase' no está presente en el juego");
+            $this->assertArrayHasKey('id', $juego['juegoBase'], "El campo 'id' del juego base no está presente");
+            $this->assertEquals(2, $juego['juegoBase']['id'], "Se encontró un juego base con un id distinto a 2");
+        }
+    }
+
+    public function testObtenerTodasLasExpansiones()
+    {
+        // Crear el cliente y obtener la URL generada para el endpoint
+        $client = $this->client;
+        $url = $this->getUrl('game_findAllExpansions');
+
+        // Hacer la solicitud GET
+        $client->request('GET', $url, [], [], ['HTTP_X-DEBUG' => '1']);
+
+        // Verificar la respuesta
+        $this->VerifyResponse($client);
+
+        // Verificar que la respuesta tenga la estructura correcta
+        $data = json_decode($client->getResponse()->getContent(), true);
+        $this->verifyReponseExtrucre($client, $data);
+
+        // Validar la estructura de los juegos
+        $this->validateAutorStructure($data);
+
+        // Validar que cada juego es una expansión
+        foreach ($data as $juego) {
+            // Asegurarse de que cada juego tenga el campo baseExpansion y sea una expansión
+            $this->assertArrayHasKey('baseExpansion', $juego, "El campo 'baseExpansion' no está presente en el juego");
+            $this->assertEquals('expansion', $juego['baseExpansion'], "El campo 'baseExpansion' no tiene el valor esperado para un juego expansión");
+    
+            // Comprobar que el campo 'juegoBase' también está presente
+            $this->assertArrayHasKey('juegoBase', $juego, "El campo 'juegoBase' no está presente en el juego");
+            $this->assertArrayHasKey('id', $juego['juegoBase'], "El campo 'id' de juegoBase no está presente");
+        }
+    }
+
+    public function testObtenerExpansionesConAutoma()
+    {
+        // Crear el cliente y obtener la URL generada para el endpoint
+        $client = $this->client;
+        $url = $this->getUrl('game_findExpansionsWithAutoma');
+
+        // Hacer la solicitud GET
+        $client->request('GET', $url, [], [], ['HTTP_X-DEBUG' => '1']);
+
+        // Verificar la respuesta
+        $this->VerifyResponse($client);
+
+        // Verificar que la respuesta tenga la estructura correcta
+        $data = json_decode($client->getResponse()->getContent(), true);
+        $this->verifyReponseExtrucre($client, $data);
+
+        // Validar la estructura de los juegos
+        $this->validateAutorStructure($data);
+
+        // Validar que cada juego es una expansión
+        foreach ($data as $juego) {
+            // Asegurarse de que cada juego tenga el campo baseExpansion y sea una expansión
+            $this->assertArrayHasKey('baseExpansion', $juego, "El campo 'baseExpansion' no está presente en el juego");
+            $this->assertEquals('expansion', $juego['baseExpansion'], "El campo 'baseExpansion' no tiene el valor esperado para un juego expansión");
+    
+            // Comprobar que el campo 'juegoBase' también está presente
+            $this->assertArrayHasKey('juegoBase', $juego, "El campo 'juegoBase' no está presente en el juego");
+            $this->assertArrayHasKey('id', $juego['juegoBase'], "El campo 'id' de juegoBase no está presente");
+
+            //Comprobar que el campo 'dispAutoma' es true
+            $this->assertEquals(true, $juego['dispAutoma'], "El campo 'dispAutoma' no tiene el valor esperado para un juego con automa");
+        }
+    }
+
+    public function testObtenerExpansionesSinAutoma()
+    {
+        // Crear el cliente y obtener la URL generada para el endpoint
+        $client = $this->client;
+        $url = $this->getUrl('game_findExpansionsWithoutAutoma');
+
+        // Hacer la solicitud GET
+        $client->request('GET', $url, [], [], ['HTTP_X-DEBUG' => '1']);
+
+        // Verificar la respuesta
+        $this->VerifyResponse($client);
+
+        // Verificar que la respuesta tenga la estructura correcta
+        $data = json_decode($client->getResponse()->getContent(), true);
+        $this->verifyReponseExtrucre($client, $data);
+
+        // Validar la estructura de los juegos
+        $this->validateAutorStructure($data);
+
+        // Validar que cada juego es una expansión
+        foreach ($data as $juego) {
+            // Asegurarse de que cada juego tenga el campo baseExpansion y sea una expansión
+            $this->assertArrayHasKey('baseExpansion', $juego, "El campo 'baseExpansion' no está presente en el juego");
+            $this->assertEquals('expansion', $juego['baseExpansion'], "El campo 'baseExpansion' no tiene el valor esperado para un juego expansión");
+    
+            // Comprobar que el campo 'juegoBase' también está presente
+            $this->assertArrayHasKey('juegoBase', $juego, "El campo 'juegoBase' no está presente en el juego");
+            $this->assertArrayHasKey('id', $juego['juegoBase'], "El campo 'id' de juegoBase no está presente");
+
+            //Comprobar que el campo 'dispAutoma' es true
+            $this->assertEquals(false, $juego['dispAutoma'], "El campo 'dispAutoma' no tiene el valor esperado para un juego con automa");
         }
     }
     

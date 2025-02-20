@@ -1,14 +1,15 @@
 <?php
 namespace App\Tests\Controller;
 
-use App\DataFixtures\JugadorFixtures;
+use Doctrine\ORM\Tools\SchemaTool;
 use App\DataFixtures\AutorFixtures;
 use App\DataFixtures\JuegoFixtures;
-use Doctrine\Common\DataFixtures\Executor\ORMExecutor;
+use App\DataFixtures\JugadorFixtures;
+use App\DataFixtures\PartidaFixtures;
 use Doctrine\Common\DataFixtures\Loader;
 use Doctrine\Common\DataFixtures\Purger\ORMPurger;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
-use Doctrine\ORM\Tools\SchemaTool;
+use Doctrine\Common\DataFixtures\Executor\ORMExecutor;
 
 abstract class BaseWebTestCase extends WebTestCase
 {
@@ -44,6 +45,7 @@ abstract class BaseWebTestCase extends WebTestCase
         $loader->addFixture(new JugadorFixtures());
         $loader->addFixture(new AutorFixtures());
         $loader->addFixture(new JuegoFixtures());
+        $loader->addFixture(new PartidaFixtures());
 
         $purger = new ORMPurger($entityManager);
         $executor = new ORMExecutor($entityManager, $purger);

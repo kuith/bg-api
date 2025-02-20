@@ -235,6 +235,11 @@ class JuegoController extends AbstractController
                 'No hay expansiones para el juego proporcionado: '.$idJuego
             );
         }
+        // Aquí agregas el campo 'juegoBaseId' a cada juego en las expansiones
+        //foreach ($juegos as &$juego) {
+        //    // Aquí asignas el id del juego base como un campo adicional
+        //    $juego['juegoBaseId'] = $idJuego;  // El idJuego es el juego base para las expansiones
+        //}
         return $this->json($juegos, Response::HTTP_OK, [], ['groups' => 'juego_lista']);
     }
 
