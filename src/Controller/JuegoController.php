@@ -3,6 +3,7 @@
 namespace App\Controller;
 use App\Entity\Autor;
 use App\Entity\Juego;
+use App\Repository\AutorRepository;
 use App\Repository\JuegoRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Request;
@@ -284,7 +285,8 @@ class JuegoController extends AbstractController
         Request $request,
         EntityManagerInterface $em,
         ValidatorInterface $validator,
-        JuegoRepository $juegoRepository
+        JuegoRepository $juegoRepository,
+        AutorRepository $autorRepository
     ): JsonResponse {
         $data = json_decode($request->getContent(), true);
 
@@ -320,7 +322,7 @@ class JuegoController extends AbstractController
 
         $juego->setTipo($data['tipo']);
         $juego->setDescripcion($data['descripcion']);
-        $juego->setAnioPublicacion($data['aniopublicacion']);
+        $juego->setAnioPublicacion($data['anioPublicacion']);
         $juego->setDispAutoma($data['dispAutoma']);
         $juego->setEditorialLocal($data['editorialLocal']);
         $juego->setEditorialMadre($data['editorialMadre']);
@@ -329,7 +331,7 @@ class JuegoController extends AbstractController
         $juego->setMaxJugadores($data['maxJugadores']);
 
         foreach ($data['autores'] as $autorId) {
-            $autor = $em->getRepository(Autor::class)->findGameById($autorId);
+            $autor = $autorRepository->findAuthorById($autorId);
 
             if (!$autor) {
                 return new JsonResponse(['error' => "Autor con ID $autorId no encontrado"], Response::HTTP_NOT_FOUND);

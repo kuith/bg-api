@@ -4,6 +4,9 @@ namespace App\Controller;
 use App\Entity\Juego;
 use App\Entity\Jugador;
 use App\Entity\Partida;
+use App\Repository\AutorRepository;
+use App\Repository\JuegoRepository;
+use App\Repository\JugadorRepository;
 use App\Repository\PartidaRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Request;
@@ -74,8 +77,13 @@ class PartidaController extends AbstractController
     }
 
     #[Route('/', name: 'match_create', methods: ['POST'])]
-    public function createMatch(Request $request, EntityManagerInterface $em): JsonResponse
-    {
+    public function createMatch(
+        Request $request,
+        EntityManagerInterface $em,
+        JuegoRepository $juegoRepository,
+        JugadorRepository $jugadorRepository
+    ): JsonResponse{
+
         $data = json_decode($request->getContent(), true);
 
         // Intenta obtener los datos JSON
@@ -95,7 +103,7 @@ class PartidaController extends AbstractController
 
         // Establecer jugadores
         foreach ($data['jugadores_ids'] as $jugadorId) {
-            $jugador = $em->getRepository(Jugador::class)->find($jugadorId);
+            $jugador = $jugadorRepository->findPlayerById($jugadorId);
             if (!$jugador) {
                 throw $this->createNotFoundException('Jugador no encontrado');
             }
@@ -105,7 +113,7 @@ class PartidaController extends AbstractController
 
         // Establecer ganadores
         foreach ($data['ganadores_ids'] as $ganadorId) {
-            $jugador = $em->getRepository(Jugador::class)->find($ganadorId);
+            $jugador = $jugadorRepository->findPlayerById($ganadorId);
             if (!$jugador) {
                 throw $this->createNotFoundException('Jugador ganador no encontrado');
             }
@@ -114,7 +122,7 @@ class PartidaController extends AbstractController
 
         //Establecer juego
         foreach ($data['juego_id'] as $juegoId) {
-            $juego = $em->getRepository(Juego::class)->findGameById($juegoId);
+            $juego = $juegoRepository->findGameById($juegoId);
 
             if (!$juego) {
                 return new JsonResponse(['error' => "Juego con ID $juegoId no encontrado"], Response::HTTP_NOT_FOUND);

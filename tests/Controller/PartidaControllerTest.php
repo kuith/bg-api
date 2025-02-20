@@ -1,6 +1,7 @@
 <?php
 namespace App\Tests\Controller;
 use App\Repository\PartidaRepository;
+use App\Entity\Juego;
 
 class PartidaControllerTest extends BaseWebTestCase
 {
@@ -52,7 +53,11 @@ class PartidaControllerTest extends BaseWebTestCase
     {
         // Crear el cliente y obtener la URL generada para el endpoint
         $client = $this->client;
-        $url = $this->getUrl('match_findByDate', ['fecha' => '2021-01-01']);
+
+        $fecha = (new \DateTime('2021-01-01'))->format('Y-m-d');
+        $url = $this->getUrl('match_findByDate', ['fecha' => $fecha]);
+        dump($url);
+
 
         // Hacer la solicitud GET
         $client->request('GET', $url, [], [], ['HTTP_X-DEBUG' => '1']);
@@ -65,7 +70,7 @@ class PartidaControllerTest extends BaseWebTestCase
         $this->verifyReponseExtrucre($client, $data);
 
         // Validar que la partida recibida tiene la fecha correcta
-        $this->assertEquals('2021-01-01', $data[0]['fecha']->date); // Verificamos que la fecha sea la que pedimos
+        $this->assertEquals('2021-01-01', $data[0]['fecha']);
     }
 
 
