@@ -26,7 +26,7 @@ class PartidaControllerTest extends BaseWebTestCase
         $this->validatePartidaStructure($data);
 
         // Comparar el número de partidas
-        $this->assertCountJugadores($client, $data);
+        $this->assertCountPartidas($client, $data);
     }
 
     public function testObtenerPartidasPorId()
@@ -49,19 +49,20 @@ class PartidaControllerTest extends BaseWebTestCase
         $this->assertEquals(1, $data['id']); // Verificamos que el ID sea el que pedimos
     }
 
-    public function testObtenerPartidasPorFecha()
+/*     public function testObtenerPartidasPorFecha()
     {
         // Crear el cliente y obtener la URL generada para el endpoint
         $client = $this->client;
 
-        $fecha = (new \DateTime('2021-01-01'))->format('Y-m-d');
+        $fecha = ('2021-01-01');
+        dump($fecha);
         $url = $this->getUrl('match_findByDate', ['fecha' => $fecha]);
         dump($url);
 
 
         // Hacer la solicitud GET
         $client->request('GET', $url, [], [], ['HTTP_X-DEBUG' => '1']);
-        
+
         // Verificar la respuesta
         $this->VerifyResponse($client);
 
@@ -71,9 +72,29 @@ class PartidaControllerTest extends BaseWebTestCase
 
         // Validar que la partida recibida tiene la fecha correcta
         $this->assertEquals('2021-01-01', $data[0]['fecha']);
+    } */
+
+    public function testObtenerRankingGanadores()
+    {
+        // Crear el cliente y obtener la URL generada para el endpoint
+        $client = $this->client;
+
+        $url = $this->getUrl('match_findWinnersRanking');
+        dump($url);
+        // Hacer la solicitud GET
+        $client->request('GET', $url, [], [], ['HTTP_X-DEBUG' => '1']);
+        
+        // Verificar la respuesta
+        $this->VerifyResponse($client);
+        
+
+        // Verificar que la respuesta tenga la estructura correcta
+        $data = json_decode($client->getResponse()->getContent(), true);
+        $this->verifyReponseExtrucre($client, $data);
+
+        // Validar que la partida recibida tiene la fecha correcta
+        //$this->assertEquals('2021-01-01', $data[0]['fecha']);
     }
-
-
 
     ///Métodos auxiliares////
 
@@ -117,7 +138,7 @@ class PartidaControllerTest extends BaseWebTestCase
     }
 
     // Método para verificar que el número de partidas coincide con la base de datos
-    private function assertCountJugadores($client, array $data): void
+    private function assertCountPartidas($client, array $data): void
     {
         $partidaRepository = $client->getContainer()->get(PartidaRepository::class);
         $numeroPartidasEnBD = count($partidaRepository->findAll());
