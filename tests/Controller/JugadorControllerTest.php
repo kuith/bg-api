@@ -114,7 +114,7 @@ class JugadorControllerTest extends BaseWebTestCase
 
     }
 
-/*     public function testCrearJugador()
+    public function testCrearJugador()
     {
         // Crear el cliente y obtener la URL generada para el endpoint
         $client = $this->client;
@@ -122,23 +122,42 @@ class JugadorControllerTest extends BaseWebTestCase
 
         //datos validos
         $jugadorData = [
-            "nombre" => "Rafa",
-            "correo" => "rafa@example.com",
+            "nombre" => "Jugador de prueba",
+            "correo" => "PRUEBAS@example.com",
             "rol" => "admin",
             "password" => "1234"
         ];
 
         // Hacer la solicitud GET
-        $client->request('GET', $url, [], [], ['CONTENT_TYPE' => 'application/json'], json_encode($jugadorData));
+        $client->request('POST', $url, [], [], ['CONTENT_TYPE' => 'application/json'], json_encode($jugadorData));
 
         // Verificar que la respuesta sea 201 (Created)
-        $this->assertEquals(201, $client->getResponse()->getStatusCode());
+        $this->assertEquals($client->getResponse()->getStatusCode(), 201);
+        
 
         // Verificar el contenido de la respuesta
         $data = json_decode($client->getResponse()->getContent(), true);
         $this->assertEquals('Jugador creado con éxito', $data['message']);
 
-    } */
+    }
+
+    public function testBorrarJugador()
+    {
+        // Crear el cliente y obtener la URL generada para el endpoint
+        $client = $this->client;
+        $url = $this->getUrl('player_delete', ['id' => 1]); // Usamos un ID que sabemos que existe en la base de datos
+
+        // Hacer la solicitud GET
+        $client->request('DELETE', $url, [], [], ['CONTENT_TYPE' => 'application/json']);
+
+        // Verificar que la respuesta sea 201 (Created)
+        $this->assertEquals($client->getResponse()->getStatusCode(), 200);
+        
+
+        // Verificar el contenido de la respuesta
+        //$data = json_decode($client->getResponse()->getContent(), true);
+        $this->assertEquals('Jugador eliminado!', $client->getResponse()->getContent());  // Verifica el mensaje completo.
+    }
 
 
 
@@ -168,7 +187,7 @@ class JugadorControllerTest extends BaseWebTestCase
         $this->assertFalse($client->getResponse()->isServerError(), 'El servidor devolvió un error 500');
 
         // Verificar que la respuesta sea 200 OK
-        $this->assertEquals(200, $client->getResponse()->getStatusCode());
+        $this->assertEquals($expectStatusCode, $client->getResponse()->getStatusCode());
     }
 
     //Validar estructura de un jugador

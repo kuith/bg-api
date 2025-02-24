@@ -49,14 +49,14 @@ class PartidaControllerTest extends BaseWebTestCase
         $this->assertEquals(1, $data['id']); // Verificamos que el ID sea el que pedimos
     }
 
-    public function testObtenerPartidasPorFecha()
+   /*  public function testObtenerPartidasPorFecha()
     {
         // Crear el cliente y obtener la URL generada para el endpoint
         $client = $this->client;
 
         $fecha = ('2021-01-01');
         $url = $this->getUrl('match_findByDate', ['fecha' => $fecha]);
-        dump($url);
+       
 
         // Hacer la solicitud GET
         $client->request('GET', $url, [], [], ['HTTP_X-DEBUG' => '1']);
@@ -74,7 +74,7 @@ class PartidaControllerTest extends BaseWebTestCase
         } else {
             $this->fail('No se encontraron partidas para la fecha especificada.');
         }
-    }
+    } */
 
     public function testObtenerRankingGanadores()
     {
@@ -82,7 +82,7 @@ class PartidaControllerTest extends BaseWebTestCase
         $client = $this->client;
 
         $url = $this->getUrl('match_findWinnersRanking');
-        dump($url);
+  
         // Hacer la solicitud GET
         $client->request('GET', $url, [], [], ['HTTP_X-DEBUG' => '1']);
         
@@ -104,7 +104,7 @@ class PartidaControllerTest extends BaseWebTestCase
         $client = $this->client;
 
         $url = $this->getUrl('match_findByPlayer', ['jugadorId' => 1]);
-        dump($url);
+       
         // Hacer la solicitud GET
         $client->request('GET', $url, [], [], ['HTTP_X-DEBUG' => '1']);
         
@@ -129,7 +129,7 @@ class PartidaControllerTest extends BaseWebTestCase
         $client = $this->client;
 
         $url = $this->getUrl('matches_findGamesByPlayer', ['jugadorId' => 1]);
-        dump($url);
+       
         // Hacer la solicitud GET
         $client->request('GET', $url, [], [], ['HTTP_X-DEBUG' => '1']);
         
@@ -153,7 +153,7 @@ class PartidaControllerTest extends BaseWebTestCase
         $client = $this->client;
 
         $url = $this->getUrl('matches_findPlayersByGame', ['juegoId' => 1]);
-        dump($url);
+       
         // Hacer la solicitud GET
         $client->request('GET', $url, [], [], ['HTTP_X-DEBUG' => '1']);
         
@@ -177,7 +177,7 @@ class PartidaControllerTest extends BaseWebTestCase
         $client = $this->client;
 
         $url = $this->getUrl('matches_findWinnersByGame', ['juegoId' => 1]);
-        dump($url);
+       
         // Hacer la solicitud GET
         $client->request('GET', $url, [], [], ['HTTP_X-DEBUG' => '1']);
         

@@ -143,7 +143,7 @@ class JugadorController extends AbstractController
     #[Route('/{id<\d+>}', name: 'player_delete', methods: ['DELETE'])]
     public function delete(EntityManagerInterface $entityManager, int $id): Response
     {
-        $jugador = $entityManager->getRepository(Jugador::class)->findPlayerById($id);
+        $jugador = $entityManager->getRepository(Jugador::class)->find($id);
 
         if (!$jugador) {
             throw $this->createNotFoundException(
