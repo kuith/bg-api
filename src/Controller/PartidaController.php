@@ -43,13 +43,13 @@ class PartidaController extends AbstractController
     #[Route('/date/{fecha}', name: 'match_findByDate', methods: ['GET'])]
     public function findMatchByDate(String $fecha, PartidaRepository $repository): Response
     {
-        $partida = $repository->findMatchByDate($fecha);
+        $partidas = $repository->findMatchByDate($fecha);
 
-        if (!$partida) {
+        if (!$partidas) {
             throw $this->createNotFoundException('Partida no encontrada.');
         }
 
-        return $this->json($partida, Response::HTTP_OK, [], ['groups' => 'partida_lista']);
+        return $this->json($partidas, Response::HTTP_OK, [], ['groups' => 'partida_lista']);
     }
 
     #[Route('/winnersRanking', name: 'match_findWinnersRanking', methods: ['GET'])]

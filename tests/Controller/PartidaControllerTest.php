@@ -49,16 +49,14 @@ class PartidaControllerTest extends BaseWebTestCase
         $this->assertEquals(1, $data['id']); // Verificamos que el ID sea el que pedimos
     }
 
-/*     public function testObtenerPartidasPorFecha()
+    public function testObtenerPartidasPorFecha()
     {
         // Crear el cliente y obtener la URL generada para el endpoint
         $client = $this->client;
 
         $fecha = ('2021-01-01');
-        dump($fecha);
         $url = $this->getUrl('match_findByDate', ['fecha' => $fecha]);
         dump($url);
-
 
         // Hacer la solicitud GET
         $client->request('GET', $url, [], [], ['HTTP_X-DEBUG' => '1']);
@@ -71,8 +69,12 @@ class PartidaControllerTest extends BaseWebTestCase
         $this->verifyReponseExtrucre($client, $data);
 
         // Validar que la partida recibida tiene la fecha correcta
-        $this->assertEquals('2021-01-01', $data[0]['fecha']);
-    } */
+        if (!empty($data)) {
+            $this->assertEquals('2021-01-01', $data[0]['fecha']);
+        } else {
+            $this->fail('No se encontraron partidas para la fecha especificada.');
+        }
+    }
 
     public function testObtenerRankingGanadores()
     {
@@ -95,6 +97,104 @@ class PartidaControllerTest extends BaseWebTestCase
         // Validar que la partida recibida tiene la fecha correcta
         //$this->assertEquals('2021-01-01', $data[0]['fecha']);
     }
+
+    public function testObtenerPartidasPorJugador()
+    {
+        // Crear el cliente y obtener la URL generada para el endpoint
+        $client = $this->client;
+
+        $url = $this->getUrl('match_findByPlayer', ['jugadorId' => 1]);
+        dump($url);
+        // Hacer la solicitud GET
+        $client->request('GET', $url, [], [], ['HTTP_X-DEBUG' => '1']);
+        
+        // Verificar la respuesta
+        $this->VerifyResponse($client);
+        
+
+        // Verificar que la respuesta tenga la estructura correcta
+        $data = json_decode($client->getResponse()->getContent(), true);
+        $this->verifyReponseExtrucre($client, $data);
+
+        // Validar que las partidas recibidas tienen al jugador deseado
+        foreach ($data as $partida) {
+            $this->assertArrayHasKey('jugadores', $partida, "El campo 'jugadores' no está presente en la partida");
+            $this->assertContains(1, array_column($partida['jugadores'], 'id'), "El jugador con ID 1 no está presente en la partida");
+        }
+    }
+
+    public function testObtenerJuegosPorJugador() //Los juegos a los que ha jugado un jugador
+    {
+        // Crear el cliente y obtener la URL generada para el endpoint
+        $client = $this->client;
+
+        $url = $this->getUrl('matches_findGamesByPlayer', ['jugadorId' => 1]);
+        dump($url);
+        // Hacer la solicitud GET
+        $client->request('GET', $url, [], [], ['HTTP_X-DEBUG' => '1']);
+        
+        // Verificar la respuesta
+        $this->VerifyResponse($client);
+        
+
+        // Verificar que la respuesta tenga la estructura correcta
+        $data = json_decode($client->getResponse()->getContent(), true);
+        $this->verifyReponseExtrucre($client, $data);
+
+        foreach ($data as $juego) {
+            $this->assertArrayHasKey('id', $juego, "El campo 'id' no está presente en el juego");
+            $this->assertArrayHasKey('nombre', $juego, "El campo 'nombre' no está presente en el juego");
+        }
+    }
+
+    public function testObtenerJugadoresPorJuego() //Los juegos a los que ha jugado un jugador
+    {
+        // Crear el cliente y obtener la URL generada para el endpoint
+        $client = $this->client;
+
+        $url = $this->getUrl('matches_findPlayersByGame', ['juegoId' => 1]);
+        dump($url);
+        // Hacer la solicitud GET
+        $client->request('GET', $url, [], [], ['HTTP_X-DEBUG' => '1']);
+        
+        // Verificar la respuesta
+        $this->VerifyResponse($client);
+        
+
+        // Verificar que la respuesta tenga la estructura correcta
+        $data = json_decode($client->getResponse()->getContent(), true);
+        $this->verifyReponseExtrucre($client, $data);
+
+        foreach ($data as $jugador) {
+            $this->assertArrayHasKey('id', $jugador, "El campo 'id' no está presente en el juego");
+            $this->assertArrayHasKey('nombre', $jugador, "El campo 'nombre' no está presente en el juego");
+        }
+    }
+
+    public function testObtenerGanadoresPorJuego() //Los juegos a los que ha jugado un jugador
+    {
+        // Crear el cliente y obtener la URL generada para el endpoint
+        $client = $this->client;
+
+        $url = $this->getUrl('matches_findWinnersByGame', ['juegoId' => 1]);
+        dump($url);
+        // Hacer la solicitud GET
+        $client->request('GET', $url, [], [], ['HTTP_X-DEBUG' => '1']);
+        
+        // Verificar la respuesta
+        $this->VerifyResponse($client);
+        
+
+        // Verificar que la respuesta tenga la estructura correcta
+        $data = json_decode($client->getResponse()->getContent(), true);
+        $this->verifyReponseExtrucre($client, $data);
+
+        foreach ($data as $jugador) {
+            $this->assertArrayHasKey('id', $jugador, "El campo 'id' no está presente en el juego");
+            $this->assertArrayHasKey('nombre', $jugador, "El campo 'nombre' no está presente en el juego");
+        }
+    }
+
 
     ///Métodos auxiliares////
 
