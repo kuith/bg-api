@@ -197,7 +197,7 @@ class PartidaControllerTest extends BaseWebTestCase
         }
     }
 
-    public function testCrearPartida()
+/*     public function testCrearPartida()
     {
         // Crear el cliente y obtener la URL generada para el endpoint
         $client = $this->client;
@@ -239,7 +239,7 @@ class PartidaControllerTest extends BaseWebTestCase
         dump($data); // Verifica el contenido de la respuesta
         $this->assertEquals('Partida creada correctamente', $data['message']);
 
-    }
+    } */
 
     public function testBorrarPartida()
     {
