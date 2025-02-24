@@ -1,7 +1,8 @@
 <?php
 namespace App\Tests\Controller;
-use App\Repository\PartidaRepository;
 use App\Entity\Juego;
+use App\Entity\Jugador;
+use App\Repository\PartidaRepository;
 
 class PartidaControllerTest extends BaseWebTestCase
 {
@@ -49,12 +50,12 @@ class PartidaControllerTest extends BaseWebTestCase
         $this->assertEquals(1, $data['id']); // Verificamos que el ID sea el que pedimos
     }
 
-   /*  public function testObtenerPartidasPorFecha()
+    public function testObtenerPartidasPorFecha()
     {
         // Crear el cliente y obtener la URL generada para el endpoint
         $client = $this->client;
 
-        $fecha = ('2021-01-01');
+        $fecha = ('2021-01-01 00:00:00');
         $url = $this->getUrl('match_findByDate', ['fecha' => $fecha]);
        
 
@@ -70,11 +71,12 @@ class PartidaControllerTest extends BaseWebTestCase
 
         // Validar que la partida recibida tiene la fecha correcta
         if (!empty($data)) {
-            $this->assertEquals('2021-01-01', $data[0]['fecha']);
+           $fechaRespuesta = (new \DateTime($data[0]['fecha']))->format('Y-m-d 00:00:00');
+           $this->assertEquals($fecha, $fechaRespuesta);
         } else {
             $this->fail('No se encontraron partidas para la fecha especificada.');
         }
-    } */
+    }
 
     public function testObtenerRankingGanadores()
     {
@@ -193,6 +195,67 @@ class PartidaControllerTest extends BaseWebTestCase
             $this->assertArrayHasKey('id', $jugador, "El campo 'id' no está presente en el juego");
             $this->assertArrayHasKey('nombre', $jugador, "El campo 'nombre' no está presente en el juego");
         }
+    }
+
+    public function testCrearPartida()
+    {
+        // Crear el cliente y obtener la URL generada para el endpoint
+        $client = $this->client;
+        $url = $this->getUrl('match_create');
+        
+        // Obtener el entity manager y los repositorios
+        $entityManager = $client->getContainer()->get('doctrine.orm.entity_manager');
+        $jugadorRepository = $entityManager->getRepository(Jugador::class);
+        $juegoRepository = $entityManager->getRepository(Juego::class);
+
+        // Obtener las referencias de los jugadores y el juego
+        $jugador1 = $jugadorRepository->findOneBy(['nombre' => 'Rafa']);
+        $jugador2 = $jugadorRepository->findOneBy(['nombre' => 'Paula']);
+        $jugador3 = $jugadorRepository->findOneBy(['nombre' => 'Miguel']);
+        $jugador4 = $jugadorRepository->findOneBy(['nombre' => 'Irene']);
+        $juego = $juegoRepository->find(['id' => '1']);
+        //$fecha = (new \DateTime('2021-01-01 00:00:00'))->format('Y-m-d 00:00:00');
+        $fecha = '2021-01-01 00:00:00';
+
+        //datos validos
+        $partidaData = [
+            "fecha" => $fecha,
+            "jugadores_ids" => [$jugador1->getId(), $jugador2->getId(), $jugador3->getId(), $jugador4->getId()],
+            "ganadores_ids" => [$jugador2->getId()],
+            "juego_id" => $juego ->getId()
+        ];
+
+        dump($juego); // Depurar si se está obteniendo correctamente el juego
+        dump($juego ? $juego->getId() : 'Juego no encontrado');
+
+        // Hacer la solicitud GET
+        $client->request('POST', $url, [], [], ['CONTENT_TYPE' => 'application/json'], json_encode($partidaData, JSON_THROW_ON_ERROR));
+
+        // Verificar que la respuesta sea 201 (Created)
+        $this->assertEquals($client->getResponse()->getStatusCode(), 201);
+        
+        // Verificar el contenido de la respuesta
+        $data = json_decode($client->getResponse()->getContent(), true);
+        dump($data); // Verifica el contenido de la respuesta
+        $this->assertEquals('Partida creada correctamente', $data['message']);
+
+    }
+
+    public function testBorrarPartida()
+    {
+        // Crear el cliente y obtener la URL generada para el endpoint
+        $client = $this->client;
+        $url = $this->getUrl('match_delete', ['id' => 1]);
+
+        // Hacer la solicitud GET
+        $client->request('DELETE', $url, [], [], ['CONTENT_TYPE' => 'application/json']);
+
+        // Verificar que la respuesta sea 201 (Created)
+        $this->assertEquals($client->getResponse()->getStatusCode(), 200);
+        
+
+        // Verificar el contenido de la respuesta
+        $this->assertEquals('Partida eliminada!', $client->getResponse()->getContent());
     }
 
 

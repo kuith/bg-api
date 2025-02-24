@@ -103,7 +103,7 @@ class PartidaController extends AbstractController
 
         // Establecer jugadores
         foreach ($data['jugadores_ids'] as $jugadorId) {
-            $jugador = $jugadorRepository->findPlayerById($jugadorId);
+            $jugador = $jugadorRepository->find($jugadorId);
             if (!$jugador) {
                 throw $this->createNotFoundException('Jugador no encontrado');
             }
@@ -113,7 +113,7 @@ class PartidaController extends AbstractController
 
         // Establecer ganadores
         foreach ($data['ganadores_ids'] as $ganadorId) {
-            $jugador = $jugadorRepository->findPlayerById($ganadorId);
+            $jugador = $jugadorRepository->find($ganadorId);
             if (!$jugador) {
                 throw $this->createNotFoundException('Jugador ganador no encontrado');
             }
@@ -122,7 +122,7 @@ class PartidaController extends AbstractController
 
         //Establecer juego
         foreach ($data['juego_id'] as $juegoId) {
-            $juego = $juegoRepository->findGameById($juegoId);
+            $juego = $juegoRepository->find($juegoId);
 
             if (!$juego) {
                 return new JsonResponse(['error' => "Juego con ID $juegoId no encontrado"], Response::HTTP_NOT_FOUND);
@@ -140,7 +140,7 @@ class PartidaController extends AbstractController
     #[Route('/{id<\d+>}', name: 'match_delete', methods: ['DELETE'])]
     public function delete(EntityManagerInterface $entityManager, int $id): Response
     {
-        $partida = $entityManager->getRepository(Partida::class)->findMatchById($id);
+        $partida = $entityManager->getRepository(Partida::class)->find($id);
 
         if (!$partida) {
             throw $this->createNotFoundException(

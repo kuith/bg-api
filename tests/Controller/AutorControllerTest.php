@@ -93,6 +93,50 @@ class AutorControllerTest extends BaseWebTestCase
         }
     }
 
+     public function testCrearAutor()
+    {
+        // Crear el cliente y obtener la URL generada para el endpoint
+        $client = $this->client;
+        $url = $this->getUrl('autor_create');
+
+        //datos validos
+        $AutorData = [
+            "nombre" => "Autor de prueba",
+            "nacionalidad" => "España"
+        ];
+
+        // Hacer la solicitud GET
+        $client->request('POST', $url, [], [], ['CONTENT_TYPE' => 'application/json'], json_encode($AutorData));
+
+        // Verificar que la respuesta sea 201 (Created)
+        $this->assertEquals($client->getResponse()->getStatusCode(), 201);
+        
+
+        // Verificar el contenido de la respuesta
+        $data = json_decode($client->getResponse()->getContent(), true);
+        $this->assertEquals('Autor creado con éxito', $data['message']);
+
+    }
+
+    public function testBorrarAutor()
+    {
+        // Crear el cliente y obtener la URL generada para el endpoint
+        $client = $this->client;
+        $url = $this->getUrl('author_delete', ['id' => 1]); // Usamos un ID que sabemos que existe en la base de datos
+
+        // Hacer la solicitud GET
+        $client->request('DELETE', $url, [], [], ['CONTENT_TYPE' => 'application/json']);
+
+        // Verificar que la respuesta sea 201 (Created)
+        $this->assertEquals($client->getResponse()->getStatusCode(), 200);
+        
+
+        // Verificar el contenido de la respuesta
+        //$data = json_decode($client->getResponse()->getContent(), true);
+        $this->assertEquals('Autor eliminado!', $client->getResponse()->getContent());
+    }
+
+
     ///Métodos auxiliares////
 
     //Verificar respuesta

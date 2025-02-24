@@ -34,7 +34,7 @@ class PartidaFixtures extends Fixture
 
 //////////////////////////////////////////////
         $partida1 = new Partida();
-        $partida1->setFecha(new \DateTime('2021-01-01'));
+        $partida1->setFecha(new \DateTime('2021-01-01 00:00:00'));
         $partida1->setJugadores($jugadores);
         $partida1->setGanadores($ganador2);
         $partida1->setJuego( $juego1);
@@ -42,7 +42,7 @@ class PartidaFixtures extends Fixture
         $manager->persist($partida1);
 //////////////////////////////////////////////
         $partida2 = new Partida();
-        $partida2->setFecha(new \DateTime('2021-01-01'));
+        $partida2->setFecha(new \DateTime('2021-01-01 00:00:00'));
         $partida2->setJugadores($jugadores1);
         $partida2->setGanadores($ganador2);
         $partida2->setJuego( $juego2);
@@ -50,7 +50,7 @@ class PartidaFixtures extends Fixture
         $manager->persist($partida2);
 //////////////////////////////////////////////
         $partida3 = new Partida();
-        $partida3->setFecha(new \DateTime('2021-01-01'));
+        $partida3->setFecha(new \DateTime('2021-01-01 00:00:00'));
         $partida3->setJugadores($jugadores1);
         $partida3->setGanadores($ganador1);
         $partida3->setJuego( $juego2);
@@ -58,7 +58,7 @@ class PartidaFixtures extends Fixture
         $manager->persist($partida3);
 //////////////////////////////////////////////
         $partida4 = new Partida();
-        $partida4->setFecha(new \DateTime('2021-01-01'));
+        $partida4->setFecha(new \DateTime('2021-01-01 00:00:00'));
         $partida4->setJugadores($jugadores2);
         $partida4->setGanadores($ganador3);
         $partida4->setJuego( $juego3);
@@ -66,7 +66,7 @@ class PartidaFixtures extends Fixture
         $manager->persist($partida4);
 //////////////////////////////////////////////
         $partida5 = new Partida();
-        $partida5->setFecha(new \DateTime('2021-01-01'));
+        $partida5->setFecha(new \DateTime('2021-01-01 00:00:00'));
         $partida5->setJugadores($jugadores);
         $partida5->setGanadores($ganador2);
         $partida5->setJuego( $juego3);

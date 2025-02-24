@@ -69,7 +69,7 @@ class AutorController extends AbstractController
     #[Route('/{id<\d+>}', name: 'author_delete', methods: ['DELETE'])]
     public function delete(EntityManagerInterface $entityManager, int $id): Response
     {
-        $autor = $entityManager->getRepository(Autor::class)->findAuthorById($id);
+        $autor = $entityManager->getRepository(Autor::class)->find($id);
 
         if (!$autor) {
             throw $this->createNotFoundException(
