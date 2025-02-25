@@ -70,7 +70,7 @@ class Partida
 
     public function setGanadores(Collection $ganadores): self
     {
-        $this->jugadores = $ganadores;
+        $this->ganadores = $ganadores;
         return $this;
     }
 

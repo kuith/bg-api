@@ -3,6 +3,7 @@
 namespace App\Controller;
 use App\Entity\Autor;
 use App\Entity\Juego;
+use App\Repository\AutorRepository;
 use App\Repository\JuegoRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Request;
@@ -146,13 +147,13 @@ class JuegoController extends AbstractController
          return $this->json($juegos, Response::HTTP_OK, [], ['groups' => 'juego_lista']);
     }
 
-    #[Route('/minplayers/{minjugadores}', name: 'game_findByMinPlayes', methods: ['GET'])]
-    public function findByMinPlayers(int $minjugadores, JuegoRepository $repository): Response
+    #[Route('/minplayers/{minJugadores}', name: 'game_findByMinPlayes', methods: ['GET'])]
+    public function findByMinPlayers(int $minJugadores, JuegoRepository $repository): Response
     {
-        $juegos = $repository->findGamesByMinPlayers($minjugadores);
+        $juegos = $repository->findGamesByMinPlayers($minJugadores);
         if (!$juegos) {
             throw $this->createNotFoundException(
-                'No hay juegos en ese mínimo de jugadores: ' .$minjugadores
+                'No hay juegos en ese mínimo de jugadores: ' .$minJugadores
             );
         }
         //return $this->json($juegos);
@@ -174,7 +175,6 @@ class JuegoController extends AbstractController
          return $this->json($juegos, Response::HTTP_OK, [], ['groups' => 'juego_lista']);
     }
     
-
     #[Route('/gamesByAutors/{id}', name: 'game_findByAuthors', methods: ['GET'])]    
     public function findByAuthors(int $id, JuegoRepository $repository): Response
     {
@@ -236,6 +236,11 @@ class JuegoController extends AbstractController
                 'No hay expansiones para el juego proporcionado: '.$idJuego
             );
         }
+        // Aquí agregas el campo 'juegoBaseId' a cada juego en las expansiones
+        //foreach ($juegos as &$juego) {
+        //    // Aquí asignas el id del juego base como un campo adicional
+        //    $juego['juegoBaseId'] = $idJuego;  // El idJuego es el juego base para las expansiones
+        //}
         return $this->json($juegos, Response::HTTP_OK, [], ['groups' => 'juego_lista']);
     }
 
@@ -280,7 +285,8 @@ class JuegoController extends AbstractController
         Request $request,
         EntityManagerInterface $em,
         ValidatorInterface $validator,
-        JuegoRepository $juegoRepository
+        JuegoRepository $juegoRepository,
+        AutorRepository $autorRepository
     ): JsonResponse {
         $data = json_decode($request->getContent(), true);
 
@@ -316,7 +322,7 @@ class JuegoController extends AbstractController
 
         $juego->setTipo($data['tipo']);
         $juego->setDescripcion($data['descripcion']);
-        $juego->setAnioPublicacion($data['aniopublicacion']);
+        $juego->setAnioPublicacion($data['anioPublicacion']);
         $juego->setDispAutoma($data['dispAutoma']);
         $juego->setEditorialLocal($data['editorialLocal']);
         $juego->setEditorialMadre($data['editorialMadre']);
@@ -325,7 +331,7 @@ class JuegoController extends AbstractController
         $juego->setMaxJugadores($data['maxJugadores']);
 
         foreach ($data['autores'] as $autorId) {
-            $autor = $em->getRepository(Autor::class)->findGameById($autorId);
+            $autor = $autorRepository->findAuthorById($autorId);
 
             if (!$autor) {
                 return new JsonResponse(['error' => "Autor con ID $autorId no encontrado"], Response::HTTP_NOT_FOUND);

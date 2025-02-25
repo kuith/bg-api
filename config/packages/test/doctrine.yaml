@@ -1,0 +1,19 @@
+doctrine:
+    dbal:
+        driver: 'pdo_sqlite'
+        url: 'sqlite:///:memory:'  # SQLite en memoria
+        logging: false
+        #memory: true  # Esto activa la base de datos en memoria
+    orm:
+        auto_generate_proxy_classes: true
+        naming_strategy: doctrine.orm.naming_strategy.underscore
+        auto_mapping: true
+        controller_resolver:
+            auto_mapping: true
+        mappings:
+            App:
+                is_bundle: false
+                dir: '%kernel.project_dir%/src/Entity'
+                prefix: 'App\Entity'
+                type: attribute
+
