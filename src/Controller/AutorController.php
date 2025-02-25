@@ -66,6 +66,34 @@ class AutorController extends AbstractController
         return new JsonResponse(['message' => 'Autor creado con éxito'], 201);
     }
 
+    #[Route('/{id}', name: 'author_update', methods: ['PATCH'])]
+    public function actualizarJugador(int $id, Request $request, AutorRepository $autorRepository, EntityManagerInterface $em): JsonResponse
+    {
+        $autor = $autorRepository->find($id);
+
+        if (!$autor) {
+            return new JsonResponse(['error' => 'Autor no encontrado'], 404);
+        }
+
+        // Obtener datos del request
+        $data = json_decode($request->getContent(), true);
+
+        // Modificar solo si los valores existen en la petición
+
+        if (isset($data['nombre'])) {
+            $autor->setNombre($data['nombre']);
+        }
+        if (isset($data['nacionalidad'])) {
+            $autor->setNacionalidad($data['nacionalidad']);
+        }
+        
+        // Guardar cambios en la base de datos
+        $em->flush();
+
+        return new JsonResponse(['message' => 'Autor actualizado con éxito'], 200);
+    }
+
+
     #[Route('/{id<\d+>}', name: 'author_delete', methods: ['DELETE'])]
     public function delete(EntityManagerInterface $entityManager, int $id): Response
     {

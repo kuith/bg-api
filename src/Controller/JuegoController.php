@@ -236,11 +236,6 @@ class JuegoController extends AbstractController
                 'No hay expansiones para el juego proporcionado: '.$idJuego
             );
         }
-        // Aquí agregas el campo 'juegoBaseId' a cada juego en las expansiones
-        //foreach ($juegos as &$juego) {
-        //    // Aquí asignas el id del juego base como un campo adicional
-        //    $juego['juegoBaseId'] = $idJuego;  // El idJuego es el juego base para las expansiones
-        //}
         return $this->json($juegos, Response::HTTP_OK, [], ['groups' => 'juego_lista']);
     }
 
@@ -355,6 +350,73 @@ class JuegoController extends AbstractController
         $em->flush();
 
         return new JsonResponse(['message' => 'Juego creado con éxito'], 201);
+    }
+
+    #[Route('/{id}', name: 'game_update', methods: ['PATCH'])]
+    public function actualizarJuego(int $id, Request $request, JuegoRepository $juegoRepository, EntityManagerInterface $em): JsonResponse
+    {
+        $juego = $juegoRepository->find($id);
+
+        if (!$juego) {
+            return new JsonResponse(['error' => 'Juego no encontrado'], 404);
+        }
+
+        // Obtener datos del request
+        $data = json_decode($request->getContent(), true);
+
+        // Modificar solo si los valores existen en la petición
+
+        if (isset($data['nombre'])) {
+            $juego->setNombre($data['nombre']);
+        }
+        if (isset($data['baseExpansion'])) {
+            $juego->setBaseExpansion($data['baseExpansion']);
+        
+            // Si es una expansión, buscar el juego base
+            if ($data['baseExpansion'] === 'expansion') {
+                if (!isset($data['juegoBaseId'])) {
+                    return new JsonResponse(['error' => 'Debe proporcionar el juego base para una expansión'], 400);
+                }
+
+                $juegoBase = $juegoRepository->find($data['juegoBaseId']);
+                if (!$juegoBase || $juegoBase->getBaseExpansion() !== 'base') {
+                    return new JsonResponse(['error' => 'El juego base no es válido'], 400);
+                }
+
+                $juego->setJuegoBase($juegoBase);
+            }
+        }
+        if (isset($data['tipo'])) {
+            $juego->setTipo($data['tipo']);
+        }
+        if (isset($data['descripcion'])) {
+            $juego->setDescripcion($data['descripcion']);
+        }
+        if (isset($data['anioPublicacion'])) {
+            $juego->setAnioPublicacion($data['anioPublicacion']);
+        }
+        if (isset($data['dispAutoma'])) {
+            $juego->setDispAutoma($data['dispAutoma']);
+        }
+        if (isset($data['editorialLocal'])) {
+            $juego->setEditorialLocal($data['editorialLocal']);
+        }
+        if (isset($data['editorialMadre'])) {
+            $juego->setEditorialMadre($data['editorialMadre']);
+        }
+        if (isset($data['precio'])) {
+            $juego->setPrecio($data['precio']);
+        }
+        if (isset($data['minJugadores'])) {
+            $juego->setMinJugadores($data['minJugadores']);
+        }
+        if (isset($data['maxJugadores'])) {
+            $juego->setMaxJugadores($data['maxJugadores']);
+        }
+        // Guardar cambios en la base de datos
+        $em->flush();
+
+        return new JsonResponse(['message' => 'Juego actualizado con éxito'], 200);
     }
 
     #[Route('/{id<\d+>}', name: 'game_delete', methods: ['DELETE'])]

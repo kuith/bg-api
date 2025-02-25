@@ -195,7 +195,7 @@ class JugadorController extends AbstractController
         // Guardar cambios en la base de datos
         $em->flush();
 
-        return $this->json($jugador, 200);
+        return new JsonResponse(['message' => 'Jugador actualizado con éxito'], 200);
     }
    
 }

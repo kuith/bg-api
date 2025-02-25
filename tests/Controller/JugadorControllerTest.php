@@ -141,6 +141,30 @@ class JugadorControllerTest extends BaseWebTestCase
 
     }
 
+    public function testActualizarJugador()
+    {
+        // Crear el cliente y obtener la URL generada para el endpoint
+        $client = $this->client;
+        $url = $this->getUrl('player_update', ['id' => 1]);
+
+        //datos validos
+        $jugadorData = [
+            "password" => "123456777"
+        ];
+
+        // Hacer la solicitud GET
+        $client->request('PATCH', $url, [], [], ['CONTENT_TYPE' => 'application/json'], json_encode($jugadorData));
+
+        // Verificar que la respuesta sea 201 (Created)
+        $this->assertEquals($client->getResponse()->getStatusCode(), 200);
+        
+
+        // Verificar el contenido de la respuesta
+        $data = json_decode($client->getResponse()->getContent(), true);
+        $this->assertEquals('Jugador actualizado con éxito', $data['message']);
+
+    }
+
     public function testBorrarJugador()
     {
         // Crear el cliente y obtener la URL generada para el endpoint
@@ -199,7 +223,7 @@ class JugadorControllerTest extends BaseWebTestCase
             $this->assertArrayHasKey('correo', $jugador);
             $this->assertArrayHasKey('rol', $jugador);
             $this->assertArrayHasKey('fechaRegistro', $jugador);
-            $this->assertArrayHasKey('password', $jugador);
+            $this->assertArrayNotHasKey('password', $jugador);
         }
     }
 

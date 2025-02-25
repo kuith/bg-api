@@ -118,6 +118,30 @@ class AutorControllerTest extends BaseWebTestCase
 
     }
 
+    public function testActualizarAutor()
+    {
+        // Crear el cliente y obtener la URL generada para el endpoint
+        $client = $this->client;
+        $url = $this->getUrl('author_update', ['id' => 1]);
+
+        //datos validos
+        $autorData = [
+            "nacionalidad" => "otra"
+        ];
+
+        // Hacer la solicitud GET
+        $client->request('PATCH', $url, [], [], ['CONTENT_TYPE' => 'application/json'], json_encode($autorData));
+
+        // Verificar que la respuesta sea 201 (Created)
+        $this->assertEquals($client->getResponse()->getStatusCode(), 200);
+        
+
+        // Verificar el contenido de la respuesta
+        $data = json_decode($client->getResponse()->getContent(), true);
+        $this->assertEquals('Autor actualizado con éxito', $data['message']);
+
+    }
+
     public function testBorrarAutor()
     {
         // Crear el cliente y obtener la URL generada para el endpoint

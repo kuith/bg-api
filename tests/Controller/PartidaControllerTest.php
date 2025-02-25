@@ -241,6 +241,30 @@ class PartidaControllerTest extends BaseWebTestCase
 
     } */
 
+    public function testActualizarPartida()
+    {
+        // Crear el cliente y obtener la URL generada para el endpoint
+        $client = $this->client;
+        $url = $this->getUrl('match_update', ['id' => 1]);
+
+        //datos validos
+        $partidaData = [
+            "fecha" => "2025-03-01 12:00:00"
+        ];
+
+        // Hacer la solicitud GET
+        $client->request('PATCH', $url, [], [], ['CONTENT_TYPE' => 'application/json'], json_encode($partidaData));
+
+        // Verificar que la respuesta sea 200 (Created)
+        $this->assertEquals($client->getResponse()->getStatusCode(), 200);
+        
+
+        // Verificar el contenido de la respuesta
+        $data = json_decode($client->getResponse()->getContent(), true);
+        $this->assertEquals('Partida actualizada con éxito', $data['message']);
+
+    }
+
     public function testBorrarPartida()
     {
         // Crear el cliente y obtener la URL generada para el endpoint

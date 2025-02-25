@@ -137,6 +137,38 @@ class PartidaController extends AbstractController
         return new JsonResponse(['mensaje' => 'Partida creada correctamente'], 201);
     }
 
+    #[Route('/{id}', name: 'match_update', methods: ['PATCH'])]
+    public function actualizarPartida(int $id, Request $request, PartidaRepository $partidaRepository, EntityManagerInterface $em): JsonResponse
+    {
+        $partida = $partidaRepository->find($id);
+
+        if (!$partida) {
+            return new JsonResponse(['error' => 'Autor no encontrado'], 404);
+        }
+
+        // Obtener datos del request
+        $data = json_decode($request->getContent(), true);
+
+        // Modificar solo si los valores existen en la petición
+        if (isset($data['fecha'])) {
+            $partida->setFecha(new \DateTime($data['fecha']));
+        }
+        if (isset($data['juego_id'])) {
+            $partida->setJuego($data['juego_id']);
+        }
+        if (isset($data['jugadores_ids'])) {
+            $partida->setJugadores($data['jugadores_ids']);
+        }
+        if (isset($data['ganadores_ids'])) {
+            $partida->setGanadores($data['ganadores_ids']);
+        }
+        
+        // Guardar cambios en la base de datos
+        $em->flush();
+
+        return new JsonResponse(['message' => 'Partida actualizada con éxito'], 200);
+    }
+
     #[Route('/{id<\d+>}', name: 'match_delete', methods: ['DELETE'])]
     public function delete(EntityManagerInterface $entityManager, int $id): Response
     {
