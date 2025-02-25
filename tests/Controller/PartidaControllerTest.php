@@ -1,7 +1,5 @@
 <?php
 namespace App\Tests\Controller;
-use App\Entity\Juego;
-use App\Entity\Jugador;
 use App\Repository\PartidaRepository;
 
 class PartidaControllerTest extends BaseWebTestCase

@@ -1,6 +1,6 @@
 # 📚 Proyecto API de Juegos de Mesa
 
-Este proyecto es una API RESTful para gestionar jugadores, juegos y partidas de mesa.
+Este proyecto es una API RESTful para gestionar jugadores, juegos y partidas de juegos de mesa.
 
 ## 🔧 **Requisitos**
 

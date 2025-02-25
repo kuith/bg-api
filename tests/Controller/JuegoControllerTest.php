@@ -1,6 +1,5 @@
 <?php
 namespace App\Tests\Controller;
-use App\Entity\Autor;
 use App\Repository\JuegoRepository;
 
 class JuegoControllerTest extends BaseWebTestCase

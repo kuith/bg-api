@@ -1,7 +1,6 @@
 <?php
 
 namespace App\Controller;
-use App\Entity\Autor;
 use App\Entity\Juego;
 use App\Repository\AutorRepository;
 use App\Repository\JuegoRepository;
@@ -292,9 +291,33 @@ class JuegoController extends AbstractController
             return new JsonResponse(['error' => 'Formato de datos inválido'], 400);
         }
 
-        // Validar que los campos requeridos están presentes
-        if (!isset($data['nombre']) || !isset($data['baseExpansion']) || !isset($data['dispAutoma'])) {
-            return new JsonResponse($data, 400);
+        //Verificar los campos requeridos
+        $requiredFields = ['nombre',
+            'baseExpansion',
+            'dispAutoma',
+            'tipo',
+            'descripcion',
+            'anioPublicacion',
+            'editorialLocal',
+            'editorialMadre',
+            'precio',
+            'minJugadores',
+            'maxJugadores',
+            'autores'
+        ];
+        $missingFields = [];
+
+        // Verificar si los campos requeridos están presentes
+        foreach ($requiredFields as $field) {
+            if (!isset($data[$field])) {
+                $missingFields[] = $field;  // Agregar el campo faltante a la lista
+            }
+        }
+
+        // Si hay campos faltantes, devolver un mensaje detallado
+        if (count($missingFields) > 0) {
+            $missingFieldsString = implode(", ", $missingFields);
+            return new JsonResponse("Faltan los siguientes datos: {$missingFieldsString}", 400);
         }
 
         $juego = new Juego();

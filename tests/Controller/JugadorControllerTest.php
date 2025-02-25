@@ -125,7 +125,8 @@ class JugadorControllerTest extends BaseWebTestCase
             "nombre" => "Jugador de prueba",
             "correo" => "PRUEBAS@example.com",
             "rol" => "admin",
-            "password" => "1234"
+            "password" => "1234",
+            "fecha_registro" => "2024-07-26"
         ];
 
         // Hacer la solicitud GET

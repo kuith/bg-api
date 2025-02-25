@@ -1,10 +1,7 @@
 <?php
 
 namespace App\Controller;
-use App\Entity\Juego;
-use App\Entity\Jugador;
 use App\Entity\Partida;
-use App\Repository\AutorRepository;
 use App\Repository\JuegoRepository;
 use App\Repository\JugadorRepository;
 use App\Repository\PartidaRepository;
@@ -93,9 +90,21 @@ class PartidaController extends AbstractController
             return new JsonResponse(['error' => 'Formato de datos inválido'], 400);
         }
 
-        // Validar que los campos requeridos están presentes
-        if (!isset($data['fecha']) || !isset($data['juego_id']) || !isset($data['jugadores_ids']) || !isset($data['ganadores_ids'])) {
-            return new JsonResponse($data, 400);
+        //Verificar los campos requeridos
+        $requiredFields = ['fecha', 'juego_id', 'jugadores_ids', 'ganadores_ids'];
+        $missingFields = [];
+
+        // Verificar si los campos requeridos están presentes
+        foreach ($requiredFields as $field) {
+            if (!isset($data[$field])) {
+                $missingFields[] = $field;  // Agregar el campo faltante a la lista
+            }
+        }
+
+        // Si hay campos faltantes, devolver un mensaje detallado
+        if (count($missingFields) > 0) {
+            $missingFieldsString = implode(", ", $missingFields);
+            return new JsonResponse("Faltan los siguientes datos: {$missingFieldsString}", 400);
         }
 
         $partida = new Partida();

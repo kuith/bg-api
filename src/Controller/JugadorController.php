@@ -112,9 +112,22 @@ class JugadorController extends AbstractController
             return new JsonResponse(['error' => 'Formato de datos inválido'], 400);
         }
 
-        // Validar que los campos requeridos están presentes
-        if (!isset($data['nombre']) || !isset($data['password']) || !isset($data['correo']) || !isset($data['rol'])) {
-            return new JsonResponse($data, 400);
+        //Verificar los campos requeridos
+        $requiredFields = ['nombre', 'password', 'correo', 'rol', 'fecha_registro'];
+  
+        $missingFields = [];
+
+        // Verificar si los campos requeridos están presentes
+        foreach ($requiredFields as $field) {
+            if (!isset($data[$field])) {
+                $missingFields[] = $field;  // Agregar el campo faltante a la lista
+            }
+        }
+
+        // Si hay campos faltantes, devolver un mensaje detallado
+        if (count($missingFields) > 0) {
+            $missingFieldsString = implode(", ", $missingFields);
+            return new JsonResponse("Faltan los siguientes datos: {$missingFieldsString}", 400);
         }
 
         $jugador = new Jugador();
