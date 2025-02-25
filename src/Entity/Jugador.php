@@ -6,9 +6,11 @@ use Doctrine\ORM\Mapping as ORM;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\Common\Collections\ArrayCollection;
 use Symfony\Component\Validator\Constraints as Assert;
+use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
+
 
 #[ORM\Entity]
-class Jugador
+class Jugador implements PasswordAuthenticatedUserInterface
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]

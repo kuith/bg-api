@@ -10,6 +10,7 @@ use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
+use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 
 #[Route('/api/players')]
 
@@ -99,7 +100,8 @@ class JugadorController extends AbstractController
     public function create(
         Request $request,
         EntityManagerInterface $em,
-        ValidatorInterface $validator
+        ValidatorInterface $validator,
+        UserPasswordHasherInterface $passwordHasher
     ): JsonResponse {
         $data = json_decode($request->getContent(), true);
 
@@ -120,7 +122,10 @@ class JugadorController extends AbstractController
         $jugador->setCorreo($data['correo']);
         $jugador->setRol($data['rol']);
         $jugador->setFechaRegistro(new \DateTime()); // Asigna la fecha actual como fecha de registro
-        $jugador->setPassword($data['password']);
+        // Hashear la contraseña
+        $hashedPassword = $passwordHasher->hashPassword($jugador, $data['password']);
+        $jugador->setPassword($hashedPassword);
+        //$jugador->setPassword($data['password']);
 
         // Validar el objeto Jugador (incluyendo las restricciones en correo, rol, etc.)
         $errors = $validator->validate($jugador);

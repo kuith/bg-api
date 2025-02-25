@@ -10,8 +10,6 @@ App\Entity\Jugador:
             groups: ['jugador_lista']
         fechaRegistro:
             groups: ['jugador_lista']
-        password:
-            groups: ['jugador_lista']
         partidas:
             groups: ['jugador_lista']
         partidasGanadas:
