@@ -1,6 +1,6 @@
 | Method  | Rute                                               | Description                                    Required Params.  
 |---------|----------------------------------------------------|----------------------------------------------|---------------
-
+|`GET`   |`/`                                                  |Home/root                               |
 **Jugadores - players**
 |`GET`   |`/api/players/`                                    |Find all players                                |
 |`GET`   |`/api/players/id/{id}`                             |Find player by id                               |`{id}`
