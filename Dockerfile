@@ -10,11 +10,13 @@ RUN apt-get update && apt-get install -y \
 # Instala Composer
 RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
 
-# Copia el código de tu proyecto al contenedor
-COPY . /var/www/html
+# Crea un nuevo usuario (sin privilegios de root) y configura los permisos
+RUN useradd -ms /bin/bash symfonyuser
+USER symfonyuser
 
-# Establece el directorio de trabajo
-WORKDIR /var/www/html
+# Copia el código de tu proyecto al contenedor
+WORKDIR /home/symfonyuser
+COPY . .
 
 # Instala las dependencias de Composer
 RUN composer install --no-dev --optimize-autoloader
