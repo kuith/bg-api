@@ -2,7 +2,7 @@
 FROM php:8.1-fpm
 
 # Instalar las dependencias necesarias
-RUN apt-get update && apt-get install -y libpq-dev git unzip && rm -rf /var/lib/apt/lists/*
+RUN apt-get update && apt-get install -y libpq-dev git unzip zlib1g-dev libzip-dev libpng-dev && rm -rf /var/lib/apt/lists/*
 
 # Instalar Composer (el gestor de dependencias de PHP)
 RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
@@ -21,3 +21,6 @@ EXPOSE 80
 
 # Configurar el comando para ejecutar el servidor web
 CMD ["php", "-S", "0.0.0.0:80", "-t", "public"]
+
+
+
