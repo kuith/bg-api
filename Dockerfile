@@ -22,5 +22,9 @@ EXPOSE 80
 # Configurar el comando para ejecutar el servidor web
 CMD ["php", "-S", "0.0.0.0:80", "-t", "public"]
 
+RUN curl -sS https://get.symfony.com/cli/installer | bash
+RUN mv /root/.symfony*/bin/symfony /usr/local/bin/symfony
+
+
 
 
