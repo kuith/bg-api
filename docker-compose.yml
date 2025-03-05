@@ -1,0 +1,17 @@
+version: '3'
+
+services:
+  app:
+    build: .
+    ports:
+      - "80:80"
+    environment:
+      - DATABASE_URL=postgres://boargame_db_user:contraseña@dpg-cv3huoa3esus73dij7s0-a.render.com:5432/boargame_db
+    volumes:
+      - .:/var/www/html
+    networks:
+      - backend
+
+networks:
+  backend:
+    driver: bridge
