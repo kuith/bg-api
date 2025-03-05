@@ -19,7 +19,8 @@ WORKDIR /home/symfonyuser
 COPY . .
 
 # Instala las dependencias de Composer
-RUN composer install --no-dev --optimize-autoloader
+RUN composer install --optimize-autoloader
+
 
 # Expone el puerto para servir la aplicación
 EXPOSE 8080
