@@ -16,7 +16,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
 class PartidaController extends AbstractController
 {
-    #[Route('/', name: 'match_list', methods: ['GET'])]
+    #[Route('/', name: 'match_list', methods: ['GET', 'HEAD'])]
     public function index(PartidaRepository $repository): Response
     {
         $partidas = $repository->findAll();
@@ -24,7 +24,7 @@ class PartidaController extends AbstractController
         return $this->json($partidas, Response::HTTP_OK, [], ['groups' => 'partida_lista']);
     }
 
-    #[Route('/id/{id<\d+>}', name: 'match_show', methods: ['GET'])]
+    #[Route('/id/{id<\d+>}', name: 'match_show', methods: ['GET', 'HEAD'])]
     public function show(int $id, PartidaRepository $repository): Response
     {
         $partida = $repository->findMatchById($id);
@@ -37,7 +37,7 @@ class PartidaController extends AbstractController
         return $this->json($partida, Response::HTTP_OK, [], ['groups' => 'partida_lista']);
     }
 
-    #[Route('/date/{fecha}', name: 'match_findByDate', methods: ['GET'])]
+    #[Route('/date/{fecha}', name: 'match_findByDate', methods: ['GET', 'HEAD'])]
     public function findMatchByDate(String $fecha, PartidaRepository $repository): Response
     {
         $partidas = $repository->findMatchByDate($fecha);
@@ -49,7 +49,7 @@ class PartidaController extends AbstractController
         return $this->json($partidas, Response::HTTP_OK, [], ['groups' => 'partida_lista']);
     }
 
-    #[Route('/winnersRanking', name: 'match_findWinnersRanking', methods: ['GET'])]
+    #[Route('/winnersRanking', name: 'match_findWinnersRanking', methods: ['GET', 'HEAD'])]
     public function getWinnersRanking(PartidaRepository $repository): Response
     {
         $partida = $repository->getWinnersRanking();
@@ -61,7 +61,7 @@ class PartidaController extends AbstractController
         return $this->json($partida, Response::HTTP_OK, [], ['groups' => 'partida_ganador']);
     }
 
-    #[Route('/player/{jugadorId}', name: 'match_findByPlayer', methods: ['GET'])]
+    #[Route('/player/{jugadorId}', name: 'match_findByPlayer', methods: ['GET', 'HEAD'])]
     public function findMatchByPlayer(String $jugadorId, PartidaRepository $repository): Response
     {
         $partida = $repository->findMatchByPlayer($jugadorId);
@@ -195,7 +195,7 @@ class PartidaController extends AbstractController
         return new Response('Partida eliminada!', 200);
     }
 
-     #[Route('/gamesByPlayer/{jugadorId}', name: 'matches_findGamesByPlayer', methods: ['GET'])]
+     #[Route('/gamesByPlayer/{jugadorId}', name: 'matches_findGamesByPlayer', methods: ['GET', 'HEAD'])]
         public function juegosPorJugador(String $jugadorId, PartidaRepository $repository): Response
     {
         $partidas = $repository->findMatchByPlayer($jugadorId);
@@ -215,7 +215,7 @@ class PartidaController extends AbstractController
         return $this->json($juegosUnicos, Response::HTTP_OK, [], ['groups' => 'jugador_juegos']);
     }
 
-    #[Route('/playersByGame/{juegoId}', name: 'matches_findPlayersByGame', methods: ['GET'])]
+    #[Route('/playersByGame/{juegoId}', name: 'matches_findPlayersByGame', methods: ['GET', 'HEAD'])]
         public function findPlayersByGame(String $juegoId, PartidaRepository $repository): Response
     {
     $partidas = $repository->findPlayersByGame($juegoId);
@@ -237,7 +237,7 @@ class PartidaController extends AbstractController
         return $this->json($jugadoresUnicos, Response::HTTP_OK, [], ['groups' => 'jugador_juegos']);
     }
 
-    #[Route('/winnersByGame/{juegoId}', name: 'matches_findWinnersByGame', methods: ['GET'])]
+    #[Route('/winnersByGame/{juegoId}', name: 'matches_findWinnersByGame', methods: ['GET', 'HEAD'])]
         public function findGanadoresByJuegoId(String $juegoId, PartidaRepository $repository): Response
     {
     $partidas = $repository->findWinnersByJuego($juegoId);

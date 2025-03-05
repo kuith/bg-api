@@ -16,7 +16,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
 class AutorController extends AbstractController
 {
-    #[Route('/', name: 'author_list', methods: ['GET'])]
+    #[Route('/', name: 'author_list', methods: ['GET', 'HEAD'])]
     public function index(AutorRepository $repository): Response
     {
         $autores = $repository->findAll();
@@ -123,7 +123,7 @@ class AutorController extends AbstractController
         return new Response('Autor eliminado!', 200);
     }
 
-    #[Route('/id/{id<\d+>}', name: 'author_show', methods: ['GET'])]
+    #[Route('/id/{id<\d+>}', name: 'author_show', methods: ['GET', 'HEAD'])]
     public function show(int $id, AutorRepository $repository): Response
     {
         $autor = $repository->findAuthorById($id);
@@ -135,7 +135,7 @@ class AutorController extends AbstractController
         return $this->json($autor, Response::HTTP_OK, [], ['groups' => 'autor_detalle']);
     }
 
-    #[Route('/name/{nombre}', name: 'author_findByname', methods: ['GET'])]
+    #[Route('/name/{nombre}', name: 'author_findByname', methods: ['GET', 'HEAD'])]
     public function findByName(String $nombre, AutorRepository $repository): Response
     {
         $autor = $repository->findAuthorByName($nombre);
@@ -147,7 +147,7 @@ class AutorController extends AbstractController
         return $this->json($autor, Response::HTTP_OK, [], ['groups' => 'autor_detalle']);
     }
 
-    #[Route('/nationality/{nacionalidad}', name: 'author_findByNac', methods: ['GET'])]
+    #[Route('/nationality/{nacionalidad}', name: 'author_findByNac', methods: ['GET', 'HEAD'])]
     public function findByNac(String $nacionalidad, AutorRepository $repository): Response
     {
         $autor = $repository->findAuthorByNac($nacionalidad);

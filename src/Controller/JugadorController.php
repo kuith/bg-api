@@ -16,7 +16,7 @@ use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 
 class JugadorController extends AbstractController
 {
-    #[Route('/', name: 'player_list', methods: ['GET'])]
+    #[Route('/', name: 'player_list', methods: ['GET', 'HEAD'])]
     public function index(JugadorRepository $repository): Response
     {
         $jugadores = $repository->findAll();
@@ -24,7 +24,7 @@ class JugadorController extends AbstractController
         return $this->json($jugadores, Response::HTTP_OK, [], ['groups' => 'jugador_lista']);
     }
 
-    #[Route('/id/{id<\d+>}', name: 'player_show', methods: ['GET'])]
+    #[Route('/id/{id<\d+>}', name: 'player_show', methods: ['GET', 'HEAD'])]
     public function show(int $id, JugadorRepository $repository): Response
     {
         $jugador = $repository->findPlayerById($id);
@@ -36,7 +36,7 @@ class JugadorController extends AbstractController
         return $this->json($jugador, Response::HTTP_OK, [], ['groups' => 'jugador_lista']);
     }
 
-    #[Route('/name/{nombre}', name: 'player_findByName', methods: ['GET'])]
+    #[Route('/name/{nombre}', name: 'player_findByName', methods: ['GET', 'HEAD'])]
     public function findByName(String $nombre, JugadorRepository $repository): Response
     {
         $jugador = $repository->findPlayerByName($nombre);
@@ -48,7 +48,7 @@ class JugadorController extends AbstractController
         return $this->json($jugador, Response::HTTP_OK, [], ['groups' => 'jugador_lista']);
     }
 
-    #[Route('/mail/{correo}', name: 'player_findByEmail', methods: ['GET'])]
+    #[Route('/mail/{correo}', name: 'player_findByEmail', methods: ['GET', 'HEAD'])]
     public function findByEmail(String $correo, JugadorRepository $repository): Response
     {
         $jugador = $repository->findPlayerByEmail($correo);
@@ -60,7 +60,7 @@ class JugadorController extends AbstractController
         return $this->json($jugador, Response::HTTP_OK, [], ['groups' => 'jugador_lista']);
     }
 
-    #[Route('/rol/{rol}', name: 'player_findByRol', methods: ['GET'])]
+    #[Route('/rol/{rol}', name: 'player_findByRol', methods: ['GET', 'HEAD'])]
     public function findByRol(String $rol, JugadorRepository $repository): Response
     {
         $jugadores = $repository->findPlayerByRol($rol);
@@ -71,7 +71,7 @@ class JugadorController extends AbstractController
 
         return $this->json($jugadores, Response::HTTP_OK, [], ['groups' => 'jugador_lista']);
     }
-    #[Route('/games/{juegoId}/players', name: 'players_findByGame', methods: ['GET'])]
+    #[Route('/games/{juegoId}/players', name: 'players_findByGame', methods: ['GET', 'HEAD'])]
     public function findPlayersByGame(int $juegoId, JugadorRepository $repository): Response
     {
         $jugadores = $repository->findPlayersByGame($juegoId);
@@ -83,7 +83,7 @@ class JugadorController extends AbstractController
         return $this->json($jugadores, Response::HTTP_OK, [], ['groups' => 'jugador_juegos']);
     }
 
-    #[Route('/{idJugador}/matches/won', name: 'playar_findByWonMatches', methods: ['GET'])]
+    #[Route('/{idJugador}/matches/won', name: 'playar_findByWonMatches', methods: ['GET', 'HEAD'])]
     public function findPartidasGanadas(String $idJugador, JugadorRepository $repository): Response
     {
         $partidasGanadas = $repository->findPartidasGanadasPorJugador($idJugador);
