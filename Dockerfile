@@ -1,5 +1,5 @@
 # Usar una imagen base de PHP
-FROM php:8.1-fpm
+FROM php:8.2-fpm
 
 # Instalar las dependencias necesarias
 RUN apt-get update && apt-get install -y libpq-dev git unzip zlib1g-dev libzip-dev libpng-dev && rm -rf /var/lib/apt/lists/*
