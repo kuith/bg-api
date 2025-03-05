@@ -1,5 +1,5 @@
-# Usa una imagen base de PHP
-FROM php:8.1-cli
+# Usa una imagen base de PHP 8.2
+FROM php:8.2-cli
 
 # Instala las dependencias necesarias
 RUN apt-get update && apt-get install -y \
