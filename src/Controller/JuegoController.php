@@ -436,6 +436,24 @@ class JuegoController extends AbstractController
         if (isset($data['maxJugadores'])) {
             $juego->setMaxJugadores($data['maxJugadores']);
         }
+        
+        // Manejar las relaciones con autores
+        if (isset($data['autores']) && is_array($data['autores'])) {
+            // Limpiar autores existentes
+            foreach ($juego->getAutores() as $autor) {
+                $juego->removeAutor($autor);
+            }
+            
+            // Agregar nuevos autores
+            $autorRepository = $em->getRepository(\App\Entity\Autor::class);
+            foreach ($data['autores'] as $autorId) {
+                $autor = $autorRepository->find($autorId);
+                if ($autor) {
+                    $juego->addAutor($autor);
+                }
+            }
+        }
+        
         // Guardar cambios en la base de datos
         $em->flush();
 
