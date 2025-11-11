@@ -210,5 +210,38 @@ class JugadorController extends AbstractController
 
         return new JsonResponse(['message' => 'Jugador actualizado con éxito'], 200);
     }
-   
+    
+    #[Route('/login', name: 'player_login', methods: ['POST'])]
+    public function login(
+        Request $request,
+        JugadorRepository $repository,
+        UserPasswordHasherInterface $passwordHasher
+    ): JsonResponse {
+        // Obtener datos del request
+        try {
+            $data = $request->toArray();
+        } catch (\Exception $e) {
+            return new JsonResponse(['error' => 'Formato de datos inválido'], 400);
+        }
+        
+        // Verificar que lleguen email y password
+        if (!isset($data['correo']) || !isset($data['password'])) {
+            return new JsonResponse(['error' => 'Email y contraseña requeridos'], 400);
+        }
+        
+        // Buscar jugador por email
+        $jugador = $repository->findPlayerByEmail($data['correo']);
+        
+        if (!$jugador) {
+            return new JsonResponse(['error' => 'Usuario no encontrado'], 401);
+        }
+        
+        // Verificar contraseña
+        if (!$passwordHasher->isPasswordValid($jugador, $data['password'])) {
+            return new JsonResponse(['error' => 'Contraseña incorrecta'], 401);
+        }
+        
+        // Login exitoso - devolver datos del usuario (sin la contraseña)
+        return $this->json($jugador, Response::HTTP_OK, [], ['groups' => 'jugador_lista']);
+    }
 }
